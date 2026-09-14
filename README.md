@@ -34,6 +34,34 @@ pnpm dev
 
 ⚠️ Les notifications push ne fonctionnent pas dans Expo Go — nécessite un EAS development build. Détail → `distribution.md`.
 
+## Stack Supabase locale
+
+`supabase start` fait tourner toute la stack (Postgres, Auth, Storage, Realtime, Studio) dans des conteneurs Docker gérés directement par la CLI Supabase — il n'y a pas de `docker-compose.yml` dans ce repo : la CLI génère et pilote elle-même sa propre config Docker à partir de `supabase/config.toml`. Ajouter un compose maison en plus ferait doublon et risquerait de diverger des versions d'images attendues par la CLI.
+
+**Commandes utiles**
+
+```bash
+supabase start    # démarre la stack (idempotent, ne recrée pas si déjà up)
+supabase stop      # arrête les conteneurs
+supabase status    # réaffiche URLs/ports/clés sans redémarrer
+supabase db reset  # rejoue toutes les migrations depuis zéro (⚠️ efface les données locales)
+```
+
+**Ports locaux** (définis dans `supabase/config.toml`, modifiables si conflit avec un autre projet) :
+
+| Service | URL |
+|---|---|
+| API (REST/Auth/Storage/Realtime, via Kong) | http://127.0.0.1:54321 |
+| Postgres | postgresql://postgres:postgres@127.0.0.1:54322/postgres |
+| Studio (UI web) | http://127.0.0.1:54323 |
+| Mailpit (emails Magic Link interceptés) | http://127.0.0.1:54324 |
+
+**Config & schéma**
+
+- `supabase/config.toml` — configuration de la stack (ports, auth, storage...), versionné.
+- `supabase/migrations/*.sql` — schéma + RLS complets, appliqués dans l'ordre du nom de fichier par `supabase db reset` / `supabase db push`. Détail des règles métier et des politiques → `modele-de-donnees.md`.
+- `supabase/.branches`, `supabase/.temp`, `supabase/.env` — état local généré par la CLI, gitignorés.
+
 ## Tests
 
 ```bash
