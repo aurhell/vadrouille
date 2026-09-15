@@ -108,7 +108,7 @@ Feature: Notification de co-ownership
 
   Scenario: Réception d'une invitation de co-ownership
     Given un ami m'invite à devenir co-owner d'un de ses chiens
-    Then je reçois une notification push "🐾 {Ami} te propose de co-gérer {Chien} avec lui"
+    Then je reçois une notification push "🦮 {Ami} te propose de co-gérer {Chien} avec lui"
 ```
 
 ## Hypothèses & points à confirmer

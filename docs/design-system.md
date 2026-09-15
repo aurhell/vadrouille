@@ -59,7 +59,7 @@ Aucun écran n'écrit `fontFamily` en dur : tout passe par les composants `Displ
 | Composant | Style | Usage |
 |---|---|---|
 | `Display size="lg"` | Baloo 2 ExtraBold, 34/36 | Écrans d'accueil de flow (ex: "Bienvenue sur Vadrouille") |
-| `Display size="md"` | Baloo 2 ExtraBold, 30/31 | Titre d'écran (ex: "Balades 🐾") |
+| `Display size="md"` | Baloo 2 ExtraBold, 30/31 | Titre d'écran (ex: "Balades 🦮") |
 | `Title size="lg"` | Baloo 2 Bold, 20/23 | Titre de carte (ex: "Parc de la Tête d'Or") |
 | `Body size="lg"` | Nunito SemiBold, 16/24 | Corps de texte |
 | `Body size="md" tone="subtle"` | Nunito SemiBold, 14/21 | Métadonnées (dates, heures) |

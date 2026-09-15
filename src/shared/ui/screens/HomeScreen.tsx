@@ -23,7 +23,7 @@ export function HomeScreen({
   return (
     <YStack flex={1} backgroundColor="$background">
       <ScreenHeader
-        title="Balades 🐾"
+        title="Balades 🦮"
         subtitle={empty ? undefined : walks.length + ' sorties à venir'}
         rightSlot={
           <YStack onPress={onPressProfile} hitSlop={10}>

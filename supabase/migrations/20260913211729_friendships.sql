@@ -28,6 +28,14 @@ $$;
 comment on function public.is_friend_of(uuid) is
   'True if target_user_id is a friend of the current authenticated user.';
 
+-- Deferred from profiles.sql: needs is_friend_of(), just defined above (multiple permissive
+-- policies for the same command are combined with OR, alongside profiles_select_own).
+create policy "profiles_select_friend"
+  on public.profiles
+  for select
+  to authenticated
+  using (public.is_friend_of(id));
+
 -- RLS -------------------------------------------------------------------------
 
 alter table public.friendships enable row level security;

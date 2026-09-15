@@ -11,6 +11,15 @@ const config: ExpoConfig = {
   ios: {
     bundleIdentifier: "dev.aureliengirault.vadrouille",
     supportsTablet: true,
+    infoPlist: {
+      // Local Supabase serves plain HTTP over the dev machine's LAN IP (see .env.example) —
+      // a physical device otherwise blocks it under App Transport Security. Scoped to local
+      // network addresses only, not arbitrary HTTP. Revisit before store distribution: the
+      // cloud/prod Supabase project is HTTPS, so this exception becomes unnecessary then.
+      NSAppTransportSecurity: {
+        NSAllowsLocalNetworking: true,
+      },
+    },
   },
   android: {
     package: "dev.aureliengirault.vadrouille",
@@ -25,7 +34,17 @@ const config: ExpoConfig = {
   web: {
     favicon: "./assets/favicon.png",
   },
-  plugins: ["expo-router", "expo-status-bar", "expo-font"],
+  plugins: [
+    "expo-router",
+    "expo-status-bar",
+    "expo-font",
+    [
+      "expo-image-picker",
+      {
+        photosPermission: "Vadrouille a besoin d'accéder à tes photos pour choisir un avatar.",
+      },
+    ],
+  ],
 }
 
 export default config

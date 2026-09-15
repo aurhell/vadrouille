@@ -1,4 +1,4 @@
-# 🐾 Vision — Vadrouille
+# 🦮 Vision — Vadrouille
 
 ## Pitch
 **Vadrouille** — appli mobile permettant d'organiser des balades de chiens entre amis : créer son compte, gérer ses chiens (y compris en foyer partagé), gérer ses amis, proposer des balades (heure/lieu/durée), être notifié et répondre (oui/non/peut-être).

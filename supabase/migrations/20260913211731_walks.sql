@@ -26,7 +26,10 @@ create table public.walk_dogs (
   walk_id uuid not null references public.walks (id) on delete cascade,
   dog_id uuid not null references public.dogs (id) on delete cascade,
   status text not null check (status in ('yes', 'maybe')),
-  updated_by uuid references public.profiles (id),
+  -- SET NULL, not CASCADE: this is only an audit column ("who last confirmed"), the
+  -- confirmation itself (this row) must survive its author's account being deleted — see
+  -- rgpd-securite.md's deletion cascade, and supabase/functions/delete-account.
+  updated_by uuid references public.profiles (id) on delete set null,
   responded_at timestamptz not null default now(),
   primary key (walk_id, dog_id)
 );

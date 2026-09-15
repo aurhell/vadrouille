@@ -71,8 +71,14 @@ create trigger profiles_set_invite_code
 
 alter table public.profiles enable row level security;
 
--- Note: the SELECT policy needs `dog_owners` and `walk_participants`, created in later
--- migrations — it is added at the end of the walks migration once every table exists.
+-- Own profile is always visible — no dependency on later tables, so added here directly.
+-- The friend / shared-walk / shared-dog clauses are added as further OR'd policies once
+-- their tables exist (friendships.sql, walks.sql).
+create policy "profiles_select_own"
+  on public.profiles
+  for select
+  to authenticated
+  using (id = auth.uid());
 
 create policy "profiles_insert_self"
   on public.profiles

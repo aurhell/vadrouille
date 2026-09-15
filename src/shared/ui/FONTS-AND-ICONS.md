@@ -50,7 +50,7 @@ Choix retenu : **emojis natifs**, pas de librairie d'icônes.
 
 - Les emojis sont rendus par la police système : pas d'asset, pas de teinte possible.
 - Un emoji n'est jamais seul porteur de sens : il accompagne toujours un mot
-  (`8/10 🐕`, `Oui 🐾`) ou reste décoratif.
+  (`8/10 🐕`, `Oui 🦮`) ou reste décoratif.
 - Toujours `numberOfLines={1}` sur un texte qui contient un emoji à l'intérieur
   d'une pastille : sinon l'emoji passe à la ligne et sort du fond arrondi.
 - Les chevrons et coches sont des caractères typographiques (`›`, `✓`, `✕`,
@@ -59,7 +59,7 @@ Choix retenu : **emojis natifs**, pas de librairie d'icônes.
   `importantForAccessibility="no"`, et donner un `accessibilityLabel` explicite
   aux pressables qui n'affichent qu'un glyphe (`✕` → « Fermer »).
 
-Set utilisé dans l'app : 🐾 (marque, balades) · 🐕 (quota chiens) · 📍 (lieu) ·
+Set utilisé dans l'app : 🦮 (marque, balades) · 🐕 (quota chiens) · 📍 (lieu) ·
 ⏳ (en attente) · 🖼 (photo choisie).
 
 Si un besoin d'icônes vectorielles apparaît (navigation, réglages),

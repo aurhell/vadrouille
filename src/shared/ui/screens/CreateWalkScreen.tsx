@@ -217,7 +217,7 @@ export function CreateWalkScreen({
             })
           }
         >
-          Proposer la balade 🐾
+          Proposer la balade 🦮
         </Button>
       </YStack>
     </YStack>

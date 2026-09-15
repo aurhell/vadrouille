@@ -33,7 +33,7 @@ const Option = styled(YStack, {
 });
 
 const options: { status: Exclude<RsvpStatus, 'pending'>; label: string }[] = [
-  { status: 'confirmed', label: 'Oui 🐾' },
+  { status: 'confirmed', label: 'Oui 🦮' },
   { status: 'maybe', label: 'Peut-être' },
   { status: 'declined', label: 'Non' },
 ];

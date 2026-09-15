@@ -28,6 +28,13 @@ supabase start
 # Appliquer les migrations du schéma (voir modele-de-donnees.md)
 supabase db reset
 
+# Config de l'app : URL + clé publiable du backend local
+cp .env.example .env
+# → EXPO_PUBLIC_SUPABASE_ANON_KEY : le PUBLISHABLE_KEY affiché par `supabase status -o json`
+# → EXPO_PUBLIC_SUPABASE_URL : sur téléphone physique, remplacer 127.0.0.1 par l'IP LAN du
+#   Mac (`ipconfig getifaddr en0`) — 127.0.0.1 sur le téléphone pointe vers le téléphone,
+#   pas vers le Mac. Le simulateur/émulateur n'a pas ce problème.
+
 # Démarrer l'app (Expo Router)
 pnpm dev
 ```
@@ -69,6 +76,18 @@ pnpm test
 ```
 
 Convention : Vitest, écrit en TDD, tests nommés en Given/When/Then (`describe("Given ...")` / `test("When ..., Then ...")`). Détail → `architecture-technique.md` §Tests.
+
+## Se connecter en dev sans passer par l'email
+
+```bash
+pnpm dev:login          # crée/réutilise dev@vadrouille.test, imprime un lien à coller
+pnpm dev:login --reset  # supprime le compte fixture d'abord (repart sur un onboarding vierge)
+```
+
+Court-circuite le round-trip email/Mailpit : colle le lien imprimé dans l'encadré pointillé
+"DEV" de l'écran de connexion (visible uniquement en dev). Voir aussi
+`src/account/presentation/screens/dev-paste-magic-link.tsx` et `supabase/config.toml` §`[auth]`
+pour le pourquoi (limite connue d'Expo Go + bug amont GoTrue sur `emailRedirectTo`).
 
 ## Documentation du projet
 

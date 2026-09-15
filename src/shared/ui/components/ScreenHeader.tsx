@@ -1,3 +1,4 @@
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XStack, YStack, styled } from 'tamagui';
 import { Body, Display } from './Text';
 
@@ -27,8 +28,13 @@ export interface ScreenHeaderProps extends React.ComponentProps<typeof Frame> {
 
 export function ScreenHeader({ title, subtitle, onBack, rightSlot, ...props }: ScreenHeaderProps) {
   const accent = props.tone === 'accent';
+  const insets = useSafeAreaInsets();
   return (
-    <Frame {...props}>
+    // Frame's own `$4` paddingTop (16px) is a fixed token, not safe-area-aware — screens
+    // without a native header (headerShown: false, see (tabs)/_layout.tsx) render straight
+    // under the status bar/notch otherwise. Overridden here rather than in Frame itself
+    // since styled() can't call hooks.
+    <Frame paddingTop={insets.top + 16} {...props}>
       {onBack ? (
         <Body
           size="sm"

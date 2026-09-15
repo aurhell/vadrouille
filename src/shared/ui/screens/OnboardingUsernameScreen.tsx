@@ -34,7 +34,7 @@ export function OnboardingUsernameScreen({
     <YStack flex={1} backgroundColor="$accent">
       <YStack paddingHorizontal="$6" paddingTop="$9" paddingBottom="$6" gap="$3">
         <Body fontSize={46} lineHeight={52}>
-          🐾
+          🦮
         </Body>
         <Display size="lg" color="$accentText">
           Bienvenue sur Vadrouille !

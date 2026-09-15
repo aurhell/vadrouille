@@ -12,7 +12,7 @@ export interface EmptyStateProps {
 
 /** Empty is an invitation, not an error: big friendly mark, one clear action. */
 export function EmptyState({
-  emoji = '🐾',
+  emoji = '🦮',
   title,
   body,
   actionLabel,

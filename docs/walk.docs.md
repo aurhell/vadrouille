@@ -149,11 +149,11 @@ Feature: Notifications liées aux balades
 
   Scenario: Réception d'une invitation
     Given je suis ajouté comme participant "pending" à une nouvelle balade
-    Then je reçois une notification push "🐾 {Organisateur} t'invite à une balade"
+    Then je reçois une notification push "🦮 {Organisateur} t'invite à une balade"
 
   Scenario: Réception d'une reprogrammation
     Given une balade à laquelle je participe est reprogrammée par l'organisateur
-    Then je reçois une notification push "🐾 {Organisateur} a mis à jour la balade. Confirme ta présence !"
+    Then je reçois une notification push "🦮 {Organisateur} a mis à jour la balade. Confirme ta présence !"
 
   Scenario Edge Case: Notifications désactivées au niveau OS
     Given j'ai désactivé les notifications push pour Vadrouille dans les réglages de mon téléphone

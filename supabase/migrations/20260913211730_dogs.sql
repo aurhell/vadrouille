@@ -8,7 +8,12 @@ create table public.dogs (
   -- trigger below commits the matching dog_owners row, even though it's already visible to
   -- every later statement in the same transaction. A plain column avoids the whole class of
   -- bug.
-  created_by uuid not null references public.profiles (id) on delete cascade default auth.uid(),
+  --
+  -- SET NULL, not CASCADE: this column must never be the reason a dog gets deleted. A
+  -- co-owned dog has to survive its creator's account deletion (see rgpd-securite.md —
+  -- ownership for that purpose is dog_owners, not this column); actual deletion of a
+  -- solely-owned dog is handled explicitly by supabase/functions/delete-account.
+  created_by uuid references public.profiles (id) on delete set null default auth.uid(),
   name text not null,
   breed text,
   birth_date date,

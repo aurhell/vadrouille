@@ -154,12 +154,29 @@ max_indexes = 5
 [auth]
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
-# in emails.
-site_url = "http://127.0.0.1:3000"
+# in emails. Set to the app's own scheme (see app.config.ts) rather than a web URL: this is a
+# mobile-only app, and magic-link/OAuth redirects need to reopen the app, not a browser.
+#
+# ⚠️ Known local-CLI/GoTrue limitation (confirmed by testing, see supabase/auth-js#418): the
+# per-request `emailRedirectTo`/`redirect_to` passed to signInWithOtp() is silently ignored —
+# every magic link redirects to `site_url` regardless of what the client requests, even when
+# the requested URL is itself in additional_redirect_urls below. site_url is the only thing
+# that actually controls where the link goes locally.
+#
+# Practical effect: `vadrouille://` (below) is correct for a standalone/EAS dev-client build,
+# where the OS has the app registered for that scheme, so tapping the link reopens the app
+# directly. It will NOT auto-reopen the app when testing in Expo Go, since Expo Go only
+# handles `exp://` links, not third-party app schemes — Expo Go can still send/receive the
+# request (email arrives fine), but completing the click-through login locally needs either a
+# dev-client build, or temporarily setting site_url to your current `exp://<lan-ip>:<port>/--/`
+# and restarting the stack (`supabase stop && supabase start`) — do not commit that override.
+site_url = "vadrouille://"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["https://127.0.0.1:3000"]
+# Kept broad (not just site_url) for when the emailRedirectTo bug above gets fixed upstream,
+# and for any other redirect-based flow (OAuth, etc.) added later.
+additional_redirect_urls = ["vadrouille://**", "exp://**"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
