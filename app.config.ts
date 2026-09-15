@@ -25,7 +25,7 @@ const config: ExpoConfig = {
   web: {
     favicon: "./assets/favicon.png",
   },
-  plugins: ["expo-router", "expo-status-bar"],
+  plugins: ["expo-router", "expo-status-bar", "expo-font"],
 }
 
 export default config

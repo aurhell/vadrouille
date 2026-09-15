@@ -2,6 +2,8 @@
 
 Direction retenue : **A — « Ludique & coloré »**. Formes pleines, coins très arrondis, aplats de couleur vive. Généré via Claude Design, à partir de 3 propositions comparées sur 5 écrans clés.
 
+📄 Version visuelle complète (palette, thèmes, composants, écrans de référence en image) → [`design-system/index.html`](./design-system/index.html) — `pnpm design-system` puis http://localhost:4040.
+
 ## Choix technique
 
 Stack : **TypeScript · Tamagui**. API des composants en anglais, copie affichée en français. **11 composants**, **5 écrans** de référence (Home, WalkDetail, CreateWalk, MyDogs, Onboarding).

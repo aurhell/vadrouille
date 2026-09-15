@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+body { margin: 0; background: #FFF7F0; }
+a { color: #C8391A; }
+a:hover { color: #2B2118; }
+</style>
+</helmet>
+
+<div style="max-width:1080px;margin:0 auto;padding:56px 28px 96px;font-family:'Nunito',sans-serif;color:#2B2118">
+
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px">
+    <div>
+      <div style="font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">Design system · React Native · Tamagui</div>
+      <div style="margin-top:12px;font:800 46px/1.02 'Baloo 2',cursive">Vadrouille 🐾</div>
+      <div style="margin-top:10px;font:600 17px/1.5 'Nunito',sans-serif;color:#8A7A6C;max-width:56ch">Direction A « Ludique &amp; coloré ». Formes pleines, coins très arrondis, aplats de couleur vive. Tokens sémantiques, thèmes clair et sombre, sous-thèmes de statut.</div>
+    </div>
+    <div style="font:500 12px/1.8 'IBM Plex Mono',monospace;color:#A79A8D;text-align:right">TypeScript<br />API anglaise · copie française<br />11 composants · 5 écrans</div>
+  </div>
+
+  <div style="height:1.5px;background:#EADDD0;margin:44px 0"></div>
+
+  <div style="font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">01 — Couleurs</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Palette et rôles</div>
+  <div style="margin-top:8px;font:600 15px/1.5 'Nunito',sans-serif;color:#8A7A6C;max-width:62ch">Les composants ne référencent jamais une couleur brute. Ils lisent un token sémantique, ce qui rend les thèmes interchangeables.</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:26px">
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#FF6B4A"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Coral 500</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#FF6B4A · $accent</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Action principale, une par écran. Heures et dates dans les cartes. Fond du header d'onboarding.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#FFC145"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Amber 500</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#FFC145 · $warning</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">« Peut-être », cadres de photos de chien, bordures pointillées d'ajout. Devient $accent en thème sombre.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#3FBFA8"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Teal 500</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#3FBFA8 · $success</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Confirmé, sélection acquise, quota rempli, foyer partagé.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#2B2118"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Brown 800</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#2B2118 · $color</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Encre. Un brun chaud, jamais de noir pur : le noir casse la chaleur de la DA.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#FFF7F0;border-bottom:1.5px solid #EADDD0"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Cream 100</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#FFF7F0 · $background</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Fond d'écran. Les cartes sont en blanc pur ($backgroundStrong) pour se détacher.</div>
+      </div>
+    </div>
+    <div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="height:92px;background:#8A7A6C"></div>
+      <div style="padding:16px">
+        <div style="font:700 18px/1 'Baloo 2',cursive">Brown 500</div>
+        <div style="margin-top:6px;font:500 12px/1 'IBM Plex Mono',monospace;color:#A79A8D">#8A7A6C · $colorSubtle</div>
+        <div style="margin-top:10px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Texte secondaire, libellés de champ, métadonnées. 4,6:1 sur le fond crème.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">02 — Thèmes</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Clair et sombre, token par token</div>
+  <div style="margin-top:8px;font:600 15px/1.5 'Nunito',sans-serif;color:#8A7A6C;max-width:62ch">Le sombre est une « nuit chaude » : fond aubergine/brun, ambre promu accent principal. Le corail perd trop de contraste sur aubergine, il n'y sert plus que pour le danger.</div>
+
+  <div style="margin-top:24px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;gap:0;padding:14px 18px;background:#FFF0EB;font:800 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6C">
+      <div>Token</div><div>Light</div><div>Dark</div><div>Rôle</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$background</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FFF7F0;border:1px solid #EADDD0"></span>FFF7F0</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#1B1218"></span>1B1218</div>
+      <div style="color:#8A7A6C">Fond d'écran</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$backgroundStrong</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FFFFFF;border:1px solid #EADDD0"></span>FFFFFF</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#251A21"></span>251A21</div>
+      <div style="color:#8A7A6C">Surface de carte</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$color</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#2B2118"></span>2B2118</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#F7EDE4"></span>F7EDE4</div>
+      <div style="color:#8A7A6C">Encre principale</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$colorSubtle</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#8A7A6C"></span>8A7A6C</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#B5A08F"></span>B5A08F</div>
+      <div style="color:#8A7A6C">Texte secondaire</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$accent</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FF6B4A"></span>FF6B4A</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FFC145"></span>FFC145</div>
+      <div style="color:#8A7A6C">Action principale</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$accentText</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FFFFFF;border:1px solid #EADDD0"></span>FFFFFF</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#241019"></span>241019</div>
+      <div style="color:#8A7A6C">Texte sur $accent</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$borderColor</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#EADDD0"></span>EADDD0</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#3B2A34"></span>3B2A34</div>
+      <div style="color:#8A7A6C">Filets, cases à cocher vides</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$success</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#3FBFA8"></span>3FBFA8</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#4FD2B8"></span>4FD2B8</div>
+      <div style="color:#8A7A6C">Confirmé, sélection</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1.6fr;align-items:center;padding:12px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div style="font:500 12px/1 'IBM Plex Mono',monospace">$danger</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#E8542F"></span>E8542F</div>
+      <div style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;border-radius:5px;background:#FF8A6A"></span>FF8A6A</div>
+      <div style="color:#8A7A6C">Décliné, erreur de champ</div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+    <div style="font:700 18px/1 'Baloo 2',cursive">Sous-thèmes de statut</div>
+    <div style="margin-top:8px;font:600 13px/1.5 'Nunito',sans-serif;color:#8A7A6C;max-width:62ch">Les quatre statuts de réponse existent en sous-thèmes Tamagui. Ils ne surchargent que les quatre tokens d'accent, donc tout composant qui se style sur <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">$accent</code> réagit automatiquement.</div>
+    <div style="margin-top:16px;font:500 12px/1.9 'IBM Plex Mono',monospace;background:#FFF7F0;border-radius:14px;padding:16px;color:#2B2118;overflow:auto">&lt;Theme name="confirmed"&gt;<br />&nbsp;&nbsp;&lt;StatusBadge status="confirmed" /&gt;<br />&lt;/Theme&gt;<br /><br />light_confirmed · light_maybe · light_declined · light_pending<br />dark_confirmed&nbsp; · dark_maybe&nbsp; · dark_declined&nbsp; · dark_pending</div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">03 — Typographie</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Deux familles, quatre composants</div>
+  <div style="margin-top:8px;font:600 15px/1.5 'Nunito',sans-serif;color:#8A7A6C;max-width:62ch">Aucun écran n'écrit <code style="font:500 13px/1 'IBM Plex Mono',monospace;color:#C8391A">fontFamily</code> en dur : tout passe par Display, Title, Body, Label.</div>
+
+  <div style="margin-top:26px;display:flex;flex-direction:column;gap:2px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px">
+      <div style="flex:1;min-width:240px;font:800 34px/1.06 'Baloo 2',cursive">Bienvenue sur Vadrouille</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Display size="lg"<br />Baloo 2 ExtraBold · 34/36</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px;border-top:1.5px solid #F4EEE8">
+      <div style="flex:1;min-width:240px;font:800 30px/1 'Baloo 2',cursive">Balades 🐾</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Display size="md"<br />Titre d'écran · 30/31</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px;border-top:1.5px solid #F4EEE8">
+      <div style="flex:1;min-width:240px;font:700 20px/1 'Baloo 2',cursive">Parc de la Tête d'Or</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Title size="lg"<br />Titre de carte · 20/23</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px;border-top:1.5px solid #F4EEE8">
+      <div style="flex:1;min-width:240px;font:600 16px/1.5 'Nunito',sans-serif">Tes amis reçoivent l'invitation aussitôt.</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Body size="lg"<br />Nunito SemiBold · 16/24</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px;border-top:1.5px solid #F4EEE8">
+      <div style="flex:1;min-width:240px;font:600 14px/1.5 'Nunito',sans-serif;color:#8A7A6C">Sam. 14 sept · 10:00 · 1 h 30</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Body size="md" tone="subtle"<br />Métadonnées · 14/21</div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:20px;padding:20px 22px;border-top:1.5px solid #F4EEE8">
+      <div style="flex:1;min-width:240px;font:800 13px/1 'Nunito',sans-serif;color:#8A7A6C">Qui on invite ?</div>
+      <div style="font:500 12px/1.7 'IBM Plex Mono',monospace;color:#A79A8D">Label<br />Nunito ExtraBold · 13/17</div>
+    </div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">04 — Espacements, rayons, ombre</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Grille de 4 pt</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:26px">
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Espacements</div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$1 · 4</span><span style="height:10px;width:4px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$2 · 8</span><span style="height:10px;width:8px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$3 · 12</span><span style="height:10px;width:12px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$4 · 16</span><span style="height:10px;width:16px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$5 · 20</span><span style="height:10px;width:20px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$6 · 24</span><span style="height:10px;width:24px;background:#FF6B4A;border-radius:2px"></span></div>
+        <div style="display:flex;align-items:center;gap:12px"><span style="font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D;width:52px">$7 · 32</span><span style="height:10px;width:32px;background:#FF6B4A;border-radius:2px"></span></div>
+      </div>
+      <div style="margin-top:16px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">$4 = gouttière interne d'une carte. $5 = marge latérale d'écran. $6 = respiration entre blocs.</div>
+    </div>
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Rayons</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:14px">
+        <div style="text-align:center"><div style="width:58px;height:58px;background:#FFF0EB;border:1.5px solid #FFD9CE;border-radius:12px"></div><div style="margin-top:6px;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">$2 · 12</div></div>
+        <div style="text-align:center"><div style="width:58px;height:58px;background:#FFF0EB;border:1.5px solid #FFD9CE;border-radius:18px"></div><div style="margin-top:6px;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">$3 · 18</div></div>
+        <div style="text-align:center"><div style="width:58px;height:58px;background:#FFF0EB;border:1.5px solid #FFD9CE;border-radius:22px"></div><div style="margin-top:6px;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">$4 · 22</div></div>
+        <div style="text-align:center"><div style="width:58px;height:58px;background:#FFF0EB;border:1.5px solid #FFD9CE;border-radius:26px"></div><div style="margin-top:6px;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">$5 · 26</div></div>
+        <div style="text-align:center"><div style="width:58px;height:58px;background:#FFF0EB;border:1.5px solid #FFD9CE;border-radius:999px"></div><div style="margin-top:6px;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">round</div></div>
+      </div>
+      <div style="margin-top:16px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">$5 pour les cartes, $4 pour les champs et les boutons secondaires, round pour les boutons primaires, pastilles et avatars.</div>
+    </div>
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Élévation</div>
+      <div style="display:flex;gap:14px;margin-top:16px">
+        <div style="flex:1;height:70px;border-radius:18px;background:#fff;box-shadow:0 6px 18px rgba(43,33,24,.08);display:flex;align-items:center;justify-content:center;font:500 10px/1 'IBM Plex Mono',monospace;color:#A79A8D">carte</div>
+        <div style="flex:1;height:70px;border-radius:18px;background:#FF6B4A;box-shadow:0 10px 22px rgba(255,107,74,.38);display:flex;align-items:center;justify-content:center;font:700 11px/1 'Nunito',sans-serif;color:#fff">CTA</div>
+      </div>
+      <div style="margin-top:16px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Deux ombres seulement. La carte a une ombre neutre ; le bouton primaire projette sa propre couleur. En sombre, l'ombre passe en noir à 45 %.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">05 — Composants</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Galerie et variantes</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:26px">
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Button</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">variant: primary | secondary | dashed · size: lg | md | sm</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px;align-items:flex-start">
+        <div style="background:#FF6B4A;color:#fff;border-radius:999px;padding:16px 26px;font:800 16px/1 'Nunito',sans-serif;box-shadow:0 10px 22px rgba(255,107,74,.38)">＋ Nouvelle balade</div>
+        <div style="background:#FFF0EB;color:#C8391A;border-radius:22px;padding:15px 24px;font:800 16px/1 'Nunito',sans-serif">Voir les participants</div>
+        <div style="border:2.5px dashed #FFC145;color:#C8391A;border-radius:22px;padding:15px 24px;font:800 15px/1 'Nunito',sans-serif">＋ Ajouter un chien</div>
+        <div style="background:#FF6B4A;color:#fff;border-radius:999px;padding:16px 26px;font:800 16px/1 'Nunito',sans-serif;opacity:.45">C'est parti !</div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Un seul primary par écran. Hauteur minimale 44 px sur les trois tailles.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">StatusBadge · QuotaBadge</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">status: confirmed | maybe | declined | pending · emphasis: soft | solid</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+        <div style="background:#E4F7F3;color:#1F8878;border-radius:999px;padding:6px 10px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">✓ Confirmé</div>
+        <div style="background:#FFF4DC;color:#9A6E00;border-radius:999px;padding:6px 10px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">? Peut-être</div>
+        <div style="background:#FFE9E4;color:#C8391A;border-radius:999px;padding:6px 10px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">✕ Décliné</div>
+        <div style="background:#F4EEE8;color:#8A7A6C;border-radius:999px;padding:6px 10px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">⏳ En attente</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+        <div style="background:#3FBFA8;color:#fff;border-radius:999px;padding:6px 11px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">8/10 🐕</div>
+        <div style="background:#FFC145;color:#2B2118;border-radius:999px;padding:6px 11px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">5/10 🐕</div>
+        <div style="background:#FFE9E4;color:#C8391A;border-radius:999px;padding:6px 11px;font:800 12px/1 'Nunito',sans-serif;white-space:nowrap">3/10 🐕</div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Couleur du quota calculée à partir du ratio : ≥ 70 % confirmé, ≥ 40 % peut-être, en dessous décliné.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Avatar · AvatarStack</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">size: sm | md | lg · tone auto-dérivé de l'id</div>
+      <div style="display:flex;align-items:center;gap:20px;margin-top:18px">
+        <div style="display:flex">
+          <div style="width:34px;height:34px;border-radius:999px;background:#FF6B4A;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font:800 12px/1 'Nunito',sans-serif;color:#fff">L</div>
+          <div style="width:34px;height:34px;border-radius:999px;background:#3FBFA8;border:3px solid #fff;margin-left:-11px;display:flex;align-items:center;justify-content:center;font:800 12px/1 'Nunito',sans-serif;color:#fff">T</div>
+          <div style="width:34px;height:34px;border-radius:999px;background:#FFC145;border:3px solid #fff;margin-left:-11px;display:flex;align-items:center;justify-content:center;font:800 12px/1 'Nunito',sans-serif;color:#2B2118">S</div>
+          <div style="width:34px;height:34px;border-radius:999px;background:#2B2118;border:3px solid #fff;margin-left:-11px;display:flex;align-items:center;justify-content:center;font:800 11px/1 'Nunito',sans-serif;color:#fff">+2</div>
+        </div>
+        <div style="width:52px;height:52px;border-radius:999px;background:#FF6B4A;display:flex;align-items:center;justify-content:center;font:800 17px/1 'Nunito',sans-serif;color:#fff">L</div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">La teinte est dérivée de l'identifiant utilisateur : un ami garde sa couleur d'un écran à l'autre.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">QuotaBar</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">current · total · label</div>
+      <div style="margin-top:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:700 17px/1 'Baloo 2',cursive">Chiens confirmés</span><span style="font:800 13px/1 'Nunito',sans-serif;color:#1F8878">8/10</span></div>
+        <div style="height:9px;border-radius:999px;background:#F4EEE8;margin-top:12px"><div style="width:80%;height:9px;border-radius:999px;background:#3FBFA8"></div></div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Jamais seule : elle accompagne toujours le chiffre écrit.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">TextField</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">state: default | filled | error · display</div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:16px">
+        <div style="background:#FFF7F0;border:2px solid transparent;border-radius:18px;padding:15px 16px;font:600 16px/1 'Nunito',sans-serif;color:#A79A8D">📍 Nom du lieu</div>
+        <div style="background:#FFF7F0;border:2px solid #FFC145;border-radius:18px;padding:15px 16px;font:600 16px/1 'Nunito',sans-serif;color:#2B2118">Parc de la Tête d'Or</div>
+        <div>
+          <div style="background:#FFF7F0;border:2px solid #E8542F;border-radius:18px;padding:15px 16px;font:600 16px/1 'Nunito',sans-serif;color:#2B2118">@tom</div>
+          <div style="margin-top:8px;font:600 12px/1 'Nunito',sans-serif;color:#C8391A">Ce pseudo est déjà pris</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">ChoiceChipGroup</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">options · value · onChange</div>
+      <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap">
+        <div style="background:#FFF7F0;border-radius:999px;padding:13px 16px;font:700 13px/1 'Nunito',sans-serif;color:#8A7A6C">30 min</div>
+        <div style="background:#FFF7F0;border-radius:999px;padding:13px 16px;font:700 13px/1 'Nunito',sans-serif;color:#8A7A6C">1 h</div>
+        <div style="background:#FF6B4A;color:#fff;border-radius:999px;padding:13px 16px;font:800 13px/1 'Nunito',sans-serif">1 h 30</div>
+        <div style="background:#FFF7F0;border-radius:999px;padding:13px 16px;font:700 13px/1 'Nunito',sans-serif;color:#8A7A6C">2 h</div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Sélection unique. La pastille active porte l'accent plein, pas seulement une bordure.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">DogPhoto</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">shape: round | card · size: sm | md | lg · selected</div>
+      <div style="display:flex;align-items:flex-end;gap:14px;margin-top:18px">
+        <div style="text-align:center">
+          <div style="width:56px;height:56px;border-radius:999px;border:3px solid #FFC145;background:repeating-linear-gradient(135deg,#F4EEE8 0 5px,#EADDD0 5px 10px);display:flex;align-items:center;justify-content:center;font:500 8px/1 'IBM Plex Mono',monospace;color:#8A7A6C">photo</div>
+          <div style="margin-top:6px;font:700 12px/1 'Nunito',sans-serif">round</div>
+        </div>
+        <div style="text-align:center">
+          <div style="width:70px;height:70px;border-radius:22px;background:repeating-linear-gradient(135deg,#F4EEE8 0 6px,#EADDD0 6px 12px);display:flex;align-items:center;justify-content:center;font:500 8px/1 'IBM Plex Mono',monospace;color:#8A7A6C">photo</div>
+          <div style="margin-top:6px;font:700 12px/1 'Nunito',sans-serif">card</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Rond = un chien dans une balade. Carré arrondi = une fiche qu'on peut ouvrir.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">RsvpSheet</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">value · prompt · onChange</div>
+      <div style="margin-top:16px;background:#FFF7F0;border-radius:22px;padding:14px">
+        <div style="font:700 13px/1 'Nunito',sans-serif;color:#8A7A6C;text-align:center">Tu viens ?</div>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <div style="flex:1;background:#3FBFA8;color:#fff;border-radius:18px;padding:15px 0;text-align:center;font:800 15px/1 'Nunito',sans-serif">Oui 🐾</div>
+          <div style="flex:1;background:#FFF4DC;color:#9A6E00;border-radius:18px;padding:15px 0;text-align:center;font:800 15px/1 'Nunito',sans-serif">Peut-être</div>
+          <div style="flex:1;background:#FFE9E4;color:#C8391A;border-radius:18px;padding:15px 0;text-align:center;font:800 15px/1 'Nunito',sans-serif">Non</div>
+        </div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Barre ancrée en bas du détail : répondre ne demande jamais de scroller.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">Card (shared)</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">interactive · shared · flat</div>
+      <div style="margin-top:16px;border:2.5px dashed #3FBFA8;border-radius:26px;padding:14px;display:flex;gap:14px;align-items:center;background:#fff">
+        <div style="width:70px;height:70px;border-radius:22px;background:repeating-linear-gradient(135deg,#F4EEE8 0 6px,#EADDD0 6px 12px);display:flex;align-items:center;justify-content:center;font:500 8px/1 'IBM Plex Mono',monospace;color:#8A7A6C">photo</div>
+        <div>
+          <div style="font:700 20px/1 'Baloo 2',cursive">Nala</div>
+          <div style="margin-top:4px;font:600 13px/1 'Nunito',sans-serif;color:#8A7A6C">Border collie · 5 ans</div>
+          <div style="display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:#E4F7F3;border-radius:999px;padding:5px 10px">
+            <span style="width:18px;height:18px;border-radius:999px;background:#FF6B4A;color:#fff;font:800 9px/18px 'Nunito',sans-serif;text-align:center">L</span>
+            <span style="font:800 11px/1 'Nunito',sans-serif;color:#1F8878">Foyer partagé avec lea</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:14px;font:600 13px/1.45 'Nunito',sans-serif;color:#8A7A6C">Le pointillé turquoise ne veut dire qu'une chose dans toute l'app : co-propriété.</div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">EmptyState</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">emoji · title · body · actionLabel</div>
+      <div style="margin-top:16px;text-align:center;background:#FFF7F0;border-radius:22px;padding:24px">
+        <div style="width:84px;height:84px;margin:0 auto;border-radius:999px;background:#FFE9DF;display:flex;align-items:center;justify-content:center;font-size:38px">🐾</div>
+        <div style="margin-top:14px;font:800 22px/1.2 'Baloo 2',cursive">Aucune balade à venir</div>
+        <div style="margin-top:8px;font:600 14px/1.5 'Nunito',sans-serif;color:#8A7A6C">Lance la première ! Propose un lieu et une heure.</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+      <div style="font:700 17px/1 'Baloo 2',cursive">ScreenHeader</div>
+      <div style="margin-top:6px;font:500 11px/1 'IBM Plex Mono',monospace;color:#A79A8D">tone: plain | accent · title · subtitle · onBack · right</div>
+      <div style="margin-top:16px;border-radius:18px;overflow:hidden">
+        <div style="background:#FF6B4A;color:#fff;padding:16px 18px 20px">
+          <div style="font:800 13px/1 'Nunito',sans-serif;opacity:.85">‹ Retour</div>
+          <div style="margin-top:10px;font:800 24px/1.1 'Baloo 2',cursive">Parc de la Tête d'Or</div>
+          <div style="margin-top:6px;font:700 13px/1 'Nunito',sans-serif;opacity:.92">Sam. 14 sept · 10:00 · 1 h 30</div>
+        </div>
+        <div style="background:#FFF7F0;padding:16px 18px">
+          <div style="font:800 24px/1 'Baloo 2',cursive">Mes chiens</div>
+          <div style="margin-top:5px;font:700 13px/1 'Nunito',sans-serif;color:#8A7A6C">3 compagnons · 1 en foyer partagé</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">06 — Do / don't</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Ce qui tient la direction</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:26px">
+    <div style="background:#E4F7F3;border-radius:22px;padding:20px">
+      <div style="font:800 13px/1 'Nunito',sans-serif;letter-spacing:.08em;color:#1F8878">À FAIRE</div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px;font:600 14px/1.5 'Nunito',sans-serif">
+        <div>Un seul bouton primaire par écran, en bas, pleine largeur ou centré.</div>
+        <div>Toujours doubler la couleur d'un statut par un mot et un glyphe.</div>
+        <div>Passer par les tokens sémantiques, même pour un one-shot.</div>
+        <div>Utiliser <code style="font:500 12px/1 'IBM Plex Mono',monospace">numberOfLines={1}</code> sur les textes de pastille contenant un emoji.</div>
+        <div>Donner un état vide à toute liste, avec le même CTA que l'écran plein.</div>
+      </div>
+    </div>
+    <div style="background:#FFE9E4;border-radius:22px;padding:20px">
+      <div style="font:800 13px/1 'Nunito',sans-serif;letter-spacing:.08em;color:#C8391A">À ÉVITER</div>
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px;font:600 14px/1.5 'Nunito',sans-serif">
+        <div>Empiler corail, ambre et turquoise en aplats dans un même bloc.</div>
+        <div>Coder une couleur en dur (<code style="font:500 12px/1 'IBM Plex Mono',monospace">#FF6B4A</code>) dans un écran : le thème sombre casse.</div>
+        <div>Utiliser le pointillé turquoise pour autre chose que le foyer partagé.</div>
+        <div>Réduire un bouton ou une pastille cliquable sous 44 px de hauteur.</div>
+        <div>Mettre un emoji seul comme unique porteur de sens.</div>
+        <div>Ajouter une troisième famille de police ou une troisième ombre.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">07 — Accessibilité</div>
+  <div style="margin-top:14px;font:800 30px/1.1 'Baloo 2',cursive">Contrastes et cibles</div>
+
+  <div style="margin-top:26px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(43,33,24,.08)">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;padding:14px 18px;background:#FFF0EB;font:800 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#8A7A6C">
+      <div>Paire</div><div>Ratio</div><div>Verdict</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;align-items:center;padding:13px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div>$color sur $background</div><div style="font:500 12px/1 'IBM Plex Mono',monospace">12,4:1</div><div style="color:#1F8878;font-weight:800">AAA</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;align-items:center;padding:13px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div>$colorSubtle sur $background</div><div style="font:500 12px/1 'IBM Plex Mono',monospace">4,6:1</div><div style="color:#1F8878;font-weight:800">AA</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;align-items:center;padding:13px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div>$accentText sur $accent</div><div style="font:500 12px/1 'IBM Plex Mono',monospace">3,2:1</div><div style="color:#9A6E00;font-weight:800">AA large</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;align-items:center;padding:13px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div>$accentSoftText sur $accentSoft</div><div style="font:500 12px/1 'IBM Plex Mono',monospace">6,1:1</div><div style="color:#1F8878;font-weight:800">AA</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;align-items:center;padding:13px 18px;border-top:1.5px solid #F4EEE8;font:600 13px/1.4 'Nunito',sans-serif">
+      <div>successSoftText sur successSoft</div><div style="font:500 12px/1 'IBM Plex Mono',monospace">5,4:1</div><div style="color:#1F8878;font-weight:800">AA</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;background:#fff;border-radius:22px;padding:20px;box-shadow:0 6px 18px rgba(43,33,24,.08);font:600 14px/1.55 'Nunito',sans-serif;color:#8A7A6C">
+    <div style="font:700 17px/1 'Baloo 2',cursive;color:#2B2118">Règles</div>
+    <div style="margin-top:12px">Le texte sur aplat corail est en blanc plein, taille 16 minimum et graisse 800 : le ratio 3,2:1 n'est conforme qu'en « large text ». Pour un libellé plus petit sur corail, utiliser <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">$accentSoft</code> + <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">$accentSoftText</code>.</div>
+    <div style="margin-top:10px">Token <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">$tap = 44</code> : toute zone cliquable en hérite via <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">minHeight="$tap"</code>. Les glyphes seuls (✕, ‹) reçoivent un <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">hitSlop</code> de 12.</div>
+    <div style="margin-top:10px">Aucune information portée par la couleur seule : les statuts cumulent teinte, glyphe et mot ; la barre de quota est toujours accompagnée du ratio écrit.</div>
+    <div style="margin-top:10px">Emojis décoratifs masqués aux lecteurs d'écran, <code style="font:500 12px/1 'IBM Plex Mono',monospace;color:#C8391A">accessibilityLabel</code> explicite sur les pressables sans texte.</div>
+  </div>
+
+  <div style="margin-top:44px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8A7A6C">08 — Fichiers livrés</div>
+  <div style="margin-top:16px;background:#2B2118;border-radius:22px;padding:24px;font:500 13px/2 'IBM Plex Mono',monospace;color:#FFF7F0;overflow:auto">design-system/<br />├── tamagui.config.ts&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">createTamagui : fonts, animations, shorthands, media</span><br />├── tokens.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">palette, space, size, radius, zIndex</span><br />├── themes.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">light, dark + 8 sous-thèmes de statut</span><br />├── types.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">Walk, Dog, Friend, WalkParticipant, RsvpStatus</span><br />├── mocks.ts&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">données de démo, libellés FR, formatteurs</span><br />├── components/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">11 briques + index.ts</span><br />├── screens/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">Home, WalkDetail, CreateWalk, MyDogs, Onboarding</span><br />├── FONTS-AND-ICONS.md<br />└── README.md&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#A79A8D">branchement + table des callbacks par écran</span></div>
+
+</div>
+
+</x-dc>
+</body>
+</html>
