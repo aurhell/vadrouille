@@ -167,6 +167,19 @@ Feature: Modification du profil (pseudo, photo)
     Then je vois un message d'erreur explicite
     And ma photo de profil précédente reste inchangée
 
+Feature: Préférence de thème (clair/sombre)
+
+  Scenario: Choisir un thème explicite
+    Given je suis dans mes réglages
+    When je choisis "Clair" ou "Sombre"
+    Then l'app applique ce thème immédiatement, indépendamment du réglage système de l'appareil
+    And ce choix est conservé après avoir quitté et rouvert l'app
+
+  Scenario: Suivre le thème du système
+    Given j'ai choisi "Système" dans mes réglages (réglage par défaut)
+    When le thème système de l'appareil change (clair ↔ sombre)
+    Then l'app suit ce changement automatiquement
+
 Feature: Déconnexion
 
   Scenario: Se déconnecter

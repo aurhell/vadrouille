@@ -2,13 +2,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router"
 import { type ReactNode, useEffect } from "react"
-import { useColorScheme } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { TamaguiProvider } from "tamagui"
 
 import { useProfile } from "@/account/presentation/hooks/use-profile"
 import { SessionProvider, useSession } from "@/account/presentation/providers/session-provider"
+import { ThemePreferenceProvider, useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { config } from "@/shared/ui"
 
 const queryClient = new QueryClient()
@@ -41,8 +41,16 @@ function AuthGate({ children }: { children: ReactNode }) {
   return children
 }
 
+function ThemedApp({ children }: { children: ReactNode }) {
+  const { resolvedTheme } = useThemePreference()
+  return (
+    <TamaguiProvider config={config} defaultTheme={resolvedTheme}>
+      {children}
+    </TamaguiProvider>
+  )
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme()
   const [fontsLoaded] = useFonts({
     "Baloo2-SemiBold": require("../assets/fonts/Baloo2-SemiBold.ttf"),
     "Baloo2-Bold": require("../assets/fonts/Baloo2-Bold.ttf"),
@@ -62,11 +70,13 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <SessionProvider>
-            <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
-              <AuthGate>
-                <Stack screenOptions={{ headerShown: false }} />
-              </AuthGate>
-            </TamaguiProvider>
+            <ThemePreferenceProvider>
+              <ThemedApp>
+                <AuthGate>
+                  <Stack screenOptions={{ headerShown: false }} />
+                </AuthGate>
+              </ThemedApp>
+            </ThemePreferenceProvider>
           </SessionProvider>
         </QueryClientProvider>
       </SafeAreaProvider>

@@ -52,6 +52,8 @@ Le thème sombre est une **« nuit chaude »** : fond aubergine/brun, ambre prom
 
 **Sous-thèmes de statut** : les 4 statuts de réponse (`confirmed`/`maybe`/`declined`/`pending`) existent en sous-thèmes Tamagui (`light_confirmed`, `dark_confirmed`, etc. — 8 au total). Ils ne surchargent que les 4 tokens d'accent : tout composant stylé sur `$accent` réagit automatiquement en étant enveloppé dans le bon `<Theme name="...">`.
 
+**Préférence utilisateur (Clair/Sombre/Système)** : `ThemePreferenceProvider` (`src/shared/providers/`) — persiste le choix en `AsyncStorage`, résout `'system'` contre `useColorScheme()`, et pilote le `defaultTheme` de `TamaguiProvider` à la racine (`app/_layout.tsx`). Toggle exposé dans Réglages via `useThemePreference()` + `<ChoiceChipGroup>` (Clair/Sombre/Système). Avant cet ajout, seul le thème système était suivi, sans override possible.
+
 ## 3. Typographie — deux familles, quatre composants texte
 
 Aucun écran n'écrit `fontFamily` en dur : tout passe par les composants `Display`, `Title`, `Body`, `Label`.

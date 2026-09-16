@@ -1,13 +1,20 @@
 import * as ImagePicker from "expo-image-picker"
 import { useEffect, useState } from "react"
-import { Alert, Image } from "react-native"
+import { Alert, Image, ScrollView } from "react-native"
 import { YStack } from "tamagui"
 
 import { useSession } from "../providers/session-provider"
 import { useProfile } from "../hooks/use-profile"
 import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
 import { useRegenerateInviteCode } from "@/friend/presentation/hooks/use-friend-mutations"
-import { Body, Button, Card, Label, ScreenHeader, TextField } from "@/shared/ui"
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
+import { Body, Button, Card, ChoiceChipGroup, Label, ScreenHeader, TextField } from "@/shared/ui"
+
+const THEME_OPTIONS = [
+  { value: "light" as const, label: "Clair" },
+  { value: "dark" as const, label: "Sombre" },
+  { value: "system" as const, label: "Système" },
+]
 
 const ERROR_MESSAGE = {
   required: "Le pseudo est obligatoire",
@@ -43,6 +50,7 @@ export function ProfileSettingsScreen() {
   const signOut = useSignOut()
   const deleteAccount = useDeleteAccount()
   const regenerateInviteCode = useRegenerateInviteCode(userId)
+  const { preference: themePreference, setPreference: setThemePreference } = useThemePreference()
 
   const usernameResult = updateUsername.data
   const errorMessage = usernameResult && !usernameResult.success ? ERROR_MESSAGE[usernameResult.reason] : undefined
@@ -93,99 +101,111 @@ export function ProfileSettingsScreen() {
     <YStack flex={1} backgroundColor="$background">
       <ScreenHeader title="Réglages" />
 
-      <YStack flex={1} padding="$5" gap="$6">
-        <YStack alignItems="center" gap="$3">
-          <YStack
-            width={104}
-            height={104}
-            borderRadius="$round"
-            backgroundColor="$accentSoft"
-            alignItems="center"
-            justifyContent="center"
-            overflow="hidden"
-            onPress={handleChangeAvatar}
-          >
+      {/* ScrollView (not a plain YStack): this screen's content has grown past a single
+       * viewport (email, invite-code card, theme toggle...) — without scroll, RN's flexbox
+       * silently compresses/overlaps children instead of overflowing visibly.
+       * contentContainerStyle flexGrow keeps "Se déconnecter" pinned to the bottom when
+       * content is short, same as before, while allowing scroll once it isn't. */}
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <YStack flex={1} padding="$5" gap="$6">
+          <YStack alignItems="center" gap="$3">
+            <YStack
+              width={104}
+              height={104}
+              borderRadius="$round"
+              backgroundColor="$accentSoft"
+              alignItems="center"
+              justifyContent="center"
+              overflow="hidden"
+              onPress={handleChangeAvatar}
+            >
+              {profile?.avatarUrl ? (
+                <Image source={{ uri: profile.avatarUrl }} style={{ width: 104, height: 104 }} />
+              ) : (
+                <Body fontSize={34} lineHeight={40}>
+                  ＋
+                </Body>
+              )}
+            </YStack>
             {profile?.avatarUrl ? (
-              <Image source={{ uri: profile.avatarUrl }} style={{ width: 104, height: 104 }} />
-            ) : (
-              <Body fontSize={34} lineHeight={40}>
-                ＋
+              <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={handleRemoveAvatar}>
+                Supprimer la photo
               </Body>
-            )}
+            ) : null}
+            {avatarError ? (
+              <Body size="sm" color="$danger" textAlign="center" fontWeight="700">
+                {avatarError}
+              </Body>
+            ) : null}
           </YStack>
-          {profile?.avatarUrl ? (
-            <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={handleRemoveAvatar}>
-              Supprimer la photo
-            </Body>
+
+          <YStack gap="$2">
+            <Label>Email</Label>
+            <Body tone="subtle">{session?.user.email}</Body>
+          </YStack>
+
+          <TextField
+            label="Pseudo"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            state={errorMessage ? "error" : "default"}
+            helper={errorMessage}
+          />
+          {usernameChanged ? (
+            <Button size="md" disabled={updateUsername.isPending} loading={updateUsername.isPending} onPress={handleSaveUsername}>
+              Enregistrer le pseudo
+            </Button>
           ) : null}
-          {avatarError ? (
-            <Body size="sm" color="$danger" textAlign="center" fontWeight="700">
-              {avatarError}
-            </Body>
+
+          {profile ? (
+            <Card gap="$2">
+              <Body size="sm" tone="subtle" fontWeight="700">
+                Mon code d'invitation
+              </Body>
+              {/* explicit lineHeight: Body's default (md, 21) is shorter than this fontSize,
+               * which clips Nunito Bold's tall strokes and makes adjacent letters look merged. */}
+              <Body fontSize={26} lineHeight={32} fontWeight="700" letterSpacing={2}>
+                {formatInviteCode(profile.inviteCode)}
+              </Body>
+              <Body
+                size="sm"
+                tone="accent"
+                fontWeight="700"
+                minHeight="$tap"
+                paddingVertical="$2"
+                hitSlop={12}
+                onPress={() => regenerateInviteCode.mutate()}
+              >
+                {regenerateInviteCode.isPending ? "Régénération..." : "Régénérer le code"}
+              </Body>
+            </Card>
           ) : null}
-        </YStack>
 
-        <YStack gap="$2">
-          <Label>Email</Label>
-          <Body tone="subtle">{session?.user.email}</Body>
-        </YStack>
+          <YStack gap="$2">
+            <Label>Thème</Label>
+            <ChoiceChipGroup options={THEME_OPTIONS} value={themePreference} onChange={setThemePreference} />
+          </YStack>
 
-        <TextField
-          label="Pseudo"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          state={errorMessage ? "error" : "default"}
-          helper={errorMessage}
-        />
-        {usernameChanged ? (
-          <Button size="md" disabled={updateUsername.isPending} loading={updateUsername.isPending} onPress={handleSaveUsername}>
-            Enregistrer le pseudo
-          </Button>
-        ) : null}
-
-        {profile ? (
-          <Card gap="$2">
-            <Body size="sm" tone="subtle" fontWeight="700">
-              Mon code d'invitation
-            </Body>
-            {/* explicit lineHeight: Body's default (md, 21) is shorter than this fontSize,
-             * which clips Nunito Bold's tall strokes and makes adjacent letters look merged. */}
-            <Body fontSize={26} lineHeight={32} fontWeight="700" letterSpacing={2}>
-              {formatInviteCode(profile.inviteCode)}
-            </Body>
+          <YStack flex={1} justifyContent="flex-end" gap="$4">
+            <Button variant="secondary" full disabled={signOut.isPending} loading={signOut.isPending} onPress={() => signOut.mutate()}>
+              Se déconnecter
+            </Button>
             <Body
               size="sm"
-              tone="accent"
+              tone="subtle"
+              textAlign="center"
               fontWeight="700"
               minHeight="$tap"
               paddingVertical="$2"
               hitSlop={12}
-              onPress={() => regenerateInviteCode.mutate()}
+              onPress={handleDeleteAccount}
             >
-              {regenerateInviteCode.isPending ? "Régénération..." : "Régénérer le code"}
+              Supprimer mon compte
             </Body>
-          </Card>
-        ) : null}
-
-        <YStack flex={1} justifyContent="flex-end" gap="$4">
-          <Button variant="secondary" full disabled={signOut.isPending} loading={signOut.isPending} onPress={() => signOut.mutate()}>
-            Se déconnecter
-          </Button>
-          <Body
-            size="sm"
-            tone="subtle"
-            textAlign="center"
-            fontWeight="700"
-            minHeight="$tap"
-            paddingVertical="$2"
-            hitSlop={12}
-            onPress={handleDeleteAccount}
-          >
-            Supprimer mon compte
-          </Body>
+          </YStack>
         </YStack>
-      </YStack>
+      </ScrollView>
     </YStack>
   )
 }
