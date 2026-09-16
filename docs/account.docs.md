@@ -59,7 +59,7 @@ Feature: Création du profil (onboarding après le premier lien magique)
 
   Scenario: Choix du pseudo
     Given je suis en cours d'onboarding
-    When je saisis un pseudo respectant le format attendu (3 à 20 caractères, lettres/chiffres/underscore/point, unicité insensible à la casse) et non déjà utilisé
+    When je saisis un pseudo respectant le format attendu (3 à 20 caractères, lettres/chiffres/underscore/point — pas de contrainte d'unicité, voir "Pseudo identique à un autre utilisateur" plus bas)
     Then mon profil est créé avec ce pseudo
     And un code d'invitation m'est automatiquement généré
     And je passe à l'étape suivante de l'onboarding (avatar)
@@ -226,3 +226,6 @@ Feature: Suppression de compte
 
 1. **Format de confirmation de suppression de compte** — modélisé comme une étape de confirmation explicite, sans préciser l'UI exacte (double-tap, saisie d'un mot, etc.) — détail à trancher en conception UI plutôt qu'en specs fonctionnelles.
 2. **Rate limiting du Magic Link** — supposé géré nativement par Supabase Auth (comportement par défaut), pas de règle métier custom à développer.
+3. **"Proposition d'ajouter un premier chien"** (fin de l'onboarding) — non implémenté : dépend du domaine `dog`, pas encore développé (voir `architecture-technique.md` §ordre d'implémentation suggéré, `account` → `friend` → `dog` → `walk`). L'onboarding s'arrête aujourd'hui après pseudo + avatar.
+4. **Notification "Balade annulée — l'organisateur a quitté Vadrouille"** (suppression de compte avec balades futures organisées) — la balade est bien supprimée par l'Edge Function `delete-account`, mais l'envoi de la notification est un `TODO` explicite dans son code : dépend de l'infra de notifications push, pas encore développée.
+5. **"Utilisateur supprimé"** (balades passées organisées, après suppression du compte) — la base est prête (`walks.organizer_id` en `ON DELETE SET NULL`), mais l'affichage "Utilisateur supprimé" pour un `organizer_id` nul est un détail d'UI du domaine `walk`, pas encore développé.
