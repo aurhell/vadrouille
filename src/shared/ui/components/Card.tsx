@@ -13,9 +13,9 @@ export const Card = styled(YStack, {
   borderRadius: '$5',
   padding: '$4',
   shadowColor: '$shadowColor',
-  shadowOpacity: 1,
-  shadowRadius: 18,
-  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.15,
+  shadowRadius: 6,
+  shadowOffset: { width: 0, height: 2 },
   variants: {
     interactive: {
       true: {

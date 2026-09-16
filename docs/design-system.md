@@ -90,6 +90,27 @@ Aucun écran n'écrit `fontFamily` en dur : tout passe par les composants `Displ
 | `Card` (shared) | `interactive`/`shared`/`flat` | Le pointillé turquoise ne signifie qu'une chose dans toute l'app : co-propriété |
 | `EmptyState` | `emoji` · `title` · `body` · `actionLabel` | Même CTA que l'écran plein — jamais une impasse |
 | `ScreenHeader` | `tone`: plain/accent · `title` · `subtitle` · `onBack` · `right` | — |
+| `RefreshControl` (shared) | `refreshing` · `onRefresh` | Anneau teinté accent + titre "Ça vadrouille…" (iOS) — limite de personnalisation de `RefreshControl` natif, voir pattern ci-dessous |
+| `NotificationBadge` (shared) | `count` · `max` | Pastille rouge `$danger`, rien en dessous de 1, `"9+"` au-delà de `max` |
+| `IconWithBadge` (shared) | `count` · `children` | Épingle un `NotificationBadge` en haut-à-droite de n'importe quelle icône — voir pattern ci-dessous |
+
+### Pull-to-refresh
+
+Toute liste rafraîchissable (amis aujourd'hui, balades plus tard) suit le même duo :
+
+- `usePullToRefresh(refetch)` (`src/shared/hooks/`) — encapsule l'état `refreshing`, impose une durée minimale affichée de 600ms (un refresh qui répond en 50ms clignote plutôt que de rassurer) et déclenche un tap haptique léger à la fin.
+- `<RefreshControl refreshing onRefresh />` (`src/shared/ui/components/`) — passé au `refreshControl` du `FlatList`, teinté accent, titre "Ça vadrouille…" sur iOS.
+
+React Native ne permet pas de remplacer l'anneau natif par une illustration custom (uniquement teinte + titre) — le "juice" vient de la teinte de marque, du titre et du tap haptique de fin, pas d'une animation graphique dédiée.
+
+### Badge de notification sur un onglet
+
+Pour signaler un élément qui attend une action (invitation d'ami reçue aujourd'hui, invitation de balade sans réponse plus tard) sur une icône d'onglet :
+
+- `<NotificationBadge count={n} />` (`src/shared/ui/components/`) — la pastille seule, `null` si `count <= 0`.
+- `<IconWithBadge count={n}>{icône}</IconWithBadge>` — épingle la pastille en haut-à-droite de n'importe quel enfant (emoji, icône SVG...).
+
+Le nombre vient directement du cache TanStack Query déjà chargé par l'écran concerné (`useReceivedFriendRequests` pour "Amis") — pas de requête dédiée au badge, pas de nouvel état à synchroniser : le badge se met à jour dès que la liste elle-même se met à jour (accept/refus, pull-to-refresh...).
 
 ## 6. Do / Don't
 
@@ -99,6 +120,7 @@ Aucun écran n'écrit `fontFamily` en dur : tout passe par les composants `Displ
 - Passer par les tokens sémantiques, même pour un usage ponctuel
 - `numberOfLines={1}` sur les textes de pastille contenant un emoji
 - Donner un état vide à toute liste, avec le même CTA que l'écran plein
+- Pour une donnée non modifiable (email du compte...), afficher `Label` + `Body` en lecture seule — jamais un `TextField` désactivé/grisé, qui se lit comme un champ cassé plutôt que comme une information
 
 **À éviter**
 - Empiler corail, ambre et turquoise en aplats dans un même bloc

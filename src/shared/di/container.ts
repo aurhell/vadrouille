@@ -9,12 +9,21 @@ import { SupabaseAccountDeletionRepository } from "@/account/infrastructure/supa
 import { SupabaseAuthRepository } from "@/account/infrastructure/supabase/auth.repository"
 import { SupabaseProfileRepository } from "@/account/infrastructure/supabase/profile.repository"
 import { SupabaseStorageRepository } from "@/account/infrastructure/supabase/storage.repository"
+import { AcceptFriendRequest } from "@/friend/application/use-cases/accept-friend-request.use-case"
+import { CancelFriendRequest } from "@/friend/application/use-cases/cancel-friend-request.use-case"
+import { DeclineFriendRequest } from "@/friend/application/use-cases/decline-friend-request.use-case"
+import { LookupInviteCode } from "@/friend/application/use-cases/lookup-invite-code.use-case"
+import { RedeemInviteCode } from "@/friend/application/use-cases/redeem-invite-code.use-case"
+import { RegenerateInviteCode } from "@/friend/application/use-cases/regenerate-invite-code.use-case"
+import { RemoveFriend } from "@/friend/application/use-cases/remove-friend.use-case"
+import { SupabaseFriendRepository } from "@/friend/infrastructure/supabase/friend.repository"
 import { supabase } from "@/shared/supabase/client"
 
 const profileRepository = new SupabaseProfileRepository(supabase)
 const authRepository = new SupabaseAuthRepository(supabase)
 const storageRepository = new SupabaseStorageRepository(supabase)
 const accountDeletionRepository = new SupabaseAccountDeletionRepository(supabase)
+const friendRepository = new SupabaseFriendRepository(supabase)
 
 export const container = {
   account: {
@@ -28,5 +37,15 @@ export const container = {
     updateAvatar: new UpdateAvatar(profileRepository, storageRepository),
     removeAvatar: new RemoveAvatar(profileRepository, storageRepository),
     deleteAccount: new DeleteAccount(accountDeletionRepository, authRepository),
+  },
+  friend: {
+    friends: friendRepository,
+    lookupInviteCode: new LookupInviteCode(friendRepository),
+    redeemInviteCode: new RedeemInviteCode(friendRepository),
+    acceptFriendRequest: new AcceptFriendRequest(friendRepository),
+    declineFriendRequest: new DeclineFriendRequest(friendRepository),
+    cancelFriendRequest: new CancelFriendRequest(friendRepository),
+    removeFriend: new RemoveFriend(friendRepository),
+    regenerateInviteCode: new RegenerateInviteCode(friendRepository),
   },
 }

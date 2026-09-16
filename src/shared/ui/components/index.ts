@@ -10,3 +10,6 @@ export { ChoiceChipGroup, ChoiceChip } from './ChoiceChip';
 export { ScreenHeader, ScreenHeaderFrame } from './ScreenHeader';
 export { EmptyState } from './EmptyState';
 export { RsvpSheet } from './RsvpSheet';
+export { RefreshControl } from './RefreshControl';
+export { NotificationBadge } from './NotificationBadge';
+export { IconWithBadge } from './IconWithBadge';

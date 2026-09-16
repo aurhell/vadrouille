@@ -147,6 +147,7 @@ create policy "dog_owners_insert_owner_invites_friend"
       from public.friendships f
       where f.user_id = auth.uid()
         and f.friend_id = dog_owners.user_id
+        and f.status = 'accepted'
     )
   );
 

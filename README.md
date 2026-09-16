@@ -77,6 +77,41 @@ pnpm test
 
 Convention : Vitest, écrit en TDD, tests nommés en Given/When/Then (`describe("Given ...")` / `test("When ..., Then ...")`). Détail → `architecture-technique.md` §Tests.
 
+## Tester sur le simulateur iOS
+
+```bash
+xcrun simctl list devices available   # lister les simulateurs installés
+open -a Simulator                     # ouvre l'app Simulator (démarre le device par défaut)
+pnpm dev                              # démarre Metro, puis appuyer sur "i" dans le terminal
+```
+
+`i` dans le terminal Metro build l'app et l'ouvre automatiquement dans Expo Go sur le
+simulateur actuellement démarré (ou le démarre s'il n'y en a aucun). Pas besoin de Xcode.
+
+### Ouvrir deux simulateurs en parallèle (tester les invitations entre deux comptes)
+
+```bash
+pnpm dev:dual                                    # alice@vadrouille.test + bob@vadrouille.test
+pnpm dev:dual alice@x.test bob@x.test             # emails custom
+pnpm dev:dual --reset                             # repart sur un onboarding vierge pour les deux
+```
+
+Une seule commande : démarre deux simulateurs iPhone de modèles différents (un seul modèle
+d'iPhone ne peut être démarré qu'une fois), démarre Metro si besoin, installe Expo Go sur
+chaque device s'il n'y est pas déjà, ouvre le projet dessus, puis crée les deux comptes
+fixture et affiche un lien magique par device — à coller dans l'encadré pointillé "DEV" de
+l'écran de connexion de chacun (voir section suivante). Idempotent : relançable sans tout
+recréer si les simulateurs/Metro tournent déjà.
+
+Par défaut : les deux premiers modèles d'iPhone disponibles sur la machine. Pour forcer des
+modèles précis : `SIM_DEVICE_1="iPhone 14" SIM_DEVICE_2="iPhone 17 Pro" pnpm dev:dual`.
+
+Une fois les deux comptes onboardés, récupérer le code d'invitation d'un des deux
+(Réglages → "Mon code d'invitation") et le rédimer depuis l'écran "Amis" de l'autre pour
+tester la relation bidirectionnelle.
+
+Détail → `scripts/dev-two-sims.mjs`.
+
 ## Se connecter en dev sans passer par l'email
 
 ```bash
@@ -88,6 +123,24 @@ Court-circuite le round-trip email/Mailpit : colle le lien imprimé dans l'encad
 "DEV" de l'écran de connexion (visible uniquement en dev). Voir aussi
 `src/account/presentation/screens/dev-paste-magic-link.tsx` et `supabase/config.toml` §`[auth]`
 pour le pourquoi (limite connue d'Expo Go + bug amont GoTrue sur `emailRedirectTo`).
+
+## Peupler un graphe d'amis pour tester
+
+Tester l'écran "Amis" à la main est fastidieux (rédimer un code, accepter, refuser...) — ce
+script peuple directement en base l'état complet dont tu as besoin, pas à pas dans l'UI :
+
+```bash
+pnpm dev:seed-friends                                       # dev@vadrouille.test : 2 amis acceptés, 2 invitations reçues, 2 envoyées
+pnpm dev:seed-friends moi@x.test --accepted=3 --received=1 --sent=0   # comptes à la carte (0 = aucun)
+pnpm dev:seed-friends --reset                                # repart avec un compte "moi" tout neuf
+pnpm dev:reset-seed                                          # supabase db reset + seed par défaut, en une commande
+```
+
+Colle le lien imprimé dans l'encadré DEV comme pour `dev:login`. Les comptes en face sont
+nommés pour s'y retrouver d'un coup d'œil : `friend_*` (amis acceptés), `incoming_*`
+(t'ont envoyé une demande, "Invitations reçues"), `outgoing_*` (tu leur as envoyé une
+demande, "Invitations envoyées"). Relancer la commande réinitialise juste ce graphe (le
+compte "moi" est conservé sauf `--reset`) — rien d'autre dans la base n'est touché.
 
 ## Documentation du projet
 

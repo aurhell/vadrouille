@@ -120,6 +120,12 @@ Feature: Création du profil (onboarding après le premier lien magique)
 
 Feature: Modification du profil (pseudo, photo)
 
+  Scenario: Consulter son adresse email
+    Given je suis connecté et j'accède à mes réglages de profil
+    When je regarde l'écran
+    Then je vois l'adresse email de mon compte, affichée en lecture seule (pas de champ de saisie)
+    And aucune action de l'écran ne permet de la modifier — l'email est immuable après création du compte
+
   Scenario: Modifier son pseudo
     Given je suis connecté et j'accède à mes réglages de profil
     When je saisis un nouveau pseudo respectant le format attendu (3 à 20 caractères, lettres/chiffres/underscore/point)

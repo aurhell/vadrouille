@@ -6,7 +6,8 @@ import { YStack } from "tamagui"
 import { useSession } from "../providers/session-provider"
 import { useProfile } from "../hooks/use-profile"
 import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
-import { Body, Button, ScreenHeader, TextField } from "@/shared/ui"
+import { useRegenerateInviteCode } from "@/friend/presentation/hooks/use-friend-mutations"
+import { Body, Button, Card, Label, ScreenHeader, TextField } from "@/shared/ui"
 
 const ERROR_MESSAGE = {
   required: "Le pseudo est obligatoire",
@@ -17,6 +18,13 @@ const AVATAR_ERROR_MESSAGE = {
   unsupported_format: "Format non supporté (JPEG ou PNG). Ta photo précédente est conservée.",
   too_large: "Fichier trop volumineux. Ta photo précédente est conservée.",
 } as const
+
+/** "ABCD1234" -> "ABCD 1234" — a bare run of 8 uppercase alphanumerics reads as an
+ * illegible blob at large sizes (thick weight + tight tracking make similar glyphs like
+ * B/R or I/1 hard to tell apart); grouping breaks it into two chunks the eye can parse. */
+function formatInviteCode(code: string): string {
+  return code.match(/.{1,4}/g)?.join(" ") ?? code
+}
 
 export function ProfileSettingsScreen() {
   const { session } = useSession()
@@ -34,6 +42,7 @@ export function ProfileSettingsScreen() {
   const removeAvatar = useRemoveAvatar()
   const signOut = useSignOut()
   const deleteAccount = useDeleteAccount()
+  const regenerateInviteCode = useRegenerateInviteCode(userId)
 
   const usernameResult = updateUsername.data
   const errorMessage = usernameResult && !usernameResult.success ? ERROR_MESSAGE[usernameResult.reason] : undefined
@@ -116,6 +125,11 @@ export function ProfileSettingsScreen() {
           ) : null}
         </YStack>
 
+        <YStack gap="$2">
+          <Label>Email</Label>
+          <Body tone="subtle">{session?.user.email}</Body>
+        </YStack>
+
         <TextField
           label="Pseudo"
           value={username}
@@ -128,6 +142,30 @@ export function ProfileSettingsScreen() {
           <Button size="md" disabled={updateUsername.isPending} loading={updateUsername.isPending} onPress={handleSaveUsername}>
             Enregistrer le pseudo
           </Button>
+        ) : null}
+
+        {profile ? (
+          <Card gap="$2">
+            <Body size="sm" tone="subtle" fontWeight="700">
+              Mon code d'invitation
+            </Body>
+            {/* explicit lineHeight: Body's default (md, 21) is shorter than this fontSize,
+             * which clips Nunito Bold's tall strokes and makes adjacent letters look merged. */}
+            <Body fontSize={26} lineHeight={32} fontWeight="700" letterSpacing={2}>
+              {formatInviteCode(profile.inviteCode)}
+            </Body>
+            <Body
+              size="sm"
+              tone="accent"
+              fontWeight="700"
+              minHeight="$tap"
+              paddingVertical="$2"
+              hitSlop={12}
+              onPress={() => regenerateInviteCode.mutate()}
+            >
+              {regenerateInviteCode.isPending ? "Régénération..." : "Régénérer le code"}
+            </Body>
+          </Card>
         ) : null}
 
         <YStack flex={1} justifyContent="flex-end" gap="$4">

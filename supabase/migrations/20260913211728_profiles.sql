@@ -48,6 +48,35 @@ $$;
 comment on function public.generate_invite_code() is
   'Generates a unique 8-character invite code candidate for profiles.invite_code.';
 
+-- security invoker (not definer): the UPDATE only needs to satisfy the ordinary
+-- profiles_update_self policy below, on the caller's own row. generate_invite_code() itself
+-- is still security definer, since checking uniqueness needs to read invite_code values the
+-- caller can't otherwise SELECT.
+create or replace function public.regenerate_invite_code()
+returns text
+language plpgsql
+security invoker
+set search_path = ''
+as $$
+declare
+  new_code text;
+begin
+  new_code := public.generate_invite_code();
+
+  update public.profiles
+  set invite_code = new_code
+  where id = auth.uid();
+
+  return new_code;
+end;
+$$;
+
+comment on function public.regenerate_invite_code() is
+  'Replaces the caller''s own invite code with a freshly generated one — the old code stops '
+  'working immediately (see friend.docs.md "Régénération du code").';
+
+grant execute on function public.regenerate_invite_code() to authenticated;
+
 create or replace function public.set_profile_invite_code()
 returns trigger
 language plpgsql

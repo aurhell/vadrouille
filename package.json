@@ -11,6 +11,7 @@
     "expo": "~57.0.22",
     "expo-constants": "~57.0.18",
     "expo-font": "~57.0.4",
+    "expo-haptics": "~57.0.3",
     "expo-image-picker": "~57.0.18",
     "expo-linking": "~57.0.10",
     "expo-router": "~57.0.21",
@@ -18,6 +19,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.2",
     "react-native-url-polyfill": "^4.0.0",
@@ -40,7 +42,10 @@
     "design-system": "serve docs/design-system -l 4040",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dev:login": "node scripts/dev-login.mjs"
+    "dev:login": "node scripts/dev-login.mjs",
+    "dev:dual": "node scripts/dev-two-sims.mjs",
+    "dev:seed-friends": "node scripts/dev-seed-friends.mjs",
+    "dev:reset-seed": "supabase db reset && node scripts/dev-seed-friends.mjs"
   },
   "private": true
 }

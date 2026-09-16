@@ -3,6 +3,7 @@ import { useFonts } from "expo-font"
 import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router"
 import { type ReactNode, useEffect } from "react"
 import { useColorScheme } from "react-native"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { TamaguiProvider } from "tamagui"
 
@@ -57,16 +58,18 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <SessionProvider>
-          <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
-            <AuthGate>
-              <Stack screenOptions={{ headerShown: false }} />
-            </AuthGate>
-          </TamaguiProvider>
-        </SessionProvider>
-      </QueryClientProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <SessionProvider>
+            <TamaguiProvider config={config} defaultTheme={colorScheme === "dark" ? "dark" : "light"}>
+              <AuthGate>
+                <Stack screenOptions={{ headerShown: false }} />
+              </AuthGate>
+            </TamaguiProvider>
+          </SessionProvider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   )
 }

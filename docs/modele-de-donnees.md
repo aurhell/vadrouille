@@ -18,8 +18,12 @@ dog_owners
   PRIMARY KEY (dog_id, user_id)
 
 friendships
-  user_id (FK profiles) · friend_id (FK profiles) · created_at
+  user_id (FK profiles) · friend_id (FK profiles) · status ('pending'|'accepted') · created_at
   UNIQUE (user_id, friend_id)
+  -- Une demande en attente est UNE SEULE ligne (demandeur -> destinataire, status='pending').
+  -- L'acceptation ajoute la ligne miroir (destinataire -> demandeur, status='accepted') et
+  -- fait passer l'originale à 'accepted' : une amitié acceptée reste donc toujours la paire
+  -- de lignes symétriques historique. Voir §"Codes d'invitation d'amis" plus bas.
 
 walks
   id · organizer_id (FK profiles, nullable)
@@ -73,9 +77,24 @@ Déclenché par un changement de `start_time`, `location_text` ou `duration_minu
 
 ## Codes d'invitation d'amis
 
-Code personnel permanent, régénérable/révocable (`profiles.invite_code`) — pas d'expiration automatique (cf. usage "friend code" façon Discord, pas un lien à usage unique). Garde-fous :
-- Contrainte unique `(user_id, friend_id)` + `ON CONFLICT DO NOTHING` (gère la double rédemption simultanée)
-- Auto-amitié bloquée (un utilisateur ne peut pas rédimer son propre code)
+Code personnel permanent, régénérable/révocable (`profiles.invite_code`) — pas d'expiration automatique (cf. usage "friend code" façon Discord, pas un lien à usage unique).
+
+Rédimer un code n'établit plus une amitié directement : ça envoie une **demande d'ami en attente**, que le destinataire doit explicitement accepter (voir `friend.docs.md`). Six RPC `SECURITY DEFINER` couvrent le cycle de vie, toutes sur `public.friendships` :
+
+- `lookup_invite_code(code)` — aperçu en lecture seule du profil propriétaire du code (pseudo, photo), utilisé pour l'écran de confirmation avant envoi. Ne crée rien.
+- `redeem_invite_code(code)` — vérifie le code, bloque l'auto-rédemption, puis :
+  - code inconnu → exception `invalid_invite_code`
+  - propre code → exception `cannot_redeem_own_code`
+  - déjà amis (ligne `accepted` existante) → `'already_friends'`, rien de créé
+  - demande déjà envoyée (ligne `pending` existante, moi → cible) → `'already_pending'`, rien de créé
+  - **demandes croisées** : la cible m'a déjà envoyé une demande en attente → celle-ci est acceptée directement (ligne miroir insérée, originale passée à `accepted`), retour `'auto_accepted'`
+  - sinon → insertion d'une ligne `pending` (moi → cible), retour `'created'`
+  - Double rédemption simultanée gérée par `ON CONFLICT (user_id, friend_id) DO NOTHING`, comme avant.
+- `accept_friend_request(requester_id)` / `decline_friend_request(requester_id)` — le destinataire répond : accepter fait passer la ligne `pending` à `accepted` et insère la ligne miroir ; refuser supprime la ligne `pending` (idempotent, pas d'erreur si déjà traitée par une action concurrente).
+- `cancel_friend_request(addressee_id)` — le demandeur retire sa propre demande encore `pending` (idempotent, même logique).
+- `remove_friend(target_user_id)` — met fin à une amitié `accepted` existante, dans les deux sens (idempotent). Voir détail dans la policy `friendships` plus bas.
+
+Ces quatre RPC de mutation sont les seuls points d'écriture sur `friendships` — pas de policy `INSERT`/`UPDATE`/`DELETE` client, pour les mêmes raisons qu'avant (une transaction doit pouvoir toucher la ligne de l'autre personne, ce qu'une policy RLS classique ne peut pas exprimer).
 
 ## Politiques d'accès (RLS)
 
@@ -106,7 +125,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 | Opération | Règle |
 |---|---|
 | SELECT | `user_id = auth.uid()` **OU** `dog_id` fait partie des chiens de l'utilisateur (pour voir la liste complète des owners/co-owners d'un chien qu'on possède) |
-| INSERT (invitation) | Le demandeur est owner du `dog_id` (`EXISTS ... role='owner' AND user_id=auth.uid()`) **ET** la cible (`user_id` de la ligne insérée) est un ami (`EXISTS` dans `friendships`) — la ligne est créée avec `role='co-owner'`, `status='pending'` |
+| INSERT (invitation) | Le demandeur est owner du `dog_id` (`EXISTS ... role='owner' AND user_id=auth.uid()`) **ET** la cible (`user_id` de la ligne insérée) est un ami **accepté** (`EXISTS` dans `friendships` avec `status='accepted'` — une demande d'ami encore `pending` ne compte pas) — la ligne est créée avec `role='co-owner'`, `status='pending'` |
 | UPDATE (acceptation) | `user_id = auth.uid()` **ET** `status` actuel = `'pending'` → passage à `'accepted'` |
 | DELETE (refus, ou retrait volontaire) | `user_id = auth.uid()` — couvre le refus d'une invitation pending et le retrait volontaire d'un co-owner accepté. Le rôle `'owner'` ne peut jamais se retirer par cette voie (suppression du chien ou du compte uniquement) |
 
@@ -114,9 +133,12 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 
 | Opération | Règle |
 |---|---|
-| SELECT | `user_id = auth.uid()` |
-| INSERT | **Aucune policy client** — la création passe exclusivement par `redeem_invite_code` (RPC `SECURITY DEFINER`), qui insère les deux lignes symétriques (`user→friend` et `friend→user`) en une transaction, après avoir vérifié le code, bloqué l'auto-rédemption et couvert la double-rédemption simultanée via la contrainte unique `(user_id, friend_id)` |
-| UPDATE / DELETE | Aucune au MVP (pas de fonctionnalité de suppression d'ami — voir `roadmap.md`) |
+| SELECT | `user_id = auth.uid()` (mes amitiés acceptées + mes demandes envoyées) **OU** (`friend_id = auth.uid()` **ET** `status = 'pending'`) (les demandes reçues, où je ne suis pas `user_id`) |
+| INSERT / UPDATE / DELETE | **Aucune policy client** — tout passe par les RPC `SECURITY DEFINER` `redeem_invite_code` / `accept_friend_request` / `decline_friend_request` / `cancel_friend_request` / `remove_friend` (voir §"Codes d'invitation d'amis"), seules capables de toucher atomiquement la ligne de l'autre personne |
+
+⚠️ Deux fonctions, deux granularités : `is_friend_of()` (utilisée par la policy `dog_owners` ci-dessus, pour le partage de co-ownership) ne compte que les lignes `status = 'accepted'`. `has_friendship_edge()` (utilisée par `profiles_select_friend`) est plus large : toute ligne entre les deux personnes, `pending` **ou** `accepted`, dans les deux sens — nécessaire pour que les écrans "Invitations reçues"/"Invitations envoyées" puissent afficher pseudo + photo de l'autre personne avant même qu'elle ait accepté (ce n'est pas une fuite : c'est exactement l'identité que le demandeur a déjà affichée via `lookup_invite_code`, ou que le destinataire connaît déjà puisqu'il a reçu la demande). Pour un pur inconnu (aucune ligne du tout), `lookup_invite_code` reste le seul moyen de voir pseudo/photo, et seulement via cette RPC `SECURITY DEFINER`, pas via un SELECT direct.
+
+`remove_friend(target_user_id)` — supprime les deux lignes `accepted` symétriques (voir `friend.docs.md` "Suppression d'un ami"). Idempotent, aucune notification à l'autre personne au MVP. Ne touche pas les lignes `pending` (c'est `cancel_friend_request`/`decline_friend_request` qui s'en chargent).
 
 ### `walks`
 
