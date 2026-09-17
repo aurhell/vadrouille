@@ -1,9 +1,11 @@
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { useId, useRef, useSyncExternalStore } from 'react';
-import { Platform, View } from 'react-native';
+import { useId, useRef, useState, useSyncExternalStore } from 'react';
+import { Modal, Platform, Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XStack, YStack } from 'tamagui';
 import { useThemePreference } from '@/shared/providers/theme-preference-provider';
 import * as pickerCoordinator from '../picker-coordinator';
+import { Button } from './Button';
 import { Body, Label } from './Text';
 
 export interface DateFieldProps {
@@ -15,6 +17,13 @@ export interface DateFieldProps {
   placeholder?: string;
   /** 'date' (default) picks a calendar day; 'time' picks a time of day. */
   mode?: 'date' | 'time';
+  /** iOS only: renders as a small themed pill that opens the picker in a bottom sheet, instead
+   * of the custom row + inline spinner below it — for a pair of fields sitting side by side
+   * (e.g. a walk's time + date) where the inline spinner would otherwise clip against the
+   * half-width column (see WalkFormScreen). A Modal sheet is always full-width regardless of
+   * the trigger's own width, which also means it needs none of the picker-coordinator dance.
+   * Falls back to the default row + dialog on Android, which is already compact. */
+  compact?: boolean;
 }
 
 function formatValue(date: Date, mode: 'date' | 'time'): string {
@@ -37,6 +46,7 @@ export function DateField({
   minimumDate,
   placeholder,
   mode = 'date',
+  compact = false,
 }: DateFieldProps) {
   const id = useId();
   // Shared across every DateField instance on screen (see picker-coordinator.ts): opening
@@ -46,7 +56,58 @@ export function DateField({
   const iosPickerOpen = useSyncExternalStore(pickerCoordinator.subscribe, () => pickerCoordinator.isOpen(id));
   const pickerRef = useRef<View>(null);
   const { resolvedTheme } = useThemePreference();
+  const insets = useSafeAreaInsets();
+  const [compactSheetOpen, setCompactSheetOpen] = useState(false);
   const resolvedPlaceholder = placeholder ?? (mode === 'time' ? 'Choisir une heure' : 'Choisir une date');
+
+  if (compact && Platform.OS === 'ios') {
+    return (
+      <YStack gap="$2">
+        {label ? <Label>{label}</Label> : null}
+        <XStack
+          backgroundColor="$backgroundStrong"
+          borderRadius="$round"
+          minHeight="$control"
+          paddingHorizontal="$4"
+          alignItems="center"
+          justifyContent="center"
+          cursor="pointer"
+          onPress={() => setCompactSheetOpen(true)}
+        >
+          <Body fontWeight="700">{formatValue(value ?? new Date(), mode)}</Body>
+        </XStack>
+        <Modal visible={compactSheetOpen} transparent animationType="slide" onRequestClose={() => setCompactSheetOpen(false)}>
+          <YStack flex={1} justifyContent="flex-end">
+            <Pressable
+              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }}
+              onPress={() => setCompactSheetOpen(false)}
+            />
+            <YStack
+              backgroundColor="$backgroundStrong"
+              borderTopLeftRadius="$5"
+              borderTopRightRadius="$5"
+              padding="$4"
+              paddingBottom={Math.max(insets.bottom, 12) + 12}
+              gap="$3"
+            >
+              <DateTimePicker
+                value={value ?? new Date()}
+                mode={mode}
+                display="spinner"
+                maximumDate={maximumDate}
+                minimumDate={minimumDate}
+                themeVariant={resolvedTheme}
+                onChange={(_event, selected) => {
+                  if (selected) onChange(selected);
+                }}
+              />
+              <Button onPress={() => setCompactSheetOpen(false)}>OK</Button>
+            </YStack>
+          </YStack>
+        </Modal>
+      </YStack>
+    );
+  }
 
   function handlePress() {
     if (Platform.OS === 'android') {
