@@ -17,6 +17,7 @@ create table public.dogs (
   name text not null,
   breed text,
   birth_date date,
+  sex text check (sex in ('male', 'female')),
   photo_url text,
   created_at timestamptz not null default now()
 );
@@ -100,6 +101,26 @@ create policy "dogs_select_owner"
   to authenticated
   using (created_by = auth.uid() or public.is_dog_owner(id));
 
+-- A pending co-owner invitee needs to see the dog's name/photo to render "Invitations
+-- reçues" (Accept/Decline with context) — same reasoning as friendships' has_friendship_edge:
+-- this isn't new exposure, it's exactly the identity the owner already attached to the
+-- invite they sent. is_dog_owner() above defaults to required_status='accepted', so it
+-- doesn't cover this case; kept as a separate policy rather than loosening that one, since
+-- is_dog_owner() is also used to gate actual write access elsewhere.
+create policy "dogs_select_pending_invitee"
+  on public.dogs
+  for select
+  to authenticated
+  using (
+    exists (
+      select 1
+      from public.dog_owners do_
+      where do_.dog_id = dogs.id
+        and do_.user_id = auth.uid()
+        and do_.status = 'pending'
+    )
+  );
+
 create policy "dogs_insert_authenticated"
   on public.dogs
   for insert
@@ -175,4 +196,16 @@ create policy "dog_owners_delete_own_non_owner_row"
   using (
     user_id = auth.uid()
     and role = 'co-owner'
+  );
+
+-- The owner withdraws an invite they sent, before the invitee has responded — this is the
+-- invitee's row (not the owner's), so it needs its own policy alongside the one above.
+create policy "dog_owners_delete_owner_cancels_pending_invite"
+  on public.dog_owners
+  for delete
+  to authenticated
+  using (
+    status = 'pending'
+    and role = 'co-owner'
+    and public.is_dog_owner(dog_id, required_role => 'owner', required_status => 'accepted')
   );

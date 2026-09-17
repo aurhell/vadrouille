@@ -17,6 +17,19 @@ import { RedeemInviteCode } from "@/friend/application/use-cases/redeem-invite-c
 import { RegenerateInviteCode } from "@/friend/application/use-cases/regenerate-invite-code.use-case"
 import { RemoveFriend } from "@/friend/application/use-cases/remove-friend.use-case"
 import { SupabaseFriendRepository } from "@/friend/infrastructure/supabase/friend.repository"
+import { AcceptCoOwnerInvite } from "@/dog/application/use-cases/accept-co-owner-invite.use-case"
+import { CancelCoOwnerInvite } from "@/dog/application/use-cases/cancel-co-owner-invite.use-case"
+import { CreateDog } from "@/dog/application/use-cases/create-dog.use-case"
+import { DeclineCoOwnerInvite } from "@/dog/application/use-cases/decline-co-owner-invite.use-case"
+import { InviteCoOwner } from "@/dog/application/use-cases/invite-co-owner.use-case"
+import { LeaveCoOwnership } from "@/dog/application/use-cases/leave-co-ownership.use-case"
+import { RemoveDog } from "@/dog/application/use-cases/remove-dog.use-case"
+import { RemoveDogPhoto } from "@/dog/application/use-cases/remove-dog-photo.use-case"
+import { UpdateDog } from "@/dog/application/use-cases/update-dog.use-case"
+import { UpdateDogPhoto } from "@/dog/application/use-cases/update-dog-photo.use-case"
+import { SupabaseDogCoOwnerRepository } from "@/dog/infrastructure/supabase/dog-co-owner.repository"
+import { SupabaseDogPhotoStorageRepository } from "@/dog/infrastructure/supabase/dog-photo-storage.repository"
+import { SupabaseDogRepository } from "@/dog/infrastructure/supabase/dog.repository"
 import { supabase } from "@/shared/supabase/client"
 
 const profileRepository = new SupabaseProfileRepository(supabase)
@@ -24,6 +37,9 @@ const authRepository = new SupabaseAuthRepository(supabase)
 const storageRepository = new SupabaseStorageRepository(supabase)
 const accountDeletionRepository = new SupabaseAccountDeletionRepository(supabase)
 const friendRepository = new SupabaseFriendRepository(supabase)
+const dogRepository = new SupabaseDogRepository(supabase)
+const dogPhotoStorageRepository = new SupabaseDogPhotoStorageRepository(supabase)
+const dogCoOwnerRepository = new SupabaseDogCoOwnerRepository(supabase)
 
 export const container = {
   account: {
@@ -47,5 +63,19 @@ export const container = {
     cancelFriendRequest: new CancelFriendRequest(friendRepository),
     removeFriend: new RemoveFriend(friendRepository),
     regenerateInviteCode: new RegenerateInviteCode(friendRepository),
+  },
+  dog: {
+    dogs: dogRepository,
+    coOwners: dogCoOwnerRepository,
+    createDog: new CreateDog(dogRepository),
+    updateDog: new UpdateDog(dogRepository),
+    removeDog: new RemoveDog(dogRepository, dogPhotoStorageRepository),
+    updateDogPhoto: new UpdateDogPhoto(dogRepository, dogPhotoStorageRepository),
+    removeDogPhoto: new RemoveDogPhoto(dogRepository, dogPhotoStorageRepository),
+    inviteCoOwner: new InviteCoOwner(dogCoOwnerRepository),
+    acceptCoOwnerInvite: new AcceptCoOwnerInvite(dogCoOwnerRepository),
+    declineCoOwnerInvite: new DeclineCoOwnerInvite(dogCoOwnerRepository),
+    cancelCoOwnerInvite: new CancelCoOwnerInvite(dogCoOwnerRepository),
+    leaveCoOwnership: new LeaveCoOwnership(dogCoOwnerRepository),
   },
 }

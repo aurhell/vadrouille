@@ -1,4 +1,4 @@
-import { validateImageFile } from "../../domain/policies/image-file.policy"
+import { validateImageFile } from "@/shared/domain/policies/image-file.policy"
 import type { Profile } from "../../domain/entities/profile"
 import type { ProfileRepository } from "../../domain/repositories/profile.repository"
 import type { StorageRepository } from "../../domain/repositories/storage.repository"

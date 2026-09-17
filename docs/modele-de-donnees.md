@@ -10,7 +10,7 @@ profiles
   invite_code (unique, regénérable) · created_at
 
 dogs
-  id · name · breed · birth_date · photo_url (nullable, upload Supabase Storage)
+  id · name · breed · birth_date · sex ('male'|'female', nullable) · photo_url (nullable, upload Supabase Storage)
 
 dog_owners
   dog_id (FK dogs) · user_id (FK profiles) · role ('owner'|'co-owner')
@@ -115,7 +115,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 
 | Opération | Règle |
 |---|---|
-| SELECT | Owner ou co-owner accepté (`dog_owners`) **OU** le chien est confirmé (`walk_dogs`) sur une balade à laquelle l'utilisateur participe (pour voir les chiens des autres dans le détail d'une balade) |
+| SELECT | Owner ou co-owner accepté (`dog_owners`) **OU** le chien est confirmé (`walk_dogs`) sur une balade à laquelle l'utilisateur participe **OU** l'utilisateur a une invitation de co-ownership `pending` sur ce chien (nom/photo visibles pour donner du contexte à "Invitations reçues" — voir la note sous `dog_owners` plus bas) |
 | INSERT | N'importe quel utilisateur connecté — la ligne `dog_owners(role='owner')` correspondante est créée dans la même transaction (ou via trigger `AFTER INSERT` sur `dogs`, avec `user_id = auth.uid()`) |
 | UPDATE | Owner **ou** co-owner au statut `accepted` (`dog_owners`) |
 | DELETE | Owner uniquement (`dog_owners.role = 'owner'`) — cohérent avec l'edge case déjà documentée plus haut |
@@ -128,6 +128,9 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 | INSERT (invitation) | Le demandeur est owner du `dog_id` (`EXISTS ... role='owner' AND user_id=auth.uid()`) **ET** la cible (`user_id` de la ligne insérée) est un ami **accepté** (`EXISTS` dans `friendships` avec `status='accepted'` — une demande d'ami encore `pending` ne compte pas) — la ligne est créée avec `role='co-owner'`, `status='pending'` |
 | UPDATE (acceptation) | `user_id = auth.uid()` **ET** `status` actuel = `'pending'` → passage à `'accepted'` |
 | DELETE (refus, ou retrait volontaire) | `user_id = auth.uid()` — couvre le refus d'une invitation pending et le retrait volontaire d'un co-owner accepté. Le rôle `'owner'` ne peut jamais se retirer par cette voie (suppression du chien ou du compte uniquement) |
+| DELETE (annulation par l'owner) | Deuxième policy DELETE, OR'd avec celle ci-dessus : l'owner accepté du `dog_id` peut supprimer une ligne `pending` d'un autre utilisateur — permet de retirer une invitation avant réponse (voir `dog.docs.md` "Retirer une invitation en attente") |
+
+⚠️ `dogs_select_pending_invitee` (policy sur `dogs`, pas sur `dog_owners`) — un utilisateur avec une ligne `dog_owners` `pending` sur un chien peut voir le nom/photo de ce chien, mais **pas** le modifier ni le supprimer (les policies `UPDATE`/`DELETE` de `dogs` exigent toujours `status = 'accepted'`). Même logique que `has_friendship_edge()` pour les amis : ce n'est pas une fuite, c'est l'identité que l'invitation elle-même a déjà exposée.
 
 ### `friendships`
 
@@ -176,4 +179,3 @@ Deux buckets, convention de chemin `{user_id}/...` pour les avatars et `{dog_id}
 ## Points ouverts
 
 1. Format technique du code d'invitation (longueur, alphabet, génération) — à définir en conception technique, pas bloquant fonctionnellement
-2. **Révocation d'une invitation de co-ownership encore `pending` par l'owner qui l'a envoyée** — pas un scénario documenté dans `dog.docs.md`. Hypothèse retenue pour la RLS : seul l'invité peut supprimer la ligne `pending` (refus). Si on veut permettre à l'owner d'annuler son invitation avant réponse, il faudra élargir la policy DELETE de `dog_owners`

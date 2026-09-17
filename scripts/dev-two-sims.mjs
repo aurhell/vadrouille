@@ -7,6 +7,9 @@
 //   pnpm dev:dual                                  fixture users alice@vadrouille.test / bob@vadrouille.test
 //   pnpm dev:dual alice@x.test bob@x.test           custom emails
 //   pnpm dev:dual --reset                           delete both fixture users first (fresh onboarding)
+//   pnpm dev:dual --with-dogs                       skip onboarding (profile pre-created), make the two
+//                                                    accounts friends, and give each one a dog — ready to
+//                                                    test co-ownership invites between the two devices
 //
 // Override which simulators to use (must be two *different* device types — the same model
 // can't be booted twice) if the defaults below aren't installed on your machine:
@@ -18,6 +21,7 @@ import { openSync } from "node:fs"
 
 const args = process.argv.slice(2)
 const reset = args.includes("--reset")
+const withDogs = args.includes("--with-dogs")
 const emails = args.filter((arg) => !arg.startsWith("--"))
 const emailA = emails[0] ?? "alice@vadrouille.test"
 const emailB = emails[1] ?? "bob@vadrouille.test"
@@ -193,6 +197,12 @@ async function findUserByEmail(targetEmail) {
 async function ensureFixture(email) {
   let user = await findUserByEmail(email)
   if (reset && user) {
+    // dogs.created_by is ON DELETE SET NULL (deliberately, so a real account deletion
+    // doesn't take a co-owned dog down with it — see supabase/migrations/*_dogs.sql) — which
+    // means deleting the user alone would leave any dev-seeded dogs behind as ownerless
+    // zombies instead of actually resetting. Delete them first, while we still know whose
+    // they were.
+    await admin.from("dogs").delete().eq("created_by", user.id)
     const { error } = await admin.auth.admin.deleteUser(user.id)
     if (error) throw error
     user = null
@@ -203,13 +213,51 @@ async function ensureFixture(email) {
     user = data.user
   }
 
+  // --with-dogs skips onboarding entirely (profile pre-created) so the paste-and-go flow
+  // lands straight on a populated app, ready to test co-ownership between the two devices.
+  if (withDogs) {
+    const { data: existingProfile } = await admin.from("profiles").select("id").eq("id", user.id).maybeSingle()
+    if (!existingProfile) {
+      const username = email.split("@")[0].replace(/[^A-Za-z0-9_.]/g, "_").slice(0, 20)
+      const { error: profileError } = await admin.from("profiles").insert({ id: user.id, username })
+      if (profileError) throw profileError
+    }
+  }
+
   const { data: linkData, error: linkError } = await admin.auth.admin.generateLink({ type: "magiclink", email })
   if (linkError) throw linkError
-  return new URL(linkData.properties.action_link).toString()
+  return { id: user.id, link: new URL(linkData.properties.action_link).toString() }
 }
 
-const linkA = await ensureFixture(emailA)
-const linkB = await ensureFixture(emailB)
+const fixtureA = await ensureFixture(emailA)
+const fixtureB = await ensureFixture(emailB)
+const linkA = fixtureA.link
+const linkB = fixtureB.link
+
+if (withDogs) {
+  // Friends first — a co-ownership invite requires it (see dog.docs.md "Inviter un co-owner
+  // qui n'est pas mon ami"). ON CONFLICT DO NOTHING: harmless if --reset wasn't passed and
+  // they're already friends from a previous run.
+  await admin
+    .from("friendships")
+    .upsert(
+      [
+        { user_id: fixtureA.id, friend_id: fixtureB.id, status: "accepted" },
+        { user_id: fixtureB.id, friend_id: fixtureA.id, status: "accepted" },
+      ],
+      { onConflict: "user_id,friend_id" },
+    )
+
+  async function ensureDog(ownerId, name) {
+    const { data: existing } = await admin.from("dogs").select("id").eq("created_by", ownerId).eq("name", name).maybeSingle()
+    if (existing) return
+    await admin.from("dogs").insert({ created_by: ownerId, name, breed: "Labrador" })
+  }
+
+  await ensureDog(fixtureA.id, "Rex")
+  await ensureDog(fixtureB.id, "Milo")
+  console.log("Seeded: alice/bob are friends, each has a dog (Rex, Milo) — ready to test a co-ownership invite.")
+}
 
 console.log(`\nPaste into the DEV box on "${device1}" (${emailA}):\n${linkA}`)
 console.log(`\nPaste into the DEV box on "${device2}" (${emailB}):\n${linkB}`)

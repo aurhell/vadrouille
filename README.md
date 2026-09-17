@@ -94,6 +94,7 @@ simulateur actuellement démarré (ou le démarre s'il n'y en a aucun). Pas beso
 pnpm dev:dual                                    # alice@vadrouille.test + bob@vadrouille.test
 pnpm dev:dual alice@x.test bob@x.test             # emails custom
 pnpm dev:dual --reset                             # repart sur un onboarding vierge pour les deux
+pnpm dev:dual --with-dogs                         # profils pré-créés (onboarding sauté), amis, un chien chacun
 ```
 
 Une seule commande : démarre deux simulateurs iPhone de modèles différents (un seul modèle
@@ -106,9 +107,17 @@ recréer si les simulateurs/Metro tournent déjà.
 Par défaut : les deux premiers modèles d'iPhone disponibles sur la machine. Pour forcer des
 modèles précis : `SIM_DEVICE_1="iPhone 14" SIM_DEVICE_2="iPhone 17 Pro" pnpm dev:dual`.
 
-Une fois les deux comptes onboardés, récupérer le code d'invitation d'un des deux
-(Réglages → "Mon code d'invitation") et le rédimer depuis l'écran "Amis" de l'autre pour
+Sans `--with-dogs` : les deux comptes démarrent sans profil, donc sur l'onboarding — utile
+pour tester ce flux. Une fois onboardés à la main, récupérer le code d'invitation d'un des
+deux (Réglages → "Mon code d'invitation") et le rédimer depuis l'écran "Amis" de l'autre pour
 tester la relation bidirectionnelle.
+
+Avec `--with-dogs` : les deux comptes sautent l'onboarding (profil déjà créé), sont déjà amis
+l'un de l'autre, et ont chacun un chien ("Rex" pour alice, "Milo" pour bob) — prêt à tester
+une invitation de foyer partagé (co-ownership) entre les deux devices sans rien saisir à la
+main. `--reset` avec `--with-dogs` nettoie aussi les chiens de la fixture (sinon
+`dogs.created_by` passe à `NULL` au lieu d'être supprimé — voir `modele-de-donnees.md` — et
+on se retrouve avec des chiens fantômes).
 
 Détail → `scripts/dev-two-sims.mjs`.
 

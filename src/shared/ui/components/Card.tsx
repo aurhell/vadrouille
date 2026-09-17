@@ -65,12 +65,15 @@ export function WalkCard({ walk, onPress }: WalkCardProps) {
 export interface DogCardProps {
   dog: Dog;
   onPress?: (dog: Dog) => void;
+  /** true when this card is the front layer of a swipe-to-delete row — see FriendsScreen's
+   * RemoveFriendRow for why a drop shadow there bleeds an ugly halo onto the reveal panel. */
+  flat?: boolean;
 }
 
-export function DogCard({ dog, onPress }: DogCardProps) {
+export function DogCard({ dog, onPress, flat }: DogCardProps) {
   const shared = !!dog.sharedWith;
   return (
-    <Card interactive shared={shared} onPress={() => onPress?.(dog)} padding="$3">
+    <Card interactive flat={flat} shared={shared} onPress={() => onPress?.(dog)} padding="$3">
       <XStack gap="$4" alignItems="center">
         <DogPhoto dog={dog} size="lg" shape="card" />
         <YStack flex={1} gap="$1">
