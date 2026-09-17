@@ -2,7 +2,7 @@ import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/d
 import { useId, useRef, useSyncExternalStore } from 'react';
 import { Platform, View } from 'react-native';
 import { XStack, YStack } from 'tamagui';
-import { useThemePreference } from '../../providers/theme-preference-provider';
+import { useThemePreference } from '@/shared/providers/theme-preference-provider';
 import * as pickerCoordinator from '../picker-coordinator';
 import { Body, Label } from './Text';
 
