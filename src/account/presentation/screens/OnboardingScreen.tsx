@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker"
+import { useRouter } from "expo-router"
 import { useState } from "react"
 import { Image } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -33,6 +34,7 @@ async function pickPhoto(): Promise<ImagePicker.ImagePickerAsset | undefined> {
 
 export function OnboardingScreen() {
   const insets = useSafeAreaInsets()
+  const router = useRouter()
   const { session } = useSession()
   const [username, setUsername] = useState("")
   const [photo, setPhoto] = useState<ImagePicker.ImagePickerAsset>()
@@ -63,8 +65,7 @@ export function OnboardingScreen() {
         // regardless) — this only surfaces *why* the photo specifically didn't make it.
         if (!avatarOutcome.success) setUnexpectedError(AVATAR_ERROR_MESSAGE[avatarOutcome.reason])
       }
-      // No manual navigation: the root layout's auth gate redirects away from onboarding as
-      // soon as the profile query (updated above via mutation cache writes) resolves non-null.
+      router.replace("/onboarding/dog")
     } catch {
       // E.g. a stale cached session pointing at a deleted/recreated auth user (foreign key
       // violation on profiles.id): there's no way to recover in place, only to sign out and

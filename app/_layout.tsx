@@ -28,12 +28,15 @@ function AuthGate({ children }: { children: ReactNode }) {
     if (session && profileLoading) return
 
     const inAuthGroup = segments[0] === "(auth)"
+    // Onboarding spans two screens (profile, then an optional first-dog step) under this one
+    // segment — while inside it, onboarding itself decides when to navigate home, not this gate.
+    const inOnboarding = segments[1] === "onboarding"
 
     if (!session && !inAuthGroup) {
       router.replace("/login")
-    } else if (session && !profile && segments[1] !== "onboarding") {
+    } else if (session && !profile && !inOnboarding) {
       router.replace("/onboarding")
-    } else if (session && profile && inAuthGroup) {
+    } else if (session && profile && inAuthGroup && !inOnboarding) {
       router.replace("/")
     }
   }, [navigationState?.key, session, sessionLoading, profile, profileLoading, segments, router])
