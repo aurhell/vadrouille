@@ -1,3 +1,4 @@
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Theme, XStack, YStack, styled } from 'tamagui';
 import { Body } from './Text';
 import type { RsvpStatus } from '../types';
@@ -46,8 +47,9 @@ export interface RsvpSheetProps {
 
 /** Docked answer bar. Always visible on the walk detail screen — no scroll to reply. */
 export function RsvpSheet({ value, prompt = 'Tu viens ?', onChange }: RsvpSheetProps) {
+  const insets = useSafeAreaInsets();
   return (
-    <Dock>
+    <Dock paddingBottom={Math.max(insets.bottom, 12) + 12}>
       <Body size="sm" tone="subtle" textAlign="center" fontWeight="700">
         {prompt}
       </Body>

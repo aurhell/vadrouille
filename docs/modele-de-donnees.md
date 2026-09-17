@@ -150,14 +150,14 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 | SELECT | `organizer_id = auth.uid()` **OU** l'utilisateur a une ligne dans `walk_participants` pour cette balade |
 | INSERT | N'importe quel utilisateur connecté, `WITH CHECK (organizer_id = auth.uid() AND start_time > now())` |
 | UPDATE | `organizer_id = auth.uid()` **ET** `start_time > now()` (sur la ligne existante) — c'est la policy "édition interdite après le départ" déjà posée plus haut |
-| DELETE | Aucune au MVP (pas d'annulation manuelle par le client — voir `roadmap.md` "cancel-walk"). Les balades futures d'un compte supprimé sont annulées par l'Edge Function de suppression de compte, pas par le client |
+| DELETE | `organizer_id = auth.uid()` **ET** `start_time > now()` — l'organisateur peut annuler tant que la balade n'a pas débuté ; cascade sur `walk_participants`/`walk_dogs` (`ON DELETE CASCADE`), aucune notification aux participants au MVP. Les balades futures d'un compte supprimé sont annulées par l'Edge Function de suppression de compte, pas par ce chemin client |
 
 ### `walk_participants`
 
 | Opération | Règle |
 |---|---|
 | SELECT | Visibilité alignée sur la balade parente : `user_id = auth.uid()` **OU** l'utilisateur a une autre ligne sur le même `walk_id` |
-| INSERT | Le demandeur est l'organisateur de `walk_id` (`EXISTS ... organizer_id = auth.uid()`) — l'organisateur crée sa propre ligne (`status='yes'`) et celles de chaque ami invité (`status='pending'`) à la création de la balade |
+| INSERT | Le demandeur est l'organisateur de `walk_id` (`EXISTS ... organizer_id = auth.uid()`) **ET** (`user_id = auth.uid()` **OU** lien d'amitié accepté vers `user_id`) — l'organisateur crée sa propre ligne (`status='yes'`) et celles de chaque ami invité (`status='pending'`) à la création de la balade ; impossible d'ajouter un non-ami comme participant, même par une requête forgée (même pattern que `dog_owners_insert_owner_invites_friend`) |
 | UPDATE (réponse RSVP) | `user_id = auth.uid()` **ET** fenêtre de réponse ouverte (`now() < start_time + 5min`, jointure sur `walks`) — policy déjà posée plus haut |
 | DELETE | Aucune (le reset de statut passe par UPDATE, pas par suppression de ligne) |
 

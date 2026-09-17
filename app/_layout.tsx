@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router"
 import { type ReactNode, useEffect } from "react"
+import { View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { TamaguiProvider } from "tamagui"
@@ -10,6 +11,7 @@ import { useProfile } from "@/account/presentation/hooks/use-profile"
 import { SessionProvider, useSession } from "@/account/presentation/providers/session-provider"
 import { ThemePreferenceProvider, useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { config } from "@/shared/ui"
+import { closeAll as closeOpenPickers, isInsideOpenBounds } from "@/shared/ui/picker-coordinator"
 
 const queryClient = new QueryClient()
 
@@ -78,7 +80,24 @@ export default function RootLayout() {
             <ThemePreferenceProvider>
               <ThemedApp>
                 <AuthGate>
-                  <Stack screenOptions={{ headerShown: false }} />
+                  {/* Capture phase, not onPress: fires before any nested Pressable/chip/row
+                   * claims the touch, so it closes an open DateField picker (see
+                   * shared/ui/picker-coordinator.ts) no matter what's tapped next, without that
+                   * component needing to know pickers exist. Skips the close when the touch
+                   * itself starts on the open picker (e.g. dragging its spinner) — otherwise
+                   * every touch on the picker would instantly unmount it. Returns false to
+                   * never actually claim the responder, so the touch still reaches its real
+                   * target normally either way. */}
+                  <View
+                    style={{ flex: 1 }}
+                    onStartShouldSetResponderCapture={(event) => {
+                      const { pageX, pageY } = event.nativeEvent
+                      if (!isInsideOpenBounds(pageX, pageY)) closeOpenPickers()
+                      return false
+                    }}
+                  >
+                    <Stack screenOptions={{ headerShown: false }} />
+                  </View>
                 </AuthGate>
               </ThemedApp>
             </ThemePreferenceProvider>

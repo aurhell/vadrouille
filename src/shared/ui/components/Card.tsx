@@ -35,13 +35,15 @@ export const Card = styled(YStack, {
 export interface WalkCardProps {
   walk: Walk;
   onPress?: (walk: Walk) => void;
+  /** true when this card is the front layer of a swipe-to-delete row — see DogCard for why. */
+  flat?: boolean;
 }
 
-export function WalkCard({ walk, onPress }: WalkCardProps) {
+export function WalkCard({ walk, onPress, flat }: WalkCardProps) {
   const yes = respondents(walk, 'confirmed');
   const dogs = confirmedDogs(walk);
   return (
-    <Card interactive onPress={() => onPress?.(walk)}>
+    <Card interactive flat={flat} onPress={() => onPress?.(walk)}>
       <XStack gap="$3" alignItems="flex-start" justifyContent="space-between">
         <Title size="lg" flex={1}>
           {walk.place}

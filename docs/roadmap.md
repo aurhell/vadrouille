@@ -8,4 +8,4 @@
 - Liste d'attente si le quota de chiens est atteint
 - Quota de chiens configurable par balade (au lieu de la constante fixe à 10)
 - Retirer un ami
-- Annuler une balade / désinviter un participant (hors suppression de compte)
+- Désinviter un participant d'une balade sans l'annuler entièrement (hors suppression de compte)

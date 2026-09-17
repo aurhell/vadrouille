@@ -30,6 +30,11 @@ import { UpdateDogPhoto } from "@/dog/application/use-cases/update-dog-photo.use
 import { SupabaseDogCoOwnerRepository } from "@/dog/infrastructure/supabase/dog-co-owner.repository"
 import { SupabaseDogPhotoStorageRepository } from "@/dog/infrastructure/supabase/dog-photo-storage.repository"
 import { SupabaseDogRepository } from "@/dog/infrastructure/supabase/dog.repository"
+import { CreateWalk } from "@/walk/application/use-cases/create-walk.use-case"
+import { RemoveWalk } from "@/walk/application/use-cases/remove-walk.use-case"
+import { RespondToWalkInvite } from "@/walk/application/use-cases/respond-to-walk-invite.use-case"
+import { ToggleDogForWalk } from "@/walk/application/use-cases/toggle-dog-for-walk.use-case"
+import { SupabaseWalkRepository } from "@/walk/infrastructure/supabase/walk.repository"
 import { supabase } from "@/shared/supabase/client"
 
 const profileRepository = new SupabaseProfileRepository(supabase)
@@ -40,6 +45,7 @@ const friendRepository = new SupabaseFriendRepository(supabase)
 const dogRepository = new SupabaseDogRepository(supabase)
 const dogPhotoStorageRepository = new SupabaseDogPhotoStorageRepository(supabase)
 const dogCoOwnerRepository = new SupabaseDogCoOwnerRepository(supabase)
+const walkRepository = new SupabaseWalkRepository(supabase)
 
 export const container = {
   account: {
@@ -77,5 +83,12 @@ export const container = {
     declineCoOwnerInvite: new DeclineCoOwnerInvite(dogCoOwnerRepository),
     cancelCoOwnerInvite: new CancelCoOwnerInvite(dogCoOwnerRepository),
     leaveCoOwnership: new LeaveCoOwnership(dogCoOwnerRepository),
+  },
+  walk: {
+    walks: walkRepository,
+    createWalk: new CreateWalk(walkRepository),
+    removeWalk: new RemoveWalk(walkRepository),
+    respondToWalkInvite: new RespondToWalkInvite(walkRepository),
+    toggleDogForWalk: new ToggleDogForWalk(walkRepository),
   },
 }

@@ -145,6 +145,25 @@ Feature: Reprogrammation d'une balade
     Then l'action est refusée
     And un message invite à créer une nouvelle balade
 
+Feature: Annulation d'une balade
+
+  Scenario: L'organisateur annule une balade à venir
+    Given je suis l'organisateur d'une balade dont le départ n'a pas encore eu lieu
+    When j'annule la balade
+    Then la balade est définitivement supprimée
+    And elle disparaît de la liste des balades de tous les participants
+    And aucune notification n'est envoyée aux participants au MVP
+
+  Scenario Edge Case: Un participant non-organisateur tente d'annuler
+    Given je suis un simple participant (pas organisateur) d'une balade
+    When je tente de l'annuler
+    Then l'action est refusée
+
+  Scenario Edge Case: Annulation après le début de la balade
+    Given une balade a déjà débuté (start_time dans le passé)
+    When l'organisateur tente de l'annuler
+    Then l'action est refusée
+
 Feature: Notifications liées aux balades
 
   Scenario: Réception d'une invitation
@@ -167,3 +186,12 @@ Feature: Notifications liées aux balades
 ## Hypothèses & points à confirmer
 
 1. **Création d'une balade sans ami sélectionné** — autorisée par hypothèse, mais l'inviter des amis *après* la création n'est pas un flow défini au MVP. À confirmer que ce cas (balade solo, ou invitation a posteriori) est hors-scope v1.
+2. **État d'implémentation** — TDD sur le domaine/l'application, vérifié de bout en bout contre la base réelle :
+   - "Création d'une balade" (US4.1) : lieu, heure de départ future, durée, sélection de mes chiens (max 10) et de mes amis. Le formulaire ne propose que mes propres chiens/amis (requêtes déjà filtrées par domaine) — le refus RLS des cas limites (`walks_insert_as_organizer_future_only`) est vérifié directement en base, pas seulement côté client.
+   - "Liste et détail des balades" (US5.1) : liste des balades à venir (organisées ou invité), détail avec participants/chiens confirmés. **Pas de Realtime pour l'instant** — le détail se met à jour au pull-to-refresh/refocus, pas en direct.
+   - "Annulation d'une balade" : hors du brief US4.1–US8.1 initial (le brief ne couvrait que la création/consultation/réponse/reprogrammation), mais nécessaire dès qu'on peut créer une balade par erreur. Réservée à l'organisateur, tant que la balade n'a pas débuté (`walks_delete_organizer_future_only`, même pattern que `walks_update_organizer_future_only`) ; cascade native sur `walk_participants`/`walk_dogs`. Swipe-to-delete dans la liste et action dans le détail, tous deux réservés à l'organisateur. Voir aussi `roadmap.md` pour le cas non couvert (désinviter un seul participant sans tout annuler).
+   - "Réponse à une invitation" (US6.1) : RSVP oui/peut-être/non (`RsvpSheet` docké en bas du détail de balade) et sélection de mes chiens confirmés (séparée de la réponse RSVP elle-même, comme décrit dans le Gherkin). Le quota (max 10) est vérifié côté client avant l'appel (`canConfirmDogForWalk`) pour un retour immédiat, le trigger SQL `enforce_walk_dogs_capacity` reste la source de vérité serveur. La fenêtre de réponse (`canRespondToWalk`, H+5min) masque le `RsvpSheet` et grise la sélection de chiens une fois expirée — RLS reste l'enforcement réel, vérifié par smoke test. Changer sa réponse loin de "oui" libère automatiquement mes propres chiens confirmés (jamais ceux d'un co-owner ou d'un autre participant) — `RespondToWalkInvite` reçoit `myDogIds` en paramètre (fourni par l'écran, qui les a déjà via le domaine `dog`) plutôt que d'injecter `DogRepository`, pour ne dépendre que de `WalkRepository`.
+   - **Non implémenté** : "Reprogrammation d'une balade" (US7.1) et "Notifications liées aux balades" (US8.1) — prochaines étapes.
+3. **Quota de 10 chiens** — vérifié à la fois à la création (`validateWalkCreation`) et à la confirmation individuelle d'un chien (`canConfirmDogForWalk`, via `ToggleDogForWalk`) côté domaine, pour un retour immédiat. Le trigger SQL `enforce_walk_dogs_capacity` (pré-existant, voir `modele-de-donnees.md`) reste la source de vérité serveur dans les deux cas.
+4. **Invitation d'un non-ami à une balade (faille corrigée)** — la policy RLS `walk_participants_insert_by_organizer` d'origine ne vérifiait que "l'auteur de la requête est l'organisateur", sans vérifier que la personne invitée est réellement une amie : une requête forgée aurait pu ajouter n'importe quel utilisateur comme participant, malgré le filtre côté client (`WalkFormScreen` ne propose que mes amis). Corrigé en alignant sur le pattern déjà utilisé pour l'invitation de co-owner (`dog_owners_insert_owner_invites_friend`) — vérifié par smoke test (auto-invitation de l'organisateur OK, ami OK, inconnu refusé).
+5. **Retrait d'un chien partagé indépendant de mon propre RSVP** — la section "Mes chiens" du détail de balade n'était accessible que si mon propre statut était "yes", alors que le Gherkin "Chien déjà confirmé par un co-owner" n'exige pas que je sois moi-même "yes" pour retirer un chien qu'un autre co-owner a confirmé (la RLS ne vérifie que la propriété du chien + la fenêtre de réponse, jamais mon statut RSVP). Corrigé : la section s'affiche dès que j'ai au moins un chien, quel que soit mon statut.
