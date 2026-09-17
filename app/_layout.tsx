@@ -32,7 +32,9 @@ function AuthGate({ children }: { children: ReactNode }) {
     // segment — while inside it, onboarding itself decides when to navigate home, not this gate.
     const inOnboarding = segments[1] === "onboarding"
 
-    if (!session && !inAuthGroup) {
+    if (!session && segments[1] !== "login") {
+      // Not just "!inAuthGroup": /login is itself in the (auth) group, and so is onboarding
+      // (e.g. signing out from there) — checking the screen itself covers both cases.
       router.replace("/login")
     } else if (session && !profile && !inOnboarding) {
       router.replace("/onboarding")
