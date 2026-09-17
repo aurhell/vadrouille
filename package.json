@@ -43,6 +43,7 @@
     "design-system": "serve docs/design-system -l 4040",
     "test": "vitest run",
     "test:watch": "vitest",
+    "dev:clean-ports": "lsof -tiTCP:8081,8082,19000,19001,19002 -sTCP:LISTEN | xargs -r kill -9",
     "dev:login": "node scripts/dev-login.mjs",
     "dev:dual": "node scripts/dev-two-sims.mjs",
     "dev:seed-friends": "node scripts/dev-seed-friends.mjs",
