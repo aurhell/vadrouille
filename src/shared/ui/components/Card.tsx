@@ -2,9 +2,8 @@ import { Theme, XStack, YStack, styled } from 'tamagui';
 import { Body, Title } from './Text';
 import { AvatarStack, Avatar } from './Avatar';
 import { DogPhoto } from './DogPhoto';
-import { QuotaBadge } from './StatusBadge';
 import type { Dog, Walk } from '../types';
-import { respondents, confirmedDogs } from '../types';
+import { respondents } from '../types';
 import { formatWalkDate, formatWalkTime, formatDuration } from '../mocks';
 
 export const Card = styled(YStack, {
@@ -41,15 +40,9 @@ export interface WalkCardProps {
 
 export function WalkCard({ walk, onPress, flat }: WalkCardProps) {
   const yes = respondents(walk, 'confirmed');
-  const dogs = confirmedDogs(walk);
   return (
     <Card interactive flat={flat} onPress={() => onPress?.(walk)}>
-      <XStack gap="$3" alignItems="flex-start" justifyContent="space-between">
-        <Title size="lg" flex={1}>
-          {walk.place}
-        </Title>
-        <QuotaBadge current={dogs.length} total={walk.dogCapacity} />
-      </XStack>
+      <Title size="lg">{walk.place}</Title>
       <Body size="md" fontWeight="700" tone="accent" marginTop="$1">
         {formatWalkDate(walk.startsAt)} · {formatWalkTime(walk.startsAt)} ·{' '}
         {formatDuration(walk.durationMinutes)}

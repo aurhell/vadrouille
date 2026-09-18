@@ -6,10 +6,11 @@ import { XStack, YStack } from "tamagui"
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useDogs } from "@/dog/presentation/hooks/use-dogs"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Card, DogPhoto, QuotaBar, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title } from "@/shared/ui"
+import { Avatar, Body, Card, DogPhoto, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title } from "@/shared/ui"
 import { formatDuration, formatWalkDate, formatWalkTime } from "@/shared/ui/mocks"
 import type { RsvpStatus } from "@/shared/ui/types"
 import { canRespondToWalk } from "../../domain/policies/response-window.policy"
+import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useRemoveWalk, useRespondToWalk, useToggleDogForWalk } from "../hooks/use-walk-mutations"
 import { useWalk } from "../hooks/use-walks"
@@ -93,9 +94,9 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <YStack flex={1} padding="$5" gap="$4">
-          <Card gap="$4">
-            <QuotaBar current={walk.dogs.length} total={10} />
-            {walk.dogs.length > 0 ? (
+          {walk.dogs.length > 0 ? (
+            <Card gap="$4">
+              <Title size="md">Chiens confirmés</Title>
               <XStack gap="$4" flexWrap="wrap">
                 {shownDogs.map((dog) => (
                   <DogPhoto
@@ -125,15 +126,22 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
                   </YStack>
                 ) : null}
               </XStack>
-            ) : null}
-          </Card>
+            </Card>
+          ) : null}
 
           {myDogs && myDogs.length > 0 ? (
             // Not gated on myStatus === "yes": a co-owner can retirer a dog a fellow co-owner
             // already confirmed regardless of their own RSVP (walk.docs.md "Chien déjà
             // confirmé par un co-owner") — RLS itself only checks ownership + response window.
             <Card gap="$3">
-              <Title size="md">Mes chiens</Title>
+              <XStack alignItems="center" justifyContent="space-between">
+                <Title size="md">Mes chiens</Title>
+                {dogQuotaMessage(walk.dogs.length) ? (
+                  <Body size="sm" fontWeight="800" tone="accent">
+                    {dogQuotaMessage(walk.dogs.length)}
+                  </Body>
+                ) : null}
+              </XStack>
               {myDogs.map((dog) => {
                 const confirmed = confirmedDogIds.has(dog.id)
                 return (

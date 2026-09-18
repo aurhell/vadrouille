@@ -8,6 +8,7 @@ import { useDogs } from "@/dog/presentation/hooks/use-dogs"
 import { useFriends } from "@/friend/presentation/hooks/use-friends"
 import { Avatar, Body, Button, ChoiceChipGroup, DateField, DogPhoto, Label, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
+import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
 import { useCreateWalk } from "../hooks/use-walk-mutations"
 
 const ERROR_MESSAGE = {
@@ -169,7 +170,14 @@ export function WalkFormScreen() {
           </YStack>
 
           <YStack gap="$2">
-            <Label>J'emmène</Label>
+            <XStack alignItems="center" justifyContent="space-between">
+              <Label>J'emmène</Label>
+              {dogQuotaMessage(dogIds.length) ? (
+                <Body size="sm" fontWeight="800" tone="accent">
+                  {dogQuotaMessage(dogIds.length)}
+                </Body>
+              ) : null}
+            </XStack>
             {dogs && dogs.length > 0 ? (
               dogs.map((dog) => {
                 const selected = dogIds.includes(dog.id)
