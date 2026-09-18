@@ -74,7 +74,7 @@ export function DateField({
           cursor="pointer"
           onPress={() => setCompactSheetOpen(true)}
         >
-          <Body fontWeight="700">{formatValue(value ?? new Date(), mode)}</Body>
+          <Body color={value ? '$color' : '$colorFaint'} fontWeight="700">{value ? formatValue(value, mode) : resolvedPlaceholder}</Body>
         </XStack>
         <Modal visible={compactSheetOpen} transparent animationType="slide" onRequestClose={() => setCompactSheetOpen(false)}>
           <YStack flex={1} justifyContent="flex-end">

@@ -308,7 +308,7 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
             helper={nameError}
           />
           <TextField label="Race (optionnel)" value={breed} onChangeText={setBreed} />
-          <DateField label="Date de naissance (optionnel)" value={birthDate} onChange={setBirthDate} maximumDate={new Date()} />
+          <DateField label="Date de naissance (optionnel)" value={birthDate} onChange={setBirthDate} maximumDate={new Date()} compact />
 
           <YStack gap="$2">
             <Label>Sexe (optionnel)</Label>
