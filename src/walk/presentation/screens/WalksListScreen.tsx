@@ -132,7 +132,7 @@ export function WalksListScreen() {
           <EmptyState
             emoji="🦮"
             title="Aucune balade à venir"
-            body="Crée une balade pour organiser une sortie avec tes amis et leurs chiens."
+            body="Lance la première ! Propose un lieu et une heure, tes amis reçoivent l'invitation aussitôt."
             actionLabel="Créer une balade"
             onAction={() => router.push("/walks/new")}
           />

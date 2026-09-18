@@ -3,9 +3,21 @@ import type { ColorValue } from "react-native"
 import { Text } from "react-native"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
+import { useReceivedCoOwnerInvites } from "@/dog/presentation/hooks/use-co-owner-invites"
 import { useReceivedFriendRequests } from "@/friend/presentation/hooks/use-friends"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { IconWithBadge, themes } from "@/shared/ui"
+
+function DogsTabIcon({ color }: { color: ColorValue }) {
+  const { session } = useSession()
+  const { data: receivedInvites } = useReceivedCoOwnerInvites(session?.user.id)
+
+  return (
+    <IconWithBadge count={receivedInvites?.length ?? 0}>
+      <Text style={{ fontSize: 20, color }}>🦮</Text>
+    </IconWithBadge>
+  )
+}
 
 function FriendsTabIcon({ color }: { color: ColorValue }) {
   const { session } = useSession()
@@ -36,15 +48,15 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Accueil",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🦮</Text>,
+          title: "Balades",
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🐾</Text>,
         }}
       />
       <Tabs.Screen
-        name="walks"
+        name="dogs"
         options={{
-          title: "Balades",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🐾</Text>,
+          title: "Chiens",
+          tabBarIcon: ({ color }) => <DogsTabIcon color={color} />,
         }}
       />
       <Tabs.Screen

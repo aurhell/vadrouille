@@ -23,7 +23,7 @@ Feature: Connexion par Magic Link
     Given j'ai reçu un email avec un lien magique valide
     When je clique sur le lien depuis mon appareil
     Then je suis authentifié
-    And je suis redirigé vers l'écran d'accueil
+    And je suis redirigé vers l'écran principal (liste des balades, premier onglet — il n'y a pas d'écran d'accueil dédié)
 
   Scenario Edge Case: Email au format invalide
     Given je ne suis pas connecté
@@ -104,7 +104,7 @@ Feature: Création du profil (onboarding après le premier lien magique)
     Given mon onboarding est en cours après le choix du pseudo
     When on me propose de créer la fiche de mon premier chien
     Then je peux le faire immédiatement ou passer cette étape ("plus tard")
-    And dans les deux cas, l'onboarding se termine et j'accède à l'écran d'accueil
+    And dans les deux cas, l'onboarding se termine et j'accède à l'écran principal (liste des balades, premier onglet — il n'y a pas d'écran d'accueil dédié)
 
   Scenario Edge Case: Onboarding interrompu avant le choix du pseudo
     Given je me suis authentifié via le lien magique mais je n'ai pas encore choisi de pseudo
@@ -116,7 +116,7 @@ Feature: Création du profil (onboarding après le premier lien magique)
     Given un profil existe déjà pour mon compte (pseudo déjà choisi lors d'une session précédente)
     When je clique sur mon lien magique
     Then je suis authentifié
-    And je suis dirigé directement vers l'écran d'accueil, sans repasser par l'onboarding
+    And je suis dirigé directement vers l'écran principal (liste des balades, premier onglet — il n'y a pas d'écran d'accueil dédié), sans repasser par l'onboarding
 
 Feature: Modification du profil (pseudo, photo)
 

@@ -32,13 +32,16 @@ app/                          # routes Expo Router — fichiers fins, délèguen
     login.tsx                 # → rend <LoginScreen /> depuis src/account/presentation/screens
     onboarding.tsx
   (tabs)/
-    walks/
-      index.tsx                # → rend <WalksListScreen /> depuis src/walk/presentation/screens
-      [walkId].tsx
-      create.tsx
-    dogs/index.tsx              # → src/dog/presentation/screens
-    friends/index.tsx           # → src/friend/presentation/screens
-    profile/index.tsx           # → src/account/presentation/screens
+    index.tsx                  # → rend <WalksListScreen /> — écran par défaut, pas de page d'accueil séparée
+    dogs.tsx                   # → src/dog/presentation/screens
+    friends.tsx                # → src/friend/presentation/screens
+    profile.tsx                # → src/account/presentation/screens
+  walks/
+    [id].tsx                   # → rend <WalkDetailScreen />, poussé depuis l'onglet Balades
+    new.tsx
+  dogs/
+    [id].tsx                   # → rend <DogFormScreen />, poussé depuis l'onglet Chiens
+    new.tsx
   _layout.tsx                  # layout racine (providers : TanStack Query, DI, thème Tamagui)
 
 src/

@@ -65,7 +65,7 @@ export function WalkFormScreen() {
       dogIds,
       friendIds,
     })
-    if (outcome.success) router.replace("/walks")
+    if (outcome.success) router.replace("/")
   }
 
   return (

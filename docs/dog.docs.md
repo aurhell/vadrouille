@@ -121,7 +121,7 @@ Feature: Notification de co-ownership
   Scenario: Réception d'une invitation de co-ownership
     Given un ami m'invite à devenir co-owner d'un de ses chiens
     Then je vois l'invitation dans "Invitations reçues" sur l'écran de mes chiens
-    And un badge sur le bouton "Mes chiens" indique le nombre d'invitations en attente
+    And un badge sur l'onglet "Chiens" indique le nombre d'invitations en attente
 ```
 
 ## Hypothèses & points à confirmer
@@ -134,3 +134,4 @@ Feature: Notification de co-ownership
 3. **Sexe du chien** — champ ajouté après coup (pas dans le brief initial). Optionnel, deux valeurs (`male`/`female`), même traitement que race/date de naissance : modifiable par n'importe quel owner/co-owner, donnée partagée. Choix binaire délibéré (cohérent avec l'usage vétérinaire/pedigree) — pas d'option "autre" au MVP.
 4. **Visibilité RLS pour une invitation en attente** — un co-owner invité (statut `pending`) peut voir le nom/photo du chien (policy `dogs_select_pending_invitee`), pour donner du contexte à l'invitation, mais ne peut ni le modifier ni le supprimer tant qu'il n'a pas accepté — même logique que `has_friendship_edge` pour les demandes d'ami (voir `modele-de-donnees.md`).
 5. **Suppression d'un chien en foyer partagé** — non couverte par le brief initial (la policy RLS `dogs_delete_owner_only` ne vérifie que le rôle, pas l'absence de co-owner). Comportement retenu : l'owner peut supprimer un chien co-owned, avec un message de confirmation le prévenant que le chien disparaît aussi du foyer partagé de ses co-owners (cascade `dog_owners` via `ON DELETE CASCADE` sur `dogs.id`) — aucune notification au(x) co-owner(s) au MVP, cohérent avec l'absence de notification de retrait/suppression déjà actée ailleurs dans ce fichier et dans `friend.docs.md`.
+6. **Accès à "Mes chiens"** — onglet de premier niveau ("Chiens", entre "Balades" et "Amis" dans la barre d'onglets), pas un écran poussé depuis une page d'accueil : il n'y a pas de page d'accueil dédiée dans l'app, l'onglet "Balades" (liste des balades à venir) fait office d'écran par défaut après connexion. Voir `architecture-technique.md` pour la structure de routing.

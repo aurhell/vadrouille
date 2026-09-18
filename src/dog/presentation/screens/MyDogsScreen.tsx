@@ -138,7 +138,6 @@ export function MyDogsScreen() {
     <YStack flex={1} backgroundColor="$background">
       <ScreenHeader
         title="Mes chiens"
-        onBack={() => router.back()}
         rightSlot={
           <Body fontWeight="800" tone="accent" onPress={() => router.push("/dogs/new")} minHeight="$tap" paddingVertical="$2" hitSlop={12}>
             ＋ Ajouter
