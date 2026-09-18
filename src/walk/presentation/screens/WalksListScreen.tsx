@@ -7,39 +7,11 @@ import { XStack, YStack } from "tamagui"
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { Body, EmptyState, RefreshControl, ScreenHeader, WalkCard } from "@/shared/ui"
-import type { Walk as DesignSystemWalk, WalkParticipant as DesignSystemParticipant } from "@/shared/ui/types"
-import type { Walk, WalkRsvpStatus } from "../../domain/entities/walk"
+import type { Walk as DesignSystemWalk } from "@/shared/ui/types"
+import type { Walk } from "../../domain/entities/walk"
 import { useRemoveWalk } from "../hooks/use-walk-mutations"
 import { useWalks } from "../hooks/use-walks"
-
-const RSVP_STATUS: Record<WalkRsvpStatus, DesignSystemParticipant["status"]> = {
-  yes: "confirmed",
-  no: "declined",
-  maybe: "maybe",
-  pending: "pending",
-}
-
-/** WalkCard only needs a friend/rsvp shape and a dog count — it doesn't otherwise care which
- * participant a dog is tied to, so every confirmed dog is attached to the organizer's entry. */
-function toDisplayWalk(walk: Walk): DesignSystemWalk {
-  const organizer = walk.participants.find((p) => p.id === walk.organizerId)
-  const dogs = walk.dogs.map((dog) => ({ id: dog.id, name: dog.name, breed: "", ageYears: 0, photoUrl: dog.photoUrl ?? undefined }))
-
-  return {
-    id: walk.id,
-    place: walk.locationText,
-    startsAt: walk.startTime,
-    durationMinutes: walk.durationMinutes,
-    dogCapacity: 10,
-    host: organizer ? { id: organizer.id, username: organizer.username, avatarUrl: organizer.avatarUrl ?? undefined } : { id: "", username: "?" },
-    myStatus: RSVP_STATUS[walk.myStatus],
-    participants: walk.participants.map((participant) => ({
-      friend: { id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined },
-      status: RSVP_STATUS[participant.status],
-      dogs: participant.id === walk.organizerId ? dogs : [],
-    })),
-  }
-}
+import { toDisplayWalk } from "../to-display-walk"
 
 const REMOVE_ACTION_WIDTH = 88
 
@@ -115,8 +87,24 @@ export function WalksListScreen() {
         }
       />
 
+      {/* Above the list, not a FlatList footer: stays reachable even on the empty state,
+       * which otherwise fills the whole flex:1 area and pushes a footer off-screen. */}
+      <Body
+        size="sm"
+        tone="subtle"
+        textAlign="right"
+        fontWeight="700"
+        paddingHorizontal="$5"
+        paddingBottom="$2"
+        minHeight="$tap"
+        hitSlop={12}
+        onPress={() => router.push("/walks/past")}
+      >
+        Voir mes balades passées ›
+      </Body>
+
       <FlatList
-        contentContainerStyle={walks && walks.length > 0 ? { padding: 20, gap: 12 } : { flexGrow: 1 }}
+        contentContainerStyle={walks && walks.length > 0 ? { padding: 20, gap: 12, paddingTop: 0 } : { flexGrow: 1 }}
         data={walks ?? []}
         keyExtractor={(walk) => walk.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

@@ -19,6 +19,17 @@ export class SupabaseWalkRepository implements WalkRepository {
     return this.hydrate((data ?? []) as unknown as WalkRow[])
   }
 
+  async listPast(): Promise<Walk[]> {
+    const { data, error } = await this.client
+      .from("walks")
+      .select(WALK_COLUMNS)
+      .lte("start_time", new Date().toISOString())
+      .order("start_time", { ascending: false })
+
+    if (error) throw error
+    return this.hydrate((data ?? []) as unknown as WalkRow[])
+  }
+
   async findById(id: string): Promise<Walk | null> {
     const { data, error } = await this.client.from("walks").select(WALK_COLUMNS).eq("id", id).maybeSingle<WalkRow>()
 

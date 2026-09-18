@@ -11,6 +11,9 @@ export interface WalkInput {
 export interface WalkRepository {
   /** Upcoming walks (organizer or invited participant), soonest first. */
   list(): Promise<Walk[]>
+  /** Past walks (organizer or invited participant) — start_time already elapsed, most recent
+   * first. See walk.docs.md "Historique des balades passées". */
+  listPast(): Promise<Walk[]>
   findById(id: string): Promise<Walk | null>
   /** Creates the walk, enrolls the caller as "yes", invites each friend as "pending" and
    * confirms each dog as "yes" (server-side inserts, RLS-enforced). */

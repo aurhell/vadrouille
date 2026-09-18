@@ -7,5 +7,4 @@
 - Export de données (portabilité RGPD self-service)
 - Liste d'attente si le quota de chiens est atteint
 - Quota de chiens configurable par balade (au lieu de la constante fixe à 10)
-- Retirer un ami
 - Désinviter un participant d'une balade sans l'annuler entièrement (hors suppression de compte)

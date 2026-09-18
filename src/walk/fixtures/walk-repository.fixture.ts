@@ -4,6 +4,7 @@ import type { WalkRepository } from "../domain/repositories/walk.repository"
 export function createWalkRepositoryMock(overrides: Partial<WalkRepository> = {}): WalkRepository {
   return {
     list: vi.fn().mockResolvedValue([]),
+    listPast: vi.fn().mockResolvedValue([]),
     findById: vi.fn().mockResolvedValue(null),
     create: vi.fn(),
     remove: vi.fn().mockResolvedValue(undefined),

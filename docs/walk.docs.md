@@ -80,6 +80,29 @@ Feature: Liste et détail des balades
     When je tente d'accéder à son détail
     Then l'accès est refusé
 
+Feature: Historique des balades passées
+
+  Scenario: Accéder à l'historique depuis la liste des balades à venir
+    Given je suis sur l'écran des balades à venir
+    When je choisis "Voir mes balades passées"
+    Then je vois la liste des balades dont l'heure de départ est passée, auxquelles je participe (organisées par moi ou par un ami), triées de la plus récente à la plus ancienne
+
+  Scenario Edge Case: Aucune balade passée
+    Given je n'ai aucune balade passée
+    When j'accède à l'historique
+    Then je vois un état vide
+
+  Scenario: Filtrer sur mes balades confirmées uniquement
+    Given je consulte l'historique de mes balades passées
+    When j'active le filtre "Confirmées uniquement"
+    Then seules les balades où j'ai répondu "oui" restent affichées
+
+  Scenario: Consulter le détail d'une balade passée
+    Given je participe (organisateur ou invité) à une balade passée
+    When j'ouvre son détail
+    Then je vois le lieu, l'heure de départ, la durée, la liste des participants avec leur statut final, et la liste des chiens qui ont participé
+    And aucune action n'est proposée (pas de réponse RSVP, pas d'annulation, pas de sélection de chiens)
+
 Feature: Réponse à une invitation
 
   Scenario: Répondre "oui" en dessous du quota
@@ -195,3 +218,9 @@ Feature: Notifications liées aux balades
 3. **Quota de 10 chiens** — vérifié à la fois à la création (`validateWalkCreation`) et à la confirmation individuelle d'un chien (`canConfirmDogForWalk`, via `ToggleDogForWalk`) côté domaine, pour un retour immédiat. Le trigger SQL `enforce_walk_dogs_capacity` (pré-existant, voir `modele-de-donnees.md`) reste la source de vérité serveur dans les deux cas.
 4. **Invitation d'un non-ami à une balade (faille corrigée)** — la policy RLS `walk_participants_insert_by_organizer` d'origine ne vérifiait que "l'auteur de la requête est l'organisateur", sans vérifier que la personne invitée est réellement une amie : une requête forgée aurait pu ajouter n'importe quel utilisateur comme participant, malgré le filtre côté client (`WalkFormScreen` ne propose que mes amis). Corrigé en alignant sur le pattern déjà utilisé pour l'invitation de co-owner (`dog_owners_insert_owner_invites_friend`) — vérifié par smoke test (auto-invitation de l'organisateur OK, ami OK, inconnu refusé).
 5. **Retrait d'un chien partagé indépendant de mon propre RSVP** — la section "Mes chiens" du détail de balade n'était accessible que si mon propre statut était "yes", alors que le Gherkin "Chien déjà confirmé par un co-owner" n'exige pas que je sois moi-même "yes" pour retirer un chien qu'un autre co-owner a confirmé (la RLS ne vérifie que la propriété du chien + la fenêtre de réponse, jamais mon statut RSVP). Corrigé : la section s'affiche dès que j'ai au moins un chien, quel que soit mon statut.
+6. **Historique des balades passées** — décisions de scope (issues d'un échange avec l'utilisateur avant dev) :
+   - **Définition de "passée"** : `start_time <= maintenant`, symétrique du filtre `> maintenant` déjà utilisé pour "à venir" — une balade en cours (entre son heure de départ et son heure de fin) est donc déjà considérée comme "passée" pour l'historique, pas de troisième état "en cours".
+   - **Accès** : lien discret depuis l'écran des balades à venir (pas un nouvel onglet, pas de toggle intégré à la liste à venir), toujours visible (y compris sur l'état vide "Aucune balade à venir") puisqu'il vit au-dessus de la liste, pas dans son footer.
+   - **Filtre "Confirmées uniquement"** : appliqué côté client sur les balades déjà chargées (pas une requête séparée) — l'historique reste par défaut sur "Toutes" (organisées ou invité, peu importe ma réponse), au chargement de l'écran.
+   - **Détail** : écran dédié en lecture seule, pas une réutilisation de `WalkDetailScreen` — pas de `RsvpSheet`, pas de sélection "Mes chiens", pas d'action d'annulation.
+   - **Explicitement hors de ce lot** : l'affichage "Utilisateur supprimé" pour un `organizer_id` nul (voir point 5 de `account.docs.md`) — reporté à un lot séparé. Pas de statistiques ni de pagination (voir `roadmap.md` "Historique / stats de balades par chien").

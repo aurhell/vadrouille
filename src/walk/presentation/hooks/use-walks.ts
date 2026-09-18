@@ -3,12 +3,21 @@ import { useQuery } from "@tanstack/react-query"
 import { container } from "@/shared/di/container"
 
 export const walksQueryKey = (userId: string) => ["walks", userId] as const
+export const pastWalksQueryKey = (userId: string) => ["walks", "past", userId] as const
 export const walkQueryKey = (walkId: string) => ["walk", walkId] as const
 
 export function useWalks(userId: string | undefined) {
   return useQuery({
     queryKey: walksQueryKey(userId ?? ""),
     queryFn: () => container.walk.walks.list(),
+    enabled: !!userId,
+  })
+}
+
+export function usePastWalks(userId: string | undefined) {
+  return useQuery({
+    queryKey: pastWalksQueryKey(userId ?? ""),
+    queryFn: () => container.walk.walks.listPast(),
     enabled: !!userId,
   })
 }
