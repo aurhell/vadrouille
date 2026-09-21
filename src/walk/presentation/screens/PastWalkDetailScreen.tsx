@@ -3,8 +3,7 @@ import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Card, DogPhoto, RefreshControl, ScreenHeader, StatusBadge, Title } from "@/shared/ui"
-import { formatDuration, formatWalkDate, formatWalkTime } from "@/shared/ui/mocks"
+import { Avatar, Body, Card, DogPhoto, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useWalk } from "../hooks/use-walks"
@@ -35,7 +34,7 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
       <ScreenHeader
         tone="accent"
         title={walk.locationText}
-        subtitle={`${formatWalkDate(walk.startTime)} · ${formatWalkTime(walk.startTime)} · ${formatDuration(walk.durationMinutes)}`}
+        subtitle={<WalkMetaLine startTime={walk.startTime} durationMinutes={walk.durationMinutes} tone="accent" />}
         onBack={() => router.back()}
       />
 

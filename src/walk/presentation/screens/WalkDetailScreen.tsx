@@ -8,8 +8,7 @@ import type { Dog } from "@/dog/domain/entities/dog"
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useDogs } from "@/dog/presentation/hooks/use-dogs"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Button, Card, DogPhoto, Label, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title } from "@/shared/ui"
-import { formatDuration, formatWalkDate, formatWalkTime } from "@/shared/ui/mocks"
+import { Avatar, Body, Button, Card, DogPhoto, Label, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
 import { canRespondToWalk } from "../../domain/policies/response-window.policy"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
@@ -149,7 +148,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
       <ScreenHeader
         tone="accent"
         title={walk.locationText}
-        subtitle={`${formatWalkDate(walk.startTime)} · ${formatWalkTime(walk.startTime)} · ${formatDuration(walk.durationMinutes)}`}
+        subtitle={<WalkMetaLine startTime={walk.startTime} durationMinutes={walk.durationMinutes} tone="accent" />}
         onBack={() => router.back()}
         rightSlot={
           isOrganizer ? (

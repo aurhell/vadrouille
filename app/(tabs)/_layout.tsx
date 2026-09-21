@@ -1,12 +1,11 @@
 import { Tabs } from "expo-router"
 import type { ColorValue } from "react-native"
-import { Text } from "react-native"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useReceivedCoOwnerInvites } from "@/dog/presentation/hooks/use-co-owner-invites"
 import { useReceivedFriendRequests } from "@/friend/presentation/hooks/use-friends"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
-import { IconWithBadge, themes } from "@/shared/ui"
+import { IconAmis, IconBalades, IconChiens, IconProfil, IconWithBadge, themes } from "@/shared/ui"
 
 function DogsTabIcon({ color }: { color: ColorValue }) {
   const { session } = useSession()
@@ -14,7 +13,7 @@ function DogsTabIcon({ color }: { color: ColorValue }) {
 
   return (
     <IconWithBadge count={receivedInvites?.length ?? 0}>
-      <Text style={{ fontSize: 20, color }}>🦮</Text>
+      <IconChiens size={27} color={color as string} />
     </IconWithBadge>
   )
 }
@@ -25,7 +24,7 @@ function FriendsTabIcon({ color }: { color: ColorValue }) {
 
   return (
     <IconWithBadge count={receivedRequests?.length ?? 0}>
-      <Text style={{ fontSize: 20, color }}>👥</Text>
+      <IconAmis size={27} color={color as string} />
     </IconWithBadge>
   )
 }
@@ -41,7 +40,9 @@ export default function TabsLayout() {
         // The native tab bar sits outside Tamagui's own render tree — it doesn't pick up
         // theme changes automatically, so it's styled explicitly from the resolved theme here.
         tabBarStyle: { backgroundColor: theme.backgroundStrong, borderTopColor: theme.borderColor },
-        tabBarActiveTintColor: theme.accent,
+        // accentSoftText (not accent) — accent is a surface-fill colour (2.8:1 on white),
+        // not legible enough as icon/label ink. See Icons.tsx.
+        tabBarActiveTintColor: theme.accentSoftText,
         tabBarInactiveTintColor: theme.colorSubtle,
       }}
     >
@@ -49,7 +50,7 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: "Balades",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>🐾</Text>,
+          tabBarIcon: ({ color }) => <IconBalades size={27} color={color as string} />,
         }}
       />
       <Tabs.Screen
@@ -70,7 +71,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: "Profil",
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 20, color }}>⚙️</Text>,
+          tabBarIcon: ({ color }) => <IconProfil size={27} color={color as string} />,
         }}
       />
     </Tabs>

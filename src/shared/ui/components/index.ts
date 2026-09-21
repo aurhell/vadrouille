@@ -15,3 +15,17 @@ export { RefreshControl } from './RefreshControl';
 export { NotificationBadge } from './NotificationBadge';
 export { IconWithBadge } from './IconWithBadge';
 export { Tag } from './Tag';
+export {
+  IconBalades,
+  IconChiens,
+  IconAmis,
+  IconProfil,
+  IconCalendar,
+  IconClock,
+  IconDuration,
+  IconChevronRight,
+  IconSettings,
+  tabIcons,
+} from './Icons';
+export type { TabKey, IconProps } from './Icons';
+export { WalkMetaLine } from './WalkMetaLine';

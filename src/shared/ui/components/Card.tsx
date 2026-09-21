@@ -1,10 +1,13 @@
 import { Theme, XStack, YStack, styled } from 'tamagui';
+import { useThemePreference } from '@/shared/providers/theme-preference-provider';
 import { Body, Title } from './Text';
 import { AvatarStack, Avatar } from './Avatar';
 import { DogPhoto } from './DogPhoto';
+import { IconChevronRight } from './Icons';
+import { WalkMetaLine } from './WalkMetaLine';
 import type { Dog, Walk } from '../types';
 import { respondents } from '../types';
-import { formatWalkDate, formatWalkTime, formatDuration } from '../mocks';
+import { themes } from '../themes';
 
 export const Card = styled(YStack, {
   name: 'Card',
@@ -43,10 +46,9 @@ export function WalkCard({ walk, onPress, flat }: WalkCardProps) {
   return (
     <Card interactive flat={flat} onPress={() => onPress?.(walk)}>
       <Title size="lg">{walk.place}</Title>
-      <Body size="md" fontWeight="700" tone="accent" marginTop="$1">
-        {formatWalkDate(walk.startsAt)} · {formatWalkTime(walk.startsAt)} ·{' '}
-        {formatDuration(walk.durationMinutes)}
-      </Body>
+      <YStack marginTop="$2">
+        <WalkMetaLine startTime={walk.startsAt} durationMinutes={walk.durationMinutes} tone="card" />
+      </YStack>
       <XStack alignItems="center" gap="$2" marginTop="$4">
         <AvatarStack friends={yes} max={3} />
         <Body size="sm" tone="subtle">
@@ -67,6 +69,8 @@ export interface DogCardProps {
 
 export function DogCard({ dog, onPress, flat }: DogCardProps) {
   const shared = !!dog.sharedWith;
+  const { resolvedTheme } = useThemePreference();
+  const theme = themes[resolvedTheme];
   return (
     <Card interactive flat={flat} shared={shared} onPress={() => onPress?.(dog)} padding="$3">
       <XStack gap="$4" alignItems="center">
@@ -96,11 +100,7 @@ export function DogCard({ dog, onPress, flat }: DogCardProps) {
             </Theme>
           ) : null}
         </YStack>
-        {shared ? null : (
-          <Body size="lg" color="$borderColor" fontWeight="800">
-            ›
-          </Body>
-        )}
+        {shared ? null : <IconChevronRight size={20} color={theme.borderColor} />}
       </XStack>
     </Card>
   );

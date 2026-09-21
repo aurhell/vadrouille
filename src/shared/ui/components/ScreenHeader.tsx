@@ -19,7 +19,9 @@ const Frame = styled(YStack, {
 
 export interface ScreenHeaderProps extends React.ComponentProps<typeof Frame> {
   title: string;
-  subtitle?: string;
+  /** A plain string renders in the header's default subtitle style. Pass a node (e.g. an
+   * icon + text row) to style it yourself — see WalkDetailScreen's date/time/duration line. */
+  subtitle?: React.ReactNode;
   /** renders a "‹ Retour" affordance */
   onBack?: () => void;
   /** named rightSlot (not `right`) — that name collides with the positioning style prop */
@@ -54,14 +56,18 @@ export function ScreenHeader({ title, subtitle, onBack, rightSlot, ...props }: S
             {title}
           </Display>
           {subtitle ? (
-            <Body
-              size="md"
-              fontWeight="700"
-              color={accent ? '$accentText' : '$colorSubtle'}
-              opacity={accent ? 0.92 : 1}
-            >
-              {subtitle}
-            </Body>
+            typeof subtitle === 'string' ? (
+              <Body
+                size="md"
+                fontWeight="700"
+                color={accent ? '$accentText' : '$colorSubtle'}
+                opacity={accent ? 0.92 : 1}
+              >
+                {subtitle}
+              </Body>
+            ) : (
+              subtitle
+            )
           ) : null}
         </YStack>
         {rightSlot ? <YStack>{rightSlot}</YStack> : null}
