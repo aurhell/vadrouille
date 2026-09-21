@@ -14,3 +14,4 @@ export { RsvpSheet } from './RsvpSheet';
 export { RefreshControl } from './RefreshControl';
 export { NotificationBadge } from './NotificationBadge';
 export { IconWithBadge } from './IconWithBadge';
+export { Tag } from './Tag';

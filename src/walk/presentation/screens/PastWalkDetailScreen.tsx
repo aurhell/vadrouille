@@ -8,6 +8,7 @@ import { formatDuration, formatWalkDate, formatWalkTime } from "@/shared/ui/mock
 import type { RsvpStatus } from "@/shared/ui/types"
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useWalk } from "../hooks/use-walks"
+import { pairParticipantsWithDogs } from "../pair-participants-with-dogs"
 
 const RSVP_STATUS: Record<WalkRsvpStatus, RsvpStatus> = {
   yes: "confirmed",
@@ -26,6 +27,8 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
   const { refreshing, onRefresh } = usePullToRefresh(() => walkQuery.refetch())
 
   if (!walk) return null
+
+  const { participants: participantsWithDogs } = pairParticipantsWithDogs(walk)
 
   return (
     <YStack flex={1} backgroundColor="$background">
@@ -56,11 +59,17 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
 
           <Card gap="$3">
             <Title size="md">Participants</Title>
-            {walk.participants.map((participant) => (
+            {participantsWithDogs.map((participant) => (
               <XStack key={participant.id} alignItems="center" gap="$3" minHeight="$tap">
                 <Avatar friend={{ id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined }} size="sm" />
                 <Body flex={1} fontWeight="700">
                   {participant.username}
+                  {participant.dogs.length > 0 ? (
+                    <Body fontWeight="600" color="$colorSubtle">
+                      {" "}
+                      · {participant.dogs.length} chien{participant.dogs.length > 1 ? "s" : ""}
+                    </Body>
+                  ) : null}
                 </Body>
                 <StatusBadge status={RSVP_STATUS[participant.status]} />
               </XStack>

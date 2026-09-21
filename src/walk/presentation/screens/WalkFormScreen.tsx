@@ -97,10 +97,10 @@ export function WalkFormScreen() {
            * would otherwise clip against the half-width column (see DateField). */}
           <XStack gap="$3">
             <YStack flex={1}>
-              <DateField label="Départ" mode="time" compact value={time} onChange={setTime} />
+              <DateField label="Jour" mode="date" compact value={date} onChange={setDate} minimumDate={new Date()} />
             </YStack>
             <YStack flex={1}>
-              <DateField label="Jour" mode="date" compact value={date} onChange={setDate} minimumDate={new Date()} />
+              <DateField label="Départ" mode="time" compact value={time} onChange={setTime} />
             </YStack>
           </XStack>
 

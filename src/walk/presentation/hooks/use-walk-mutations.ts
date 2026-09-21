@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
-import type { Walk, WalkRsvpStatus } from "../../domain/entities/walk"
+import type { Walk, WalkDog, WalkRsvpStatus } from "../../domain/entities/walk"
 import type { WalkInput } from "../../domain/repositories/walk.repository"
 import type { ToggleDogForWalkInput } from "../../application/use-cases/toggle-dog-for-walk.use-case"
 import { walkQueryKey, walksQueryKey } from "./use-walks"
@@ -41,6 +41,26 @@ export function useRespondToWalk(userId: string | undefined, walkId: string) {
   return useMutation({
     mutationFn: (input: { status: WalkRsvpStatus; myDogIds: string[] }) =>
       container.walk.respondToWalkInvite.execute(walkId, input.status, input.myDogIds),
+    // Optimistic: the RsvpSheet's dog picker (see WalkDetailScreen) expands/collapses off
+    // `walk.myStatus` — waiting for the round trip before that reacts would make the "slide"
+    // feel laggy instead of an immediate response to the tap.
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: walkQueryKey(walkId) })
+      const previous = queryClient.getQueryData<Walk | null>(walkQueryKey(walkId))
+      queryClient.setQueryData(walkQueryKey(walkId), (walk: Walk | null | undefined) =>
+        walk
+          ? {
+              ...walk,
+              myStatus: input.status,
+              participants: walk.participants.map((p) => (p.id === userId ? { ...p, status: input.status } : p)),
+            }
+          : walk,
+      )
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context && context.previous !== undefined) queryClient.setQueryData(walkQueryKey(walkId), context.previous)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: walkQueryKey(walkId) })
       if (userId) queryClient.invalidateQueries({ queryKey: walksQueryKey(userId) })
@@ -48,10 +68,36 @@ export function useRespondToWalk(userId: string | undefined, walkId: string) {
   })
 }
 
+/** Extra display fields beyond what the use-case itself needs, carried through to `onMutate`
+ * so it can optimistically splice a full WalkDog into the cache — the mutation has no other
+ * access to "my dogs" data (that's a separate hook/query in the screen). */
+export interface ToggleDogForWalkMutationInput extends ToggleDogForWalkInput {
+  dogName: string
+  dogPhotoUrl: string | null
+}
+
 export function useToggleDogForWalk(userId: string | undefined, walkId: string) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: ToggleDogForWalkInput) => container.walk.toggleDogForWalk.execute(input),
+    mutationFn: (input: ToggleDogForWalkMutationInput) => container.walk.toggleDogForWalk.execute(input),
+    // Optimistic: "Chiens confirmés" (see WalkDetailScreen) should reflect a toggle the
+    // instant it's tapped in the bottom sheet, not after a round trip.
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: walkQueryKey(walkId) })
+      const previous = queryClient.getQueryData<Walk | null>(walkQueryKey(walkId))
+      queryClient.setQueryData(walkQueryKey(walkId), (walk: Walk | null | undefined) => {
+        if (!walk) return walk
+        if (input.isConfirmed) {
+          return { ...walk, dogs: walk.dogs.filter((dog) => dog.id !== input.dogId) }
+        }
+        const newDog: WalkDog = { id: input.dogId, name: input.dogName, photoUrl: input.dogPhotoUrl, status: "yes", updatedBy: userId ?? null }
+        return { ...walk, dogs: [...walk.dogs, newDog] }
+      })
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context && context.previous !== undefined) queryClient.setQueryData(walkQueryKey(walkId), context.previous)
+    },
     onSuccess: (result) => {
       if (!result.success) return
       queryClient.invalidateQueries({ queryKey: walkQueryKey(walkId) })

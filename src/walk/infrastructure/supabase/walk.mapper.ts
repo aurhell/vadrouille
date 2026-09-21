@@ -16,6 +16,7 @@ export interface ParticipantRow {
 
 export interface WalkDogRow {
   status: "yes" | "maybe"
+  updated_by: string | null
   dog: { id: string; name: string; photo_url: string | null }
 }
 
@@ -26,7 +27,13 @@ export function toWalk(row: WalkRow, participantRows: ParticipantRow[], dogRows:
     avatarUrl: p.user.avatar_url,
     status: p.status,
   }))
-  const dogs: WalkDog[] = dogRows.map((d) => ({ id: d.dog.id, name: d.dog.name, photoUrl: d.dog.photo_url, status: d.status }))
+  const dogs: WalkDog[] = dogRows.map((d) => ({
+    id: d.dog.id,
+    name: d.dog.name,
+    photoUrl: d.dog.photo_url,
+    status: d.status,
+    updatedBy: d.updated_by,
+  }))
 
   return {
     id: row.id,

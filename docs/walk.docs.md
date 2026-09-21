@@ -67,8 +67,7 @@ Feature: Liste et détail des balades
     Given je participe à une balade (organisateur ou invité)
     When j'ouvre son détail
     Then je vois le lieu, l'heure de départ et la durée
-    And je vois la liste des participants avec leur statut (yes/no/maybe/pending)
-    And je vois la liste des chiens confirmés
+    And je vois chaque participant avec son statut (yes/no/maybe/pending), et le(s) chien(s) qu'il ou elle amène juste en dessous de son nom
 
   Scenario: Mise à jour en direct des réponses
     Given je consulte le détail d'une balade
@@ -100,7 +99,7 @@ Feature: Historique des balades passées
   Scenario: Consulter le détail d'une balade passée
     Given je participe (organisateur ou invité) à une balade passée
     When j'ouvre son détail
-    Then je vois le lieu, l'heure de départ, la durée, la liste des participants avec leur statut final, et la liste des chiens qui ont participé
+    Then je vois le lieu, l'heure de départ, la durée, et chaque participant avec son statut final et le(s) chien(s) qu'il ou elle a amené juste en dessous de son nom
     And aucune action n'est proposée (pas de réponse RSVP, pas d'annulation, pas de sélection de chiens)
 
 Feature: Réponse à une invitation
@@ -225,3 +224,5 @@ Feature: Notifications liées aux balades
    - **Filtre "Confirmées uniquement"** : appliqué côté client sur les balades déjà chargées (pas une requête séparée) — l'historique reste par défaut sur "Toutes" (organisées ou invité, peu importe ma réponse), au chargement de l'écran.
    - **Détail** : écran dédié en lecture seule, pas une réutilisation de `WalkDetailScreen` — pas de `RsvpSheet`, pas de sélection "Mes chiens", pas d'action d'annulation.
    - **Explicitement hors de ce lot** : l'affichage "Utilisateur supprimé" pour un `organizer_id` nul (voir point 5 de `account.docs.md`) — reporté à un lot séparé. Pas de statistiques ni de pagination (voir `roadmap.md` "Historique / stats de balades par chien").
+7. **Réorganisation du détail de balade** (revu en deux passes après un premier passage jugé mal organisé) : "Participants" passe en première section (avant les chiens — priorité à "qui vient"). Les cartes "Chiens confirmés" (lecture seule) et "Participants" affichaient la même information sous deux formes différentes — fusionnées en une seule carte "Participants" où chaque personne affiche le(s) chien(s) qu'elle amène juste en dessous de son nom (deux lignes empilées), avec une mention discrète "sans chien" pour un participant qui n'en amène pas. "Mes chiens" (la sélection *actionnable*, à cocher) reste une carte séparée juste en dessous — ce n'est pas de l'affichage, c'est là qu'on agit. Le `RsvpSheet` reste docké en bas (inchangé) et "Annuler cette balade" reste un lien discret en bas de page (inchangé). Même fusion appliquée à `PastWalkDetailScreen` (sans "Mes chiens", qui n'a pas lieu d'être une fois la balade passée).
+   - **Association chien ↔ participant** : un chien n'est jamais dupliqué sous ses deux co-owners s'ils participent tous les deux à la balade — il n'apparaît que sous celui qui l'a effectivement confirmé pour cette balade (`walk_dogs.updated_by`, déjà stocké comme champ d'audit, maintenant aussi exposé sur l'entité domaine `WalkDog.updatedBy`). Si `updated_by` est nul (compte confirmant supprimé depuis) ou ne correspond plus à un participant actuel, le chien atterrit dans un petit groupe "Autres chiens confirmés" en bas de la carte plutôt que d'être supprimé silencieusement. Logique d'appariement dans `pairParticipantsWithDogs` (présentation, pas domaine — c'est une transformation d'affichage, pas une règle métier), TDD, vérifié par smoke test que la colonne `updated_by` remonte bien via `SupabaseWalkRepository`.

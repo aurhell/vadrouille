@@ -132,13 +132,13 @@ export class SupabaseWalkRepository implements WalkRepository {
     const byWalk = new Map<string, WalkDogRow[]>()
     const { data, error } = await this.client
       .from("walk_dogs")
-      .select("walk_id, status, dog:dogs(id, name, photo_url)")
+      .select("walk_id, status, updated_by, dog:dogs(id, name, photo_url)")
       .in("walk_id", walkIds)
 
     if (error) throw error
-    for (const row of (data ?? []) as unknown as { walk_id: string; status: "yes" | "maybe"; dog: WalkDogRow["dog"] }[]) {
+    for (const row of (data ?? []) as unknown as { walk_id: string; status: "yes" | "maybe"; updated_by: string | null; dog: WalkDogRow["dog"] }[]) {
       const list = byWalk.get(row.walk_id) ?? []
-      list.push({ status: row.status, dog: row.dog })
+      list.push({ status: row.status, updated_by: row.updated_by, dog: row.dog })
       byWalk.set(row.walk_id, list)
     }
     return byWalk
