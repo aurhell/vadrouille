@@ -17,8 +17,8 @@ export interface PairedWalkDogs {
 }
 
 /** One dog is only ever paired with the single participant who confirmed it (`updatedBy`),
- * never duplicated under every co-owner present — see walk.docs.md "Une seule carte
- * Participants". */
+ * never duplicated under every co-owner present — see walk.docs.md "Détail de balade — deux
+ * cartes séparées, pas fusionnées". */
 export function pairParticipantsWithDogs(walk: Walk): PairedWalkDogs {
   const participantIds = new Set(walk.participants.map((p) => p.id))
   const dogsByParticipant = new Map<string, WalkDog[]>()
@@ -38,4 +38,15 @@ export function pairParticipantsWithDogs(walk: Walk): PairedWalkDogs {
     participants: walk.participants.map((p) => ({ ...p, dogs: dogsByParticipant.get(p.id) ?? [] })),
     unattributed,
   }
+}
+
+/** Name to show for whoever organized the walk. `organizerId` is `ON DELETE SET NULL` on
+ * `walks` (see modele-de-donnees.md) — a deleted account's future walks are cancelled by the
+ * delete-account Edge Function, but a past walk they organized survives with a null
+ * `organizerId` and no participant row for them either (`walk_participants.user_id` cascades),
+ * so there is no username left to recover — see account.docs.md "Utilisateur supprimé". */
+export function organizerDisplayName(walk: Walk, userId: string | undefined): string {
+  if (walk.organizerId === null) return "Utilisateur supprimé"
+  if (walk.organizerId === userId) return "toi"
+  return walk.participants.find((p) => p.id === walk.organizerId)?.username ?? "Utilisateur supprimé"
 }

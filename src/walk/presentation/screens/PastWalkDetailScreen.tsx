@@ -2,12 +2,13 @@ import { useRouter } from "expo-router"
 import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
+import { useSession } from "@/account/presentation/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { Avatar, Body, Card, DogPhoto, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useWalk } from "../hooks/use-walks"
-import { pairParticipantsWithDogs } from "../pair-participants-with-dogs"
+import { organizerDisplayName, pairParticipantsWithDogs } from "../pair-participants-with-dogs"
 
 const RSVP_STATUS: Record<WalkRsvpStatus, RsvpStatus> = {
   yes: "confirmed",
@@ -21,6 +22,7 @@ const RSVP_STATUS: Record<WalkRsvpStatus, RsvpStatus> = {
  * read-only mode, since none of its interactive pieces apply once a walk is over. */
 export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
   const router = useRouter()
+  const { session } = useSession()
   const walkQuery = useWalk(walkId)
   const { data: walk } = walkQuery
   const { refreshing, onRefresh } = usePullToRefresh(() => walkQuery.refetch())
@@ -40,6 +42,10 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <YStack flex={1} padding="$5" gap="$4">
+          <Body size="sm" tone="subtle" fontWeight="700">
+            Organisée par {organizerDisplayName(walk, session?.user.id)}
+          </Body>
+
           {walk.dogs.length > 0 ? (
             <Card gap="$3">
               <Title size="md">Chiens qui ont participé</Title>

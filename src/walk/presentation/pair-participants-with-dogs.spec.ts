@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
 import { createWalkFixture } from "../fixtures/walk.fixture"
-import { pairParticipantsWithDogs } from "./pair-participants-with-dogs"
+import { organizerDisplayName, pairParticipantsWithDogs } from "./pair-participants-with-dogs"
 
 describe("pairParticipantsWithDogs", () => {
   describe("Given a dog confirmed by a participant", () => {
@@ -71,6 +71,40 @@ describe("pairParticipantsWithDogs", () => {
       const result = pairParticipantsWithDogs(walk)
 
       expect(result.unattributed).toEqual(walk.dogs)
+    })
+  })
+})
+
+describe("organizerDisplayName", () => {
+  describe("Given the organizer is me", () => {
+    test("When computing the name, Then it returns 'toi'", () => {
+      const walk = createWalkFixture({ organizerId: "me", participants: [{ id: "me", username: "me", avatarUrl: null, status: "yes" }] })
+
+      expect(organizerDisplayName(walk, "me")).toBe("toi")
+    })
+  })
+
+  describe("Given the organizer is someone else still a participant", () => {
+    test("When computing the name, Then it returns their username", () => {
+      const walk = createWalkFixture({ organizerId: "alice", participants: [{ id: "alice", username: "alice", avatarUrl: null, status: "yes" }] })
+
+      expect(organizerDisplayName(walk, "me")).toBe("alice")
+    })
+  })
+
+  describe("Given the organizer's account has since been deleted (organizerId null)", () => {
+    test("When computing the name, Then it returns 'Utilisateur supprimé'", () => {
+      const walk = createWalkFixture({ organizerId: null, participants: [] })
+
+      expect(organizerDisplayName(walk, "me")).toBe("Utilisateur supprimé")
+    })
+  })
+
+  describe("Given an organizerId with no matching participant (defensive case)", () => {
+    test("When computing the name, Then it falls back to 'Utilisateur supprimé'", () => {
+      const walk = createWalkFixture({ organizerId: "ghost", participants: [] })
+
+      expect(organizerDisplayName(walk, "me")).toBe("Utilisateur supprimé")
     })
   })
 })
