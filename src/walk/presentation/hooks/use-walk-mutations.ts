@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
 import type { Walk, WalkDog, WalkRsvpStatus } from "../../domain/entities/walk"
-import type { WalkInput } from "../../domain/repositories/walk.repository"
+import type { UpdateWalkInput, WalkInput } from "../../domain/repositories/walk.repository"
 import type { ToggleDogForWalkInput } from "../../application/use-cases/toggle-dog-for-walk.use-case"
 import { walkQueryKey, walksQueryKey } from "./use-walks"
 
@@ -19,6 +19,23 @@ export function useCreateWalk(userId: string | undefined) {
         [...(walks ?? []), result.walk].sort((a, b) => a.startTime.localeCompare(b.startTime)),
       )
       queryClient.invalidateQueries({ queryKey: walksQueryKey(userId) })
+    },
+  })
+}
+
+export function useUpdateWalk(userId: string | undefined, walkId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: UpdateWalkInput) => container.walk.updateWalk.execute(walkId, input),
+    onSuccess: (result) => {
+      if (!result.success) return
+      // The response already carries the reset walk (every non-pending RSVP back to
+      // "pending", confirmed dogs left as-is — see modele-de-donnees.md "Modification d'une
+      // balade déjà envoyée") — spliced straight into the cache instead of waiting on a round
+      // trip, same reasoning as useCreateWalk.
+      queryClient.setQueryData(walkQueryKey(walkId), result.walk)
+      queryClient.invalidateQueries({ queryKey: walkQueryKey(walkId) })
+      if (userId) queryClient.invalidateQueries({ queryKey: walksQueryKey(userId) })
     },
   })
 }

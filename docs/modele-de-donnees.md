@@ -70,8 +70,9 @@ Verrouillage (RSVP personnel ET confirmation des chiens) 5 minutes après `start
 Déclenché par un changement de `start_time`, `location_text` ou `duration_minutes` (les trois traités de façon identique) sur une balade déjà notifiée :
 
 - Tous les `walk_participants` dont le statut n'est pas `pending` sont réinitialisés à `pending` — y compris un `no` explicite.
-- Toutes les lignes `walk_dogs` de la balade sont **supprimées**.
+- Les lignes `walk_dogs` sont **conservées** — un chien déjà confirmé n'a pas besoin d'être re-sélectionné après une simple modification d'heure/lieu/durée (revu après le MVP initial : seule la réponse RSVP elle-même doit être reconfirmée, pas la sélection de chiens qui l'accompagne).
 - **Tous** les participants reçoivent une notification push, y compris ceux encore `pending`.
+- L'organisateur peut aussi inviter de nouveaux amis en reprogrammant (`walk_participants` insérés en `pending`, même policy `walk_participants_insert_by_organizer` qu'à la création) — les participants déjà invités ne sont jamais touchés (ni retirés, ni dupliqués). Désinviter un participant existant reste hors-MVP, voir `roadmap.md`.
 - **Édition interdite une fois `start_time` déjà passé** — policy RLS `WITH CHECK (start_time > now())` sur `UPDATE walks`, en plus de la validation domaine à la création.
 - Pas de limite de fréquence de modification au MVP.
 

@@ -34,6 +34,7 @@ import { CreateWalk } from "@/walk/application/use-cases/create-walk.use-case"
 import { RemoveWalk } from "@/walk/application/use-cases/remove-walk.use-case"
 import { RespondToWalkInvite } from "@/walk/application/use-cases/respond-to-walk-invite.use-case"
 import { ToggleDogForWalk } from "@/walk/application/use-cases/toggle-dog-for-walk.use-case"
+import { UpdateWalk } from "@/walk/application/use-cases/update-walk.use-case"
 import { SupabaseWalkRepository } from "@/walk/infrastructure/supabase/walk.repository"
 import { supabase } from "@/shared/supabase/client"
 
@@ -87,6 +88,7 @@ export const container = {
   walk: {
     walks: walkRepository,
     createWalk: new CreateWalk(walkRepository),
+    updateWalk: new UpdateWalk(walkRepository),
     removeWalk: new RemoveWalk(walkRepository),
     respondToWalkInvite: new RespondToWalkInvite(walkRepository),
     toggleDogForWalk: new ToggleDogForWalk(walkRepository),

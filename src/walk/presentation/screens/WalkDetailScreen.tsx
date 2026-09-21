@@ -342,6 +342,17 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
               paddingHorizontal="$3"
               onPress={() => {
                 setMenuOpen(false)
+                router.push(`/walks/${walkId}/edit`)
+              }}
+            >
+              <Body fontWeight="700">Modifier</Body>
+            </XStack>
+            <XStack
+              alignItems="center"
+              minHeight="$tap"
+              paddingHorizontal="$3"
+              onPress={() => {
+                setMenuOpen(false)
                 setCancelModalOpen(true)
               }}
             >

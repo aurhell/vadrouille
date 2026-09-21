@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 import type { Walk, WalkRsvpStatus } from "../../domain/entities/walk"
-import type { WalkInput, WalkRepository } from "../../domain/repositories/walk.repository"
+import type { UpdateWalkInput, WalkInput, WalkRepository } from "../../domain/repositories/walk.repository"
 import { toWalk, type ParticipantRow, type WalkDogRow, type WalkRow } from "./walk.mapper"
 
 const WALK_COLUMNS = "id, organizer_id, location_text, start_time, duration_minutes"
@@ -71,6 +71,33 @@ export class SupabaseWalkRepository implements WalkRepository {
     const created = await this.findById(walkRow.id)
     if (!created) throw new Error("Walk not found right after creation")
     return created
+  }
+
+  async update(id: string, input: UpdateWalkInput): Promise<Walk> {
+    const { error } = await this.client
+      .from("walks")
+      .update({
+        location_text: input.locationText,
+        start_time: input.startTime,
+        duration_minutes: input.durationMinutes,
+      })
+      .eq("id", id)
+    if (error) throw error
+
+    if (input.newFriendIds.length > 0) {
+      const participantRows = input.newFriendIds.map((friendId) => ({ walk_id: id, user_id: friendId, status: "pending" }))
+      // ignoreDuplicates, not a plain insert: never touch an existing participant's row (own
+      // RSVP status) if a friend already invited is passed in by mistake — see
+      // UpdateWalkInput.newFriendIds.
+      const { error: participantsError } = await this.client
+        .from("walk_participants")
+        .upsert(participantRows, { onConflict: "walk_id,user_id", ignoreDuplicates: true })
+      if (participantsError) throw participantsError
+    }
+
+    const updated = await this.findById(id)
+    if (!updated) throw new Error("Walk not found right after update")
+    return updated
   }
 
   async remove(id: string): Promise<void> {

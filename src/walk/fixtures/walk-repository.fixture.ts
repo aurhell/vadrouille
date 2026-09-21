@@ -7,6 +7,7 @@ export function createWalkRepositoryMock(overrides: Partial<WalkRepository> = {}
     listPast: vi.fn().mockResolvedValue([]),
     findById: vi.fn().mockResolvedValue(null),
     create: vi.fn(),
+    update: vi.fn(),
     remove: vi.fn().mockResolvedValue(undefined),
     respond: vi.fn().mockResolvedValue(undefined),
     confirmDog: vi.fn().mockResolvedValue(undefined),
