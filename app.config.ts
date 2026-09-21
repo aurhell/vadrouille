@@ -24,7 +24,9 @@ const config: ExpoConfig = {
   android: {
     package: "dev.aureliengirault.vadrouille",
     adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
+      // Fallback only — backgroundImage below is what actually renders — but kept in sync
+      // with it (coral, see assets/logo/README.md) rather than left at its old placeholder.
+      backgroundColor: "#FF6B4A",
       foregroundImage: "./assets/android-icon-foreground.png",
       backgroundImage: "./assets/android-icon-background.png",
       monochromeImage: "./assets/android-icon-monochrome.png",

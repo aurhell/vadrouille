@@ -1,16 +1,20 @@
 import { useState } from "react"
 import { YStack } from "tamagui"
 
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { useRequestMagicLink } from "../hooks/use-account-mutations"
 import { useSession } from "../providers/session-provider"
 import { DevPasteMagicLink } from "./dev-paste-magic-link"
-import { Body, Button, Display, TextField } from "@/shared/ui"
+import { Body, Button, TextField, VadrouilleLockup } from "@/shared/ui"
+import { themes } from "@/shared/ui/themes"
 
 const ERROR_MESSAGE = {
   invalid_format: "Adresse email invalide",
 } as const
 
 export function LoginScreen() {
+  const { resolvedTheme } = useThemePreference()
+  const theme = themes[resolvedTheme]
   const { authError, clearAuthError } = useSession()
   const [email, setEmail] = useState("")
   const [linkSent, setLinkSent] = useState(false)
@@ -38,10 +42,7 @@ export function LoginScreen() {
   return (
     <YStack flex={1} backgroundColor="$background" justifyContent="center" paddingHorizontal="$6" gap="$6">
       <YStack alignItems="center" gap="$2">
-        <Body fontSize={46} lineHeight={52}>
-          🦮
-        </Body>
-        <Display size="lg">Vadrouille</Display>
+        <VadrouilleLockup markSize={76} wordSize={38} color={theme.accent} background={theme.background} wordColor={theme.color} />
         <Body size="lg" tone="subtle" textAlign="center">
           Organise des balades de chiens entre amis.
         </Body>

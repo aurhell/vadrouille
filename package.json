@@ -29,6 +29,7 @@
     "tamagui": "^2.7.7"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/react": "~19.2.2",
     "serve": "^14.2.6",
     "supabase": "^2.117.0",
@@ -48,7 +49,8 @@
     "dev:login": "node scripts/dev-login.mjs",
     "dev:dual": "node scripts/dev-two-sims.mjs",
     "dev:seed-friends": "node scripts/dev-seed-friends.mjs",
-    "dev:reset-seed": "supabase db reset && node scripts/dev-seed-friends.mjs"
+    "dev:reset-seed": "supabase db reset && node scripts/dev-seed-friends.mjs",
+    "icons:generate": "node scripts/generate-app-icons.mjs"
   },
   "private": true
 }

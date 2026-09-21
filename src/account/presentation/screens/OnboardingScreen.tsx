@@ -5,9 +5,11 @@ import { Image } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { XStack, YStack } from "tamagui"
 
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { useSession } from "../providers/session-provider"
 import { useCreateProfile, useSignOut, useUpdateAvatar } from "../hooks/use-account-mutations"
-import { Body, Button, Display, TextField } from "@/shared/ui"
+import { Body, Button, Display, TextField, VadrouilleMark } from "@/shared/ui"
+import { themes } from "@/shared/ui/themes"
 
 const ERROR_MESSAGE = {
   required: "Le pseudo est obligatoire",
@@ -34,6 +36,8 @@ async function pickPhoto(): Promise<ImagePicker.ImagePickerAsset | undefined> {
 
 export function OnboardingScreen() {
   const insets = useSafeAreaInsets()
+  const { resolvedTheme } = useThemePreference()
+  const theme = themes[resolvedTheme]
   const router = useRouter()
   const { session } = useSession()
   const [username, setUsername] = useState("")
@@ -80,9 +84,7 @@ export function OnboardingScreen() {
         {/* flex-start, not center: the title wraps to 2 lines here, and centering against the
          * whole 2-line block visually misaligns the emoji from the first line's cap-height. */}
         <XStack alignItems="flex-start" gap="$2">
-          <Body fontSize={30} lineHeight={41}>
-            🦮
-          </Body>
+          <VadrouilleMark size={30} color={theme.accentText} background={theme.accent} />
           <Display size="lg" color="$accentText" flexShrink={1}>
             Bienvenue sur Vadrouille !
           </Display>

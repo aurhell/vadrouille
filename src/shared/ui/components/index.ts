@@ -29,3 +29,5 @@ export {
 } from './Icons';
 export type { TabKey, IconProps } from './Icons';
 export { WalkMetaLine } from './WalkMetaLine';
+export { VadrouilleMark, VadrouilleLockup } from './VadrouilleLogo';
+export type { VadrouilleMarkProps, VadrouilleLockupProps } from './VadrouilleLogo';
