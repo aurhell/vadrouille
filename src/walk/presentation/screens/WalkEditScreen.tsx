@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
-import { Alert, ScrollView } from "react-native"
+import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
 import { useSession } from "@/shared/providers/session-provider"
@@ -75,8 +75,9 @@ export function WalkEditScreen({ walkId }: { walkId: string }) {
       if (outcome.success) router.replace(`/walks/${walkId}`)
     } catch {
       // E.g. the walk started between opening this screen and saving — RLS refuses the
-      // update server-side (walks_update_organizer_future_only).
-      Alert.alert("Un problème est survenu. Réessaie dans quelques instants.")
+      // update server-side (walks_update_organizer_future_only). Already surfaces the generic
+      // fallback alert via the QueryClient's mutationCache.onError (app/_layout.tsx) — this
+      // catch only exists so the rejection doesn't bubble up as an unhandled promise rejection.
     }
   }
 

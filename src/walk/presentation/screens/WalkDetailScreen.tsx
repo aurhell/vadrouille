@@ -113,11 +113,14 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
         dogName: dog.name,
         dogPhotoUrl: dog.photoUrl,
       })
-      if (!result.success) Alert.alert(QUOTA_EXCEEDED_MESSAGE)
-    } catch {
       // E.g. a race with someone else confirming the 10th dog between our own client-side
       // quota check and the request landing — the SQL trigger still refuses it server-side.
-      Alert.alert("Un problème est survenu. Réessaie dans quelques instants.")
+      if (!result.success) Alert.alert(QUOTA_EXCEEDED_MESSAGE)
+    } catch {
+      // A rejected mutation (network, uncaught server error) already surfaces the generic
+      // fallback alert via the QueryClient's mutationCache.onError (app/_layout.tsx) — this
+      // catch only exists so the rejection doesn't bubble up as an unhandled promise
+      // rejection, since handleToggleDog isn't awaited by its caller.
     }
   }
 

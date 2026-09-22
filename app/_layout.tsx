@@ -1,8 +1,8 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { MutationCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useFonts } from "expo-font"
 import { Stack, useRootNavigationState, useRouter, useSegments } from "expo-router"
 import { type ReactNode, useEffect } from "react"
-import { View } from "react-native"
+import { Alert, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { TamaguiProvider } from "tamagui"
@@ -14,7 +14,18 @@ import { ThemePreferenceProvider, useThemePreference } from "@/shared/providers/
 import { config } from "@/shared/ui"
 import { closeAll as closeOpenPickers, isInsideOpenBounds } from "@/shared/ui/picker-coordinator"
 
-const queryClient = new QueryClient()
+const GENERIC_ERROR_MESSAGE = "Un problème est survenu. Réessaie dans quelques instants."
+
+const queryClient = new QueryClient({
+  // Fallback net for the ~19 `.mutate()` call sites across the app that don't pass their own
+  // onError (a rejected mutation — network down, an uncaught server error — was previously
+  // completely silent: the confirm dialog closes, the UI settles back, nothing tells the user
+  // it didn't actually work). A mutation with its own onError/try-catch (e.g. a specific
+  // business-rule message) still runs that first; this only fills the gap for ones that don't.
+  mutationCache: new MutationCache({
+    onError: () => Alert.alert(GENERIC_ERROR_MESSAGE),
+  }),
+})
 
 function AuthGate({ children }: { children: ReactNode }) {
   const { session, loading: sessionLoading } = useSession()

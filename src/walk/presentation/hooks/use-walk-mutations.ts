@@ -117,8 +117,14 @@ export function useToggleDogForWalk(userId: string | undefined, walkId: string) 
     onError: (_error, _input, context) => {
       if (context && context.previous !== undefined) queryClient.setQueryData(walkQueryKey(walkId), context.previous)
     },
-    onSuccess: (result) => {
-      if (!result.success) return
+    onSuccess: (result, _input, context) => {
+      if (!result.success) {
+        // A business-rule refusal (quota reached), not a network exception — onError never
+        // fires for this, so the optimistic dog-add from onMutate would otherwise stay in
+        // the cache showing a dog as confirmed that the server just rejected.
+        if (context && context.previous !== undefined) queryClient.setQueryData(walkQueryKey(walkId), context.previous)
+        return
+      }
       queryClient.invalidateQueries({ queryKey: walkQueryKey(walkId) })
       if (userId) queryClient.invalidateQueries({ queryKey: walksQueryKey(userId) })
     },
