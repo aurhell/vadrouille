@@ -4,8 +4,7 @@ import { useEffect, useState } from "react"
 import { Image, ScrollView } from "react-native"
 import { YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
-import { useFriends } from "@/friend/presentation/hooks/use-friends"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, Card, ChoiceChipGroup, ConfirmDialog, DateField, Label, PersonRow, ScreenHeader, TextField } from "@/shared/ui"
 import type { DogSex } from "../../domain/entities/dog"
 import { deleteDogMessage } from "../delete-dog-message"
@@ -13,6 +12,7 @@ import { useCancelCoOwnerInvite, useInviteCoOwner, useLeaveCoOwnership } from ".
 import { useSentCoOwnerInvites } from "../hooks/use-co-owner-invites"
 import { useCreateDog, useRemoveDog, useRemoveDogPhoto, useUpdateDog, useUpdateDogPhoto } from "../hooks/use-dog-mutations"
 import { useDog } from "../hooks/use-dogs"
+import { useFriends } from "../hooks/use-friends"
 
 const ERROR_MESSAGE = {
   required: "Le nom est obligatoire",

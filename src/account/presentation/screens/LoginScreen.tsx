@@ -3,7 +3,7 @@ import { YStack } from "tamagui"
 
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { useRequestMagicLink } from "../hooks/use-account-mutations"
-import { useSession } from "../providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { DevPasteMagicLink } from "./dev-paste-magic-link"
 import { Body, Button, TextField, VadrouilleLockup } from "@/shared/ui"
 import { themes } from "@/shared/ui/themes"

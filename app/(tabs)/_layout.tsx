@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router"
 import type { ColorValue } from "react-native"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { useReceivedCoOwnerInvites } from "@/dog/presentation/hooks/use-co-owner-invites"
 import { useReceivedFriendRequests } from "@/friend/presentation/hooks/use-friends"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"

@@ -3,9 +3,9 @@ import { useState } from "react"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { YStack } from "tamagui"
 
-import { useCreateDog } from "@/dog/presentation/hooks/use-dog-mutations"
 import { Body, Button, Display, TextField } from "@/shared/ui"
-import { useSession } from "../providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
+import { useCreateDog } from "../hooks/use-create-dog"
 
 const ERROR_MESSAGE = {
   required: "Le nom est obligatoire",

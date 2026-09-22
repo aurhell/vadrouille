@@ -9,7 +9,7 @@ import { TamaguiProvider } from "tamagui"
 
 import { useProfile } from "@/account/presentation/hooks/use-profile"
 import { usePushRegistration } from "@/account/presentation/hooks/use-push-registration"
-import { SessionProvider, useSession } from "@/account/presentation/providers/session-provider"
+import { SessionProvider, useSession } from "@/shared/providers/session-provider"
 import { ThemePreferenceProvider, useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { config } from "@/shared/ui"
 import { closeAll as closeOpenPickers, isInsideOpenBounds } from "@/shared/ui/picker-coordinator"

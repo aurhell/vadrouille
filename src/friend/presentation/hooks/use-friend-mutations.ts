@@ -1,7 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { Profile } from "@/account/domain/entities/profile"
-import { profileQueryKey } from "@/account/presentation/hooks/use-profile"
 import { container } from "@/shared/di/container"
 import { friendsQueryKey, receivedRequestsQueryKey, sentRequestsQueryKey } from "./use-friends"
 
@@ -64,19 +62,6 @@ export function useRemoveFriend(userId: string | undefined) {
     mutationFn: (friendId: string) => container.friend.removeFriend.execute(friendId),
     onSuccess: () => {
       if (userId) queryClient.invalidateQueries({ queryKey: friendsQueryKey(userId) })
-    },
-  })
-}
-
-export function useRegenerateInviteCode(userId: string | undefined) {
-  const queryClient = useQueryClient()
-  return useMutation({
-    mutationFn: () => container.friend.regenerateInviteCode.execute(),
-    onSuccess: (newCode) => {
-      if (!userId) return
-      queryClient.setQueryData<Profile | null>(profileQueryKey(userId), (profile) =>
-        profile ? { ...profile, inviteCode: newCode } : profile,
-      )
     },
   })
 }

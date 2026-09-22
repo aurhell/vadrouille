@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { XStack, YStack } from "tamagui"
 
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
-import { useSession } from "../providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { useCreateProfile, useSignOut, useUpdateAvatar } from "../hooks/use-account-mutations"
 import { Body, Button, Display, TextField, VadrouilleMark } from "@/shared/ui"
 import { themes } from "@/shared/ui/themes"

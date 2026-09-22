@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FlatList } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import type { Friend } from "../../domain/entities/friend"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import {

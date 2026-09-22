@@ -3,12 +3,12 @@ import { useEffect, useState } from "react"
 import { Image, ScrollView } from "react-native"
 import { YStack } from "tamagui"
 
-import { useSession } from "../providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { useProfile } from "../hooks/use-profile"
 import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
-import { useRegenerateInviteCode } from "@/friend/presentation/hooks/use-friend-mutations"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { Body, Button, Card, ChoiceChipGroup, ConfirmDialog, Label, ScreenHeader, TextField } from "@/shared/ui"
+import { useRegenerateInviteCode } from "../hooks/use-regenerate-invite-code"
 
 const THEME_OPTIONS = [
   { value: "light" as const, label: "Clair" },

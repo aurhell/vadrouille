@@ -3,7 +3,7 @@ import { useState } from "react"
 import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { ChoiceChipGroup, EmptyState, RefreshControl, ScreenHeader, WalkCard } from "@/shared/ui"
 import { usePastWalks } from "../hooks/use-walks"

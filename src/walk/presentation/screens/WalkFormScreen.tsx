@@ -3,13 +3,13 @@ import { useState } from "react"
 import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
-import { useDogs } from "@/dog/presentation/hooks/use-dogs"
-import { useFriends } from "@/friend/presentation/hooks/use-friends"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, ChoiceChipGroup, CloseButton, DateField, DogPhoto, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
 import { useCreateWalk } from "../hooks/use-walk-mutations"
+import { useDogs } from "../hooks/use-dogs"
+import { useFriends } from "../hooks/use-friends"
 
 const ERROR_MESSAGE = {
   location_required: "Le lieu est obligatoire",

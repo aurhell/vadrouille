@@ -3,10 +3,10 @@ import { useEffect, useState } from "react"
 import { Alert, ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
-import { useFriends } from "@/friend/presentation/hooks/use-friends"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, ChoiceChipGroup, CloseButton, DateField, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
+import { useFriends } from "../hooks/use-friends"
 import { useUpdateWalk } from "../hooks/use-walk-mutations"
 import { useWalk } from "../hooks/use-walks"
 

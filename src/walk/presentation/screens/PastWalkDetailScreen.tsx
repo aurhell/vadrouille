@@ -2,7 +2,7 @@ import { useRouter } from "expo-router"
 import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/account/presentation/providers/session-provider"
+import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { Body, Card, DogPhoto, PersonRow, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
