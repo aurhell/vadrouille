@@ -3,6 +3,7 @@ import { FlatList } from "react-native"
 import { XStack, YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useRefetchOnFocus } from "@/shared/hooks/use-refetch-on-focus"
 import { useSession } from "@/shared/providers/session-provider"
 import {
   Avatar,
@@ -72,6 +73,9 @@ export function FriendsScreen() {
   const { data: sentRequests } = sentRequestsQuery
   const { data: receivedRequests } = receivedRequestsQuery
 
+  useRefetchOnFocus(() =>
+    Promise.all([friendsQuery.refetch(), sentRequestsQuery.refetch(), receivedRequestsQuery.refetch()]),
+  )
   const { refreshing, onRefresh } = usePullToRefresh(() =>
     Promise.all([friendsQuery.refetch(), sentRequestsQuery.refetch(), receivedRequestsQuery.refetch()]),
   )

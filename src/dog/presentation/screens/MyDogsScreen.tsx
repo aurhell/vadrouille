@@ -3,6 +3,7 @@ import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useRefetchOnFocus } from "@/shared/hooks/use-refetch-on-focus"
 import { useSession } from "@/shared/providers/session-provider"
 import { Body, DogCard, EmptyState, InviteRequestCard, RefreshControl, ScreenHeader, SwipeToDeleteRow, Title } from "@/shared/ui"
 
@@ -62,6 +63,7 @@ export function MyDogsScreen() {
   const { data: dogs } = dogsQuery
   const receivedInvitesQuery = useReceivedCoOwnerInvites(userId)
   const { data: receivedInvites } = receivedInvitesQuery
+  useRefetchOnFocus(() => Promise.all([dogsQuery.refetch(), receivedInvitesQuery.refetch()]))
   const { refreshing, onRefresh } = usePullToRefresh(() =>
     Promise.all([dogsQuery.refetch(), receivedInvitesQuery.refetch()]),
   )

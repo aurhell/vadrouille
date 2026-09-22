@@ -105,6 +105,12 @@ Toute liste rafraîchissable (amis aujourd'hui, balades plus tard) suit le même
 
 React Native ne permet pas de remplacer l'anneau natif par une illustration custom (uniquement teinte + titre) — le "juice" vient de la teinte de marque, du titre et du tap haptique de fin, pas d'une animation graphique dédiée.
 
+Ce duo couvre le rafraîchissement *manuel*. Pour le rafraîchissement *automatique* au changement d'onglet, voir `useRefetchOnFocus` ci-dessous — les deux sont complémentaires, pas redondants : une liste rafraîchissable a presque toujours les deux.
+
+### Rafraîchissement au changement d'onglet
+
+`useRefetchOnFocus(refetch)` (`src/shared/hooks/`) — appelle `refetch` à chaque fois que l'écran regagne le focus (changement d'onglet, retour depuis un écran poussé), silencieusement, sans passer par l'anneau de `<RefreshControl>`. Nécessaire car React Navigation garde les écrans d'onglets montés en permanence : le refetch-on-mount par défaut de TanStack Query ne se déclenche donc jamais en revenant sur un onglet déjà visité, contrairement à ce qui se passerait sur une page web rechargée. Repéré en testant le Realtime du détail de balade avec deux comptes (voir `walk.docs.md` point 13) ; appliqué depuis à toute liste rafraîchissable (`WalksListScreen`, `PastWalksListScreen`, `MyDogsScreen`, `FriendsScreen`).
+
 ### Badge de notification sur un onglet
 
 Pour signaler un élément qui attend une action (invitation d'ami reçue aujourd'hui, invitation de balade sans réponse plus tard) sur une icône d'onglet :

@@ -4,6 +4,7 @@ import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useRefetchOnFocus } from "@/shared/hooks/use-refetch-on-focus"
 import { useSession } from "@/shared/providers/session-provider"
 import { ChoiceChipGroup, EmptyState, RefreshControl, ScreenHeader, WalkCard } from "@/shared/ui"
 
@@ -23,6 +24,7 @@ export function PastWalksListScreen() {
   const userId = session?.user.id
   const walksQuery = usePastWalks(userId)
   const { data: walks } = walksQuery
+  useRefetchOnFocus(walksQuery.refetch)
   const { refreshing, onRefresh } = usePullToRefresh(() => walksQuery.refetch())
   const [filter, setFilter] = useState<Filter>("all")
 

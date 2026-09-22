@@ -3,6 +3,7 @@ import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useRefetchOnFocus } from "@/shared/hooks/use-refetch-on-focus"
 import { useSession } from "@/shared/providers/session-provider"
 import { Body, EmptyState, RefreshControl, ScreenHeader, SwipeToDeleteRow, WalkCard } from "@/shared/ui"
 
@@ -49,6 +50,7 @@ export function WalksListScreen() {
   const userId = session?.user.id
   const walksQuery = useWalks(userId)
   const { data: walks } = walksQuery
+  useRefetchOnFocus(walksQuery.refetch)
   const { refreshing, onRefresh } = usePullToRefresh(() => walksQuery.refetch())
   const removeWalk = useRemoveWalk(userId)
 

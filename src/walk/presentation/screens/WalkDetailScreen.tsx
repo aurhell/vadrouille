@@ -12,6 +12,7 @@ import { canRespondToWalk } from "../../domain/policies/response-window.policy"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
 import { useDogs } from "../hooks/use-dogs"
 import { useRemoveWalk, useRespondToWalk, useToggleDogForWalk } from "../hooks/use-walk-mutations"
+import { useWalkRealtime } from "../hooks/use-walk-realtime"
 import { useWalk } from "../hooks/use-walks"
 import { pairParticipantsWithDogs } from "../pair-participants-with-dogs"
 
@@ -70,6 +71,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
   const userId = session?.user.id
   const walkQuery = useWalk(walkId)
   const { data: walk } = walkQuery
+  useWalkRealtime(walkId)
   const dogsQuery = useDogs(userId)
   const { data: myDogs } = dogsQuery
   const { refreshing, onRefresh } = usePullToRefresh(() => Promise.all([walkQuery.refetch(), dogsQuery.refetch()]))
