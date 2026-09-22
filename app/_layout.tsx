@@ -8,6 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import { TamaguiProvider } from "tamagui"
 
 import { useProfile } from "@/account/presentation/hooks/use-profile"
+import { usePushRegistration } from "@/account/presentation/hooks/use-push-registration"
 import { SessionProvider, useSession } from "@/account/presentation/providers/session-provider"
 import { ThemePreferenceProvider, useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { config } from "@/shared/ui"
@@ -23,6 +24,10 @@ function AuthGate({ children }: { children: ReactNode }) {
   const segments = useSegments() as string[]
   const router = useRouter()
   const navigationState = useRootNavigationState()
+
+  // Gated on `profile`, not just `session`: push_tokens.user_id references profiles, so
+  // registering any earlier (mid-onboarding, before a profile row exists) would just fail.
+  usePushRegistration(profile ? session?.user.id : undefined)
 
   useEffect(() => {
     // Router isn't ready to navigate yet, or we don't have enough info to decide.

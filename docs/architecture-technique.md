@@ -4,12 +4,14 @@
 
 Le principe "zéro API custom" tient presque entièrement : RLS (Row Level Security) porte toute la logique d'autorisation, et le client mobile parle directement au SDK Supabase.
 
-Deux exceptions incontournables (privilèges que le client ne doit jamais avoir) :
+Une exception incontournable (privilège que le client ne doit jamais avoir) :
 
-1. **Notification push** — trigger DB sur `walk_participants` / `walk_dogs` / `dog_owners` (invitations, réponses, co-ownership) → Edge Function → Expo Push (unifie FCM + APNs)
-2. **Suppression de compte (RGPD)** — nécessite `service_role`, donc une Edge Function dédiée, appelée par l'utilisateur authentifié, qui vérifie que le `user_id` correspond au token puis exécute la cascade de suppression (détail → `rgpd-securite.md`)
+1. **Suppression de compte (RGPD)** — nécessite `service_role`, donc une Edge Function dédiée, appelée par l'utilisateur authentifié, qui vérifie que le `user_id` correspond au token puis exécute la cascade de suppression (détail → `rgpd-securite.md`)
 
-Une troisième exception, plus légère : **rédemption d'un code d'invitation** — pas de SELECT client sur `profiles.invite_code` (sinon n'importe qui peut lister tous les codes et casser le modèle "il faut que ton ami te partage son code"). Traité via une **fonction Postgres `SECURITY DEFINER`** exposée en RPC (`redeem_invite_code(code)`), pas une Edge Function à part entière — elle vérifie le code, bloque l'auto-rédemption, et crée les deux lignes `friendships` (relation bidirectionnelle) en une transaction. Détail → `modele-de-donnees.md` §Politiques d'accès.
+Deux exceptions plus légères, chacune traitée par une **fonction Postgres `SECURITY DEFINER`**, pas une Edge Function à part entière :
+
+- **Rédemption d'un code d'invitation** — pas de SELECT client sur `profiles.invite_code` (sinon n'importe qui peut lister tous les codes et casser le modèle "il faut que ton ami te partage son code"). RPC `redeem_invite_code(code)` : vérifie le code, bloque l'auto-rédemption, et crée les deux lignes `friendships` (relation bidirectionnelle) en une transaction. Détail → `modele-de-donnees.md` §Politiques d'accès.
+- **Notification push** — trigger DB sur `walk_participants` (invitation) / `walks` (reprogrammation) / `dog_owners` (co-ownership) / `friendships` (demande d'ami), chacun `SECURITY DEFINER`, qui appelle directement l'API Expo Push (`https://exp.host/--/api/v2/push/send`) via `pg_net`. Pas d'Edge Function intermédiaire : contrairement à la suppression de compte, l'API Expo Push ne demande aucun secret côté serveur, donc un relai n'aurait fait qu'ajouter une URL et un secret internes à gérer différemment entre le dev local et le cloud, pour la même unique requête HTTP que le trigger peut déjà émettre lui-même. Détail → migration `push_notifications.sql` et `modele-de-donnees.md` §Notifications push. Un token par utilisateur (pas de fan-out multi-appareil au MVP) dans `push_tokens`, RLS scoping strict à `auth.uid()` côté client (la lecture cross-utilisateur ne se fait que depuis les fonctions `SECURITY DEFINER`). Seule la notification "Balade annulée" (suppression de compte) part de l'Edge Function `delete-account` elle-même, qui a déjà un contexte `service_role` — même appel direct à Expo, pas de second hop non plus.
 
 Tout le reste (CRUD chiens, amis, balades, réponses) reste 100% client-side, protégé par RLS.
 
@@ -116,7 +118,7 @@ Les spécifications fonctionnelles (user stories + Gherkin) vivent **dans le rep
 - Stack Supabase locale complète via Docker (`supabase start`) : Postgres, Auth, Storage, Realtime, Studio
 - Migrations gérées via la CLI Supabase
 - L'application Expo tourne indépendamment de Docker (Expo Dev Client / Expo Go), pointant vers l'instance Supabase locale en dev
-- ⚠️ **Push notifications** : Expo Go ne supporte plus les notifications push à distance — un **EAS development build** est nécessaire dès qu'on veut tester ce flow (pas d'impact sur le code, juste sur le setup de test)
+- ⚠️ **Push notifications** : Expo Go ne supporte plus les notifications push à distance — un **EAS development build** est nécessaire dès qu'on veut tester ce flow (pas d'impact sur le code, juste sur le setup de test). Le simulateur iOS ne peut de toute façon jamais recevoir de push distante, build EAS ou pas (aucune identité APNs possible sans matériel réel) — seul un vrai iPhone en reçoit côté iOS ; côté Android, l'émulateur fonctionne (un vrai token FCM peut y être obtenu).
 
 ## Tests
 

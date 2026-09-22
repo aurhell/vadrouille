@@ -9,8 +9,11 @@
 // supabase/migrations/*.sql files. This function only handles the two things a plain FK
 // cascade can't express (deleting rather than unlinking, and time-based branching), plus
 // Storage cleanup, which isn't a database concern at all:
-//   1. Future walks organized by this user: DELETED outright, not just unlinked (past ones
-//      are left for the FK's SET NULL to handle once the profile itself is deleted below).
+//   1. Future walks organized by this user: participants get a "Balade annulée" push (same
+//      Expo Push API call the DB triggers use, see push_notifications.sql — this function
+//      already runs with service_role, so it calls Expo directly rather than adding a second
+//      hop), then the walks are DELETED outright, not just unlinked (past ones are left for
+//      the FK's SET NULL to handle once the profile itself is deleted below).
 //   2. Dogs solely owned by this user: DELETED outright (co-owned dogs must survive for the
 //      other owner — that's dog_owners, unlinked automatically by cascade below).
 //   3. Storage files (avatar, and photos of the dogs deleted in step 2).
@@ -58,9 +61,51 @@ Deno.serve(async (req) => {
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
   try {
-    // 1. Future organized walks: delete outright.
-    // TODO(push): once the push-notification Edge Function exists, notify participants here
-    // ("Balade annulée — l'organisateur a quitté Vadrouille") before deleting the rows.
+    // 1. Future organized walks: notify participants, then delete outright.
+    const { data: futureWalks, error: futureWalksSelectError } = await admin
+      .from("walks")
+      .select("id")
+      .eq("organizer_id", userId)
+      .gt("start_time", new Date().toISOString())
+    if (futureWalksSelectError) throw futureWalksSelectError
+
+    if (futureWalks && futureWalks.length > 0) {
+      const walkIds = futureWalks.map((w) => w.id)
+      const { data: participants, error: participantsError } = await admin
+        .from("walk_participants")
+        .select("user_id")
+        .in("walk_id", walkIds)
+        .neq("user_id", userId)
+      if (participantsError) throw participantsError
+
+      const participantIds = [...new Set((participants ?? []).map((p) => p.user_id))]
+      if (participantIds.length > 0) {
+        // Best-effort, same posture as every other push send in this app (see
+        // push_notifications.sql migration) — a failure here must never block account
+        // deletion itself.
+        try {
+          const { data: tokenRows } = await admin.from("push_tokens").select("expo_push_token").in("user_id", participantIds)
+          const tokens = (tokenRows ?? []).map((t) => t.expo_push_token)
+          if (tokens.length > 0) {
+            await fetch("https://exp.host/--/api/v2/push/send", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
+              body: JSON.stringify(
+                tokens.map((to) => ({
+                  to,
+                  title: "🦮 Balade annulée",
+                  body: "L'organisateur a quitté Vadrouille.",
+                  data: { type: "walk_cancelled_organizer_deleted" },
+                })),
+              ),
+            })
+          }
+        } catch {
+          // Ignore — see comment above.
+        }
+      }
+    }
+
     const { error: futureWalksError } = await admin
       .from("walks")
       .delete()

@@ -59,3 +59,9 @@ export function useDeleteAccount() {
     mutationFn: () => container.account.deleteAccount.execute(),
   })
 }
+
+export function useRegisterPushToken() {
+  return useMutation({
+    mutationFn: (token: string) => container.account.registerPushToken.execute(token),
+  })
+}

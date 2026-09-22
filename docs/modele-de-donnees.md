@@ -97,6 +97,20 @@ Rédimer un code n'établit plus une amitié directement : ça envoie une **dema
 
 Ces quatre RPC de mutation sont les seuls points d'écriture sur `friendships` — pas de policy `INSERT`/`UPDATE`/`DELETE` client, pour les mêmes raisons qu'avant (une transaction doit pouvoir toucher la ligne de l'autre personne, ce qu'une policy RLS classique ne peut pas exprimer).
 
+## Notifications push
+
+Un token Expo push par utilisateur (`public.push_tokens`, `user_id` en clé primaire) — le dernier appareil enregistré gagne, pas de fan-out multi-appareil au MVP. Écrit par le client (`upsert`, RLS scoping à `auth.uid()`) au démarrage de l'app une fois la permission accordée et un profil existant (voir `account.docs.md`).
+
+Cinq événements déclenchent un envoi, chacun via une fonction trigger `SECURITY DEFINER` qui construit le message en SQL puis appelle directement l'API Expo Push (`https://exp.host/--/api/v2/push/send`) via `pg_net` — voir migration `push_notifications.sql` et architecture-technique.md §Backend pour le choix de ne pas passer par une Edge Function intermédiaire :
+
+- **Invitation à une balade** — `AFTER INSERT` sur `walk_participants` quand `status = 'pending'` : "🦮 {Organisateur} t'invite à une balade".
+- **Reprogrammation** — la même fonction qui réinitialise les réponses (`reset_walk_responses_on_reschedule`, voir plus haut) notifie aussi, dans la même transaction, tous les participants (y compris encore `pending`) : "🦮 {Organisateur} a mis à jour la balade".
+- **Invitation de co-ownership** — `AFTER INSERT` sur `dog_owners` quand `status = 'pending' AND role = 'co-owner'`, notifie l'invité·e (l'inviteur est déduit de `auth.uid()`, seul un owner accepté pouvant insérer cette ligne — voir policy `dog_owners_insert_owner_invites_friend`).
+- **Demande d'ami** — `AFTER INSERT` sur `friendships` quand `status = 'pending'`, notifie `friend_id` (le destinataire).
+- **Suppression de compte avec balades futures organisées** — pas un trigger DB : l'Edge Function `delete-account` (déjà en contexte `service_role`) appelle Expo directement, avant de supprimer les balades, pour chaque participant encore concerné. Voir `rgpd-securite.md`.
+
+**Best effort, pas de garantie de livraison** — cohérent avec le reste de l'app (pas de notification sur le retrait d'un ami, pas de notification sur l'annulation d'une balade par son organisateur en dehors du cas suppression de compte) : aucune re-tentative, aucun suivi de statut de livraison stocké. `pg_net` exécute l'appel HTTP de façon asynchrone (ne bloque jamais la transaction qui a déclenché le trigger) et journalise la réponse dans `net._http_response`, consultable manuellement en cas de debug, mais rien dans l'app ne la lit.
+
 ## Politiques d'accès (RLS)
 
 RLS activé sur toutes les tables. Principe général : on ne voit que ce qui touche directement son propre cercle (soi-même, ses amis, ses colocataires de balade ou de chien) — jamais de table "ouverte" par défaut.
@@ -169,6 +183,12 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 | SELECT | Même visibilité que `walk_participants` (aligné sur la balade parente) |
 | INSERT / UPDATE (confirmer un chien, `yes`↔`maybe`) | Le demandeur est owner ou co-owner accepté du `dog_id` **ET** fenêtre de réponse ouverte **ET** quota non dépassé (trigger `COUNT`, déjà documenté plus haut) |
 | DELETE (retirer un chien) | Owner ou co-owner accepté du `dog_id` **ET** fenêtre de réponse ouverte — un co-owner peut retirer un chien confirmé par l'autre co-owner (donnée partagée, cf. `walk.docs.md`) |
+
+### `push_tokens`
+
+| Opération | Règle |
+|---|---|
+| SELECT / INSERT / UPDATE / DELETE | `user_id = auth.uid()` — jamais de lecture cross-utilisateur côté client. Les fonctions trigger qui envoient les notifications (voir §Notifications push) lisent la table en `SECURITY DEFINER`, hors RLS, ce qui est le seul chemin de lecture cross-utilisateur qui existe |
 
 ### Stockage (avatars, photos de chien)
 

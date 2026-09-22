@@ -23,6 +23,13 @@ const config: ExpoConfig = {
   },
   android: {
     package: "dev.aureliengirault.vadrouille",
+    // FCM credentials for push — google-services.json is gitignored (one per dev/environment,
+    // never committed, see .gitignore), so EAS Build (which only uploads git-tracked files)
+    // can't see a hardcoded relative path. GOOGLE_SERVICES_JSON is an EAS file-type env var
+    // (`eas env:create ... --type file`) that resolves to the real file's path at build time;
+    // falls back to the local path for `expo start`/local builds, where the file is just on
+    // disk. See https://docs.expo.dev/push-notifications/fcm-credentials/.
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
     adaptiveIcon: {
       // Fallback only — backgroundImage below is what actually renders — but kept in sync
       // with it (coral, see assets/logo/README.md) rather than left at its old placeholder.
@@ -47,7 +54,19 @@ const config: ExpoConfig = {
         photosPermission: "Vadrouille a besoin d'accéder à tes photos pour choisir un avatar.",
       },
     ],
+    [
+      "expo-notifications",
+      {
+        // Coral, matching the brand mark — see assets/logo/README.md.
+        color: "#FF6B4A",
+      },
+    ],
   ],
+  extra: {
+    eas: {
+      projectId: "c9a46154-c633-4c4d-98cb-d34435e13455",
+    },
+  },
 }
 
 export default config

@@ -20,6 +20,12 @@ android/
 .env.local
 .env.*.local
 
+# --- Push notifications (Firebase/FCM) ---
+# Not a MVP-breaking secret (restricted by package name/SHA, Google's own docs say it's safe
+# in a public repo), but kept local anyway, consistent with how .env/service_role are handled
+# — each dev/environment registers its own Firebase project rather than sharing one.
+google-services.json
+
 # --- Supabase local ---
 supabase/.branches
 supabase/.temp

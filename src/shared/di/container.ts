@@ -1,5 +1,6 @@
 import { CreateProfile } from "@/account/application/use-cases/create-profile.use-case"
 import { DeleteAccount } from "@/account/application/use-cases/delete-account.use-case"
+import { RegisterPushToken } from "@/account/application/use-cases/register-push-token.use-case"
 import { RemoveAvatar } from "@/account/application/use-cases/remove-avatar.use-case"
 import { RequestMagicLink } from "@/account/application/use-cases/request-magic-link.use-case"
 import { SignOut } from "@/account/application/use-cases/sign-out.use-case"
@@ -8,6 +9,7 @@ import { UpdateUsername } from "@/account/application/use-cases/update-username.
 import { SupabaseAccountDeletionRepository } from "@/account/infrastructure/supabase/account-deletion.repository"
 import { SupabaseAuthRepository } from "@/account/infrastructure/supabase/auth.repository"
 import { SupabaseProfileRepository } from "@/account/infrastructure/supabase/profile.repository"
+import { SupabasePushTokenRepository } from "@/account/infrastructure/supabase/push-token.repository"
 import { SupabaseStorageRepository } from "@/account/infrastructure/supabase/storage.repository"
 import { AcceptFriendRequest } from "@/friend/application/use-cases/accept-friend-request.use-case"
 import { CancelFriendRequest } from "@/friend/application/use-cases/cancel-friend-request.use-case"
@@ -42,6 +44,7 @@ const profileRepository = new SupabaseProfileRepository(supabase)
 const authRepository = new SupabaseAuthRepository(supabase)
 const storageRepository = new SupabaseStorageRepository(supabase)
 const accountDeletionRepository = new SupabaseAccountDeletionRepository(supabase)
+const pushTokenRepository = new SupabasePushTokenRepository(supabase)
 const friendRepository = new SupabaseFriendRepository(supabase)
 const dogRepository = new SupabaseDogRepository(supabase)
 const dogPhotoStorageRepository = new SupabaseDogPhotoStorageRepository(supabase)
@@ -60,6 +63,7 @@ export const container = {
     updateAvatar: new UpdateAvatar(profileRepository, storageRepository),
     removeAvatar: new RemoveAvatar(profileRepository, storageRepository),
     deleteAccount: new DeleteAccount(accountDeletionRepository, authRepository),
+    registerPushToken: new RegisterPushToken(pushTokenRepository),
   },
   friend: {
     friends: friendRepository,
