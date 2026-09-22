@@ -33,7 +33,7 @@
 | État serveur / cache | TanStack Query (React Query) |
 | Injection de dépendances | Container manuel (composition root) |
 | Tests | Vitest, écrits en Given/When/Then |
-| Validation | Zod |
+| Validation | Policies `domain` faites main (pas de lib dédiée) |
 | Backend custom | 2 Edge Functions (push, suppression de compte) |
 
 *Détails d'implémentation → `architecture-technique.md`.*

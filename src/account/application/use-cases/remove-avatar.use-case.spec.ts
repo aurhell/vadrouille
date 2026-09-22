@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
-import { InMemoryProfileRepository } from "../../domain/repositories/profile.repository"
+import { InMemoryProfileRepository } from "../../fixtures/profile-repository.fixture"
 import type { StorageRepository } from "../../domain/repositories/storage.repository"
 import { RemoveAvatar } from "./remove-avatar.use-case"
 

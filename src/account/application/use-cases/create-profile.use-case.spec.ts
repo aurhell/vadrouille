@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "vitest"
-import { InMemoryProfileRepository } from "../../domain/repositories/profile.repository"
+import { InMemoryProfileRepository } from "../../fixtures/profile-repository.fixture"
 import { CreateProfile } from "./create-profile.use-case"
 
 describe("CreateProfile", () => {

@@ -110,7 +110,7 @@ Les spécifications fonctionnelles (user stories + Gherkin) vivent **dans le rep
 | État UI | **Zustand** | Peu de boilerplate, pas de ceremony de Provider (contrairement à Context API pur), plus léger que Redux Toolkit pour la taille du projet |
 | État serveur / cache | **TanStack Query** | Cache + gestion loading/error automatique autour des repositories ; s'intègre naturellement avec Realtime (invalidation du cache sur événement) |
 | Injection de dépendances | **Container manuel** (composition root dans `shared/di/`) | Les libs de DI (tsyringe, InversifyJS) reposent sur decorators + `reflect-metadata`, source de frictions connues avec Metro (bundler RN/Expo) ; un wiring manuel reste 100% typé et trivial à tracer pour la taille de ce projet. Le container assemble les repositories concrets de toutes les features et les injecte dans les use-cases |
-| Validation | **Zod** | Aux deux frontières naturelles : formulaires en `presentation`, DTOs en entrée des use-cases en `application`. Le `domain` reste du TypeScript pur, sans dépendance externe |
+| Validation | **Policies `domain` faites main**, pas Zod | Chaque règle de validation (format de pseudo, nom de fichier image, quota de balade...) vit dans une fonction pure de `domain/policies/`, testée en TDD comme le reste du domaine. Écarté au fil de l'implémentation au profit de ce choix, plus proche de Clean Architecture qu'une lib de validation à la frontière : le `domain` reste du TypeScript pur, sans dépendance externe, et la règle elle-même (pas seulement sa vérification) est documentée et testée au même endroit |
 
 ## Dev local
 

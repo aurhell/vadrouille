@@ -1,6 +1,6 @@
 # Vadrouille
 
-App mobile pour organiser des balades de chiens entre amis. Stack : Expo (managed) + Expo Router, TypeScript, Tamagui, Zustand, TanStack Query, Zod, Supabase (Postgres + Auth + Realtime + Storage), pnpm.
+App mobile pour organiser des balades de chiens entre amis. Stack : Expo (managed) + Expo Router, TypeScript, Tamagui, Zustand, TanStack Query, Supabase (Postgres + Auth + Realtime + Storage), pnpm.
 
 Toute la doc de référence est dans `docs/`. La lire avant toute tâche substantielle — ne pas redécouvrir le projet par exploration du code.
 

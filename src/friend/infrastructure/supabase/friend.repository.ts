@@ -1,16 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 import type { Friend } from "../../domain/entities/friend"
 import type { FriendRepository, RedeemInviteCodeOutcome } from "../../domain/repositories/friend.repository"
-
-interface FriendRow {
-  id: string
-  username: string
-  avatar_url: string | null
-}
-
-function toFriend(row: FriendRow): Friend {
-  return { id: row.id, username: row.username, avatarUrl: row.avatar_url }
-}
+import { toFriend, type FriendRow } from "./friend.mapper"
 
 const REDEEM_OUTCOMES: RedeemInviteCodeOutcome["outcome"][] = ["created", "auto_accepted", "already_friends", "already_pending"]
 
