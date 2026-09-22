@@ -11,7 +11,7 @@ Toute la doc de référence est dans `docs/`. La lire avant toute tâche substan
 - Design system (tokens, composants, Tamagui) : @docs/design-system.md
 - Distribution (TestFlight, Android) : @docs/distribution.md
 - Roadmap post-MVP : @docs/roadmap.md
-- Specs fonctionnelles par feature (Gherkin) : @docs/account.docs.md, @docs/dog.docs.md, @docs/friend.docs.md, @docs/walk.docs.md
+- Specs fonctionnelles par feature (Gherkin), co-localisées avec le code : @src/account/account.docs.md, @src/dog/dog.docs.md, @src/friend/friend.docs.md, @src/walk/walk.docs.md
 
 ## Architecture
 

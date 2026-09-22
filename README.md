@@ -159,7 +159,7 @@ compte "moi" est conservé sauf `--reset`) — rien d'autre dans la base n'est t
 | `architecture-technique.md` | DDD/Clean Architecture, stack d'implémentation, setup dev local, tests/TDD, ordre d'implémentation suggéré |
 | `modele-de-donnees.md` | Schéma des tables, règles métier (quota, fenêtre de réponse, reprogrammation), politiques RLS complètes |
 | `design-system.md` | Tamagui, tokens, conventions UI |
-| `account.docs.md`, `dog.docs.md`, `friend.docs.md`, `walk.docs.md` | Specs fonctionnelles par domaine (`src/domain/<domaine>/`) |
+| `account.docs.md`, `dog.docs.md`, `friend.docs.md`, `walk.docs.md` | Specs fonctionnelles par domaine, co-localisées avec le code (`src/<domaine>/<domaine>.docs.md`) |
 | `rgpd-securite.md` | Auth, consentement, droit à l'oubli |
 | `distribution.md` | Dev local → cercle privé (amis) → publication stores |
 | `roadmap.md` | Fonctionnalités post-MVP |

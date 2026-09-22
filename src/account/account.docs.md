@@ -1,6 +1,6 @@
 # Specs — Domaine Account (auth, profil, compte)
 
-*Ce fichier vit dans le repo à `src/domain/account/account.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
+*Ce fichier vit dans le repo à `src/account/account.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
 
 **US1.1** — En tant qu'utilisateur, je veux me connecter via un lien magique envoyé par email, afin de ne pas avoir à gérer de mot de passe.
 

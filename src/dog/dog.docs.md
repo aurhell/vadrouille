@@ -1,6 +1,6 @@
 # Specs — Domaine Dog
 
-*Ce fichier vit dans le repo à `src/domain/dog/dog.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
+*Ce fichier vit dans le repo à `src/dog/dog.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
 
 **US2.1** — En tant qu'utilisateur, je veux ajouter une fiche pour mon chien, afin de pouvoir l'associer à des balades.
 

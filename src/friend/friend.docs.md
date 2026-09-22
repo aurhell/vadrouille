@@ -1,6 +1,6 @@
 # Specs — Domaine Friend
 
-*Ce fichier vit dans le repo à `src/domain/friend/friend.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
+*Ce fichier vit dans le repo à `src/friend/friend.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention.*
 
 **US3.1** — En tant qu'utilisateur, je veux ajouter un ami via un code d'invitation, avec confirmation des deux côtés, afin de m'assurer d'ajouter la bonne personne et de ne jamais me retrouver ami avec quelqu'un sans l'avoir accepté.
 

@@ -1,6 +1,6 @@
 # Specs — Domaine Walk
 
-*Ce fichier vit dans le repo à `src/domain/walk/walk.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention. Les invariants métier détaillés (quota, fenêtre de réponse, reprogrammation) sont documentés en profondeur dans `modele-de-donnees.md` §Règles métier — ce fichier se concentre sur le comportement observable côté utilisateur.*
+*Ce fichier vit dans le repo à `src/walk/walk.docs.md`. Voir `architecture-technique.md` §Documentation des specs pour la convention. Les invariants métier détaillés (quota, fenêtre de réponse, reprogrammation) sont documentés en profondeur dans `modele-de-donnees.md` §Règles métier — ce fichier se concentre sur le comportement observable côté utilisateur.*
 
 **US4.1** — En tant qu'organisateur, je veux créer une balade avec un lieu, une heure et une durée, et y inviter des amis, afin de coordonner une sortie.
 
