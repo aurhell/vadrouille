@@ -4,7 +4,7 @@ import { XStack, YStack } from "tamagui"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Card, DogPhoto, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
+import { Body, Card, DogPhoto, PersonRow, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useWalk } from "../hooks/use-walks"
@@ -65,19 +65,19 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
           <Card gap="$3">
             <Title size="md">Participants</Title>
             {participantsWithDogs.map((participant) => (
-              <XStack key={participant.id} alignItems="center" gap="$3" minHeight="$tap">
-                <Avatar friend={{ id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined }} size="sm" />
-                <Body flex={1} fontWeight="700">
-                  {participant.username}
-                  {participant.dogs.length > 0 ? (
+              <PersonRow
+                key={participant.id}
+                person={{ id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined }}
+                suffix={
+                  participant.dogs.length > 0 ? (
                     <Body fontWeight="600" color="$colorSubtle">
                       {" "}
                       · {participant.dogs.length} chien{participant.dogs.length > 1 ? "s" : ""}
                     </Body>
-                  ) : null}
-                </Body>
-                <StatusBadge status={RSVP_STATUS[participant.status]} />
-              </XStack>
+                  ) : undefined
+                }
+                trailing={<StatusBadge status={RSVP_STATUS[participant.status]} />}
+              />
             ))}
           </Card>
         </YStack>

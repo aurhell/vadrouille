@@ -1,12 +1,10 @@
 import { useRouter } from "expo-router"
-import { useRef } from "react"
-import { Alert, FlatList } from "react-native"
-import { Swipeable } from "react-native-gesture-handler"
-import { XStack, YStack } from "tamagui"
+import { FlatList } from "react-native"
+import { YStack } from "tamagui"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Button, Card, DogCard, EmptyState, RefreshControl, ScreenHeader, Title } from "@/shared/ui"
+import { Body, DogCard, EmptyState, InviteRequestCard, RefreshControl, ScreenHeader, SwipeToDeleteRow, Title } from "@/shared/ui"
 import type { Dog as DesignSystemDog } from "@/shared/ui/types"
 import type { Dog, DogCoOwnerInvite } from "../../domain/entities/dog"
 import { deleteDogMessage } from "../delete-dog-message"
@@ -32,8 +30,6 @@ function toDisplayDog(dog: Dog): DesignSystemDog {
   }
 }
 
-const REMOVE_ACTION_WIDTH = 88
-
 function DogRow({
   dog,
   onPress,
@@ -43,77 +39,16 @@ function DogRow({
   onPress: (dog: DesignSystemDog) => void
   onRemove: (dog: Dog) => void
 }) {
-  const swipeableRef = useRef<Swipeable>(null)
-
   // Only an owner can delete — see dog.docs.md "Un co-owner tente de supprimer un chien" —
   // so a co-owner's row is a plain card, no swipe affordance at all.
   if (dog.myRole !== "owner") {
     return <DogCard dog={toDisplayDog(dog)} onPress={onPress} />
   }
 
-  function handlePress() {
-    swipeableRef.current?.close()
-    Alert.alert(`Supprimer ${dog.name} ?`, deleteDogMessage(dog), [
-      { text: "Annuler", style: "cancel" },
-      { text: "Supprimer", style: "destructive", onPress: () => onRemove(dog) },
-    ])
-  }
-
   return (
-    <Swipeable
-      ref={swipeableRef}
-      friction={2}
-      overshootRight={false}
-      renderRightActions={() => (
-        <XStack
-          width={REMOVE_ACTION_WIDTH}
-          alignItems="center"
-          justifyContent="center"
-          backgroundColor="$danger"
-          borderRadius="$5"
-          onPress={handlePress}
-        >
-          <Body fontWeight="800" color="$colorInverse">
-            Supprimer
-          </Body>
-        </XStack>
-      )}
-    >
+    <SwipeToDeleteRow actionLabel="Supprimer" confirmTitle={`Supprimer ${dog.name} ?`} confirmMessage={deleteDogMessage(dog)} onConfirm={() => onRemove(dog)}>
       <DogCard dog={toDisplayDog(dog)} onPress={onPress} flat />
-    </Swipeable>
-  )
-}
-
-function ReceivedInviteRow({
-  invite,
-  onAccept,
-  onDecline,
-  accepting,
-  declining,
-}: {
-  invite: DogCoOwnerInvite
-  onAccept: () => void
-  onDecline: () => void
-  accepting: boolean
-  declining: boolean
-}) {
-  return (
-    <Card gap="$3">
-      <XStack alignItems="center" gap="$3">
-        <Avatar friend={{ id: invite.otherUser.id, username: invite.otherUser.username, avatarUrl: invite.otherUser.avatarUrl ?? undefined }} size="sm" />
-        <Body fontWeight="700" flex={1}>
-          {invite.otherUser.username} te propose de co-gérer {invite.dogName}
-        </Body>
-      </XStack>
-      <XStack gap="$3">
-        <Button variant="secondary" size="sm" flex={1} disabled={declining} onPress={onDecline}>
-          Refuser
-        </Button>
-        <Button size="sm" flex={1} disabled={accepting} onPress={onAccept}>
-          Accepter
-        </Button>
-      </XStack>
-    </Card>
+    </SwipeToDeleteRow>
   )
 }
 
@@ -157,14 +92,17 @@ export function MyDogsScreen() {
           receivedInvites && receivedInvites.length > 0 ? (
             <YStack gap="$3" paddingBottom="$4">
               <Title size="sm">Invitations reçues</Title>
-              {receivedInvites.map((invite) => (
-                <ReceivedInviteRow
+              {receivedInvites.map((invite: DogCoOwnerInvite) => (
+                <InviteRequestCard
                   key={invite.dogId}
-                  invite={invite}
-                  accepting={acceptInvite.isPending}
-                  declining={declineInvite.isPending}
-                  onAccept={() => acceptInvite.mutate(invite.dogId)}
-                  onDecline={() => declineInvite.mutate(invite.dogId)}
+                  person={{ id: invite.otherUser.id, username: invite.otherUser.username, avatarUrl: invite.otherUser.avatarUrl ?? undefined }}
+                  label={`${invite.otherUser.username} te propose de co-gérer ${invite.dogName}`}
+                  secondaryLabel="Refuser"
+                  secondaryDisabled={declineInvite.isPending}
+                  onSecondary={() => declineInvite.mutate(invite.dogId)}
+                  primaryLabel="Accepter"
+                  primaryDisabled={acceptInvite.isPending}
+                  onPrimary={() => acceptInvite.mutate(invite.dogId)}
                 />
               ))}
               {dogs && dogs.length > 0 ? <Title size="sm">Mes chiens</Title> : null}

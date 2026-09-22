@@ -6,7 +6,7 @@ import { XStack, YStack } from "tamagui"
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useDogs } from "@/dog/presentation/hooks/use-dogs"
 import { useFriends } from "@/friend/presentation/hooks/use-friends"
-import { Avatar, Body, Button, ChoiceChipGroup, DateField, DogPhoto, Label, ScreenHeader, TextField } from "@/shared/ui"
+import { Body, Button, ChoiceChipGroup, CloseButton, DateField, DogPhoto, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
 import { useCreateWalk } from "../hooks/use-walk-mutations"
@@ -73,20 +73,7 @@ export function WalkFormScreen() {
     <YStack flex={1} backgroundColor="$background">
       <ScreenHeader
         title="Nouvelle balade"
-        rightSlot={
-          <Body
-            fontSize={20}
-            fontWeight="700"
-            color="$colorSubtle"
-            onPress={() => router.back()}
-            minHeight="$tap"
-            minWidth="$tap"
-            textAlign="center"
-            hitSlop={12}
-          >
-            ✕
-          </Body>
-        }
+        rightSlot={<CloseButton onPress={() => router.back()} />}
       />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -113,61 +100,13 @@ export function WalkFormScreen() {
             />
           </YStack>
 
-          <YStack gap="$3">
-            <XStack alignItems="center" justifyContent="space-between">
-              <Label>Qui on invite ?</Label>
-              {friendIds.length > 0 ? (
-                <Body size="sm" fontWeight="800" tone="accent">
-                  {friendIds.length} sélectionné{friendIds.length > 1 ? "s" : ""}
-                </Body>
-              ) : null}
-            </XStack>
-            {friends && friends.length > 0 ? (
-              <XStack gap="$4" flexWrap="wrap">
-                {friends.map((friend) => {
-                  const selected = friendIds.includes(friend.id)
-                  return (
-                    <YStack key={friend.id} alignItems="center" gap="$2" width={64} onPress={() => setFriendIds((ids) => toggle(ids, friend.id))}>
-                      <YStack position="relative">
-                        <Avatar
-                          friend={{ id: friend.id, username: friend.username, avatarUrl: friend.avatarUrl ?? undefined }}
-                          size="lg"
-                          tone={selected ? undefined : "muted"}
-                          opacity={selected ? 1 : 0.5}
-                        />
-                        {selected ? (
-                          <YStack
-                            position="absolute"
-                            bottom={-2}
-                            right={-2}
-                            width={20}
-                            height={20}
-                            borderRadius="$round"
-                            borderWidth={2}
-                            borderColor="$backgroundStrong"
-                            backgroundColor="$success"
-                            alignItems="center"
-                            justifyContent="center"
-                          >
-                            <Body fontSize={11} lineHeight={11} fontWeight="800" color="$colorInverse">
-                              ✓
-                            </Body>
-                          </YStack>
-                        ) : null}
-                      </YStack>
-                      <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorFaint"} numberOfLines={1}>
-                        {friend.username}
-                      </Body>
-                    </YStack>
-                  )
-                })}
-              </XStack>
-            ) : (
-              <Body size="sm" tone="subtle">
-                Tu n'as pas encore d'ami à inviter.
-              </Body>
-            )}
-          </YStack>
+          <PersonPicker
+            label="Qui on invite ?"
+            people={(friends ?? []).map((friend) => ({ ...friend, avatarUrl: friend.avatarUrl ?? undefined }))}
+            selectedIds={friendIds}
+            onChange={setFriendIds}
+            emptyLabel="Tu n'as pas encore d'ami à inviter."
+          />
 
           <YStack gap="$2">
             <XStack alignItems="center" justifyContent="space-between">

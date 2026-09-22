@@ -8,7 +8,7 @@ import type { Dog } from "@/dog/domain/entities/dog"
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useDogs } from "@/dog/presentation/hooks/use-dogs"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Button, Card, DogPhoto, Label, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
+import { Body, Button, Card, ConfirmDialog, DogPhoto, Label, PersonRow, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 import type { RsvpStatus } from "@/shared/ui/types"
 import { canRespondToWalk } from "../../domain/policies/response-window.policy"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
@@ -214,19 +214,20 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
           <Card gap="$3">
             <Title size="md">Participants</Title>
             {orderedParticipants.map((participant) => (
-              <XStack key={participant.id} alignItems="center" gap="$3" minHeight="$tap">
-                <Avatar friend={{ id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined }} size="sm" />
-                <Body flex={1} fontWeight="700">
-                  {participant.id === userId ? "toi" : participant.username}
-                  {participant.dogs.length > 0 ? (
+              <PersonRow
+                key={participant.id}
+                person={{ id: participant.id, username: participant.username, avatarUrl: participant.avatarUrl ?? undefined }}
+                label={participant.id === userId ? "toi" : participant.username}
+                suffix={
+                  participant.dogs.length > 0 ? (
                     <Body fontWeight="600" color="$colorSubtle">
                       {" "}
                       · {participant.dogs.length} chien{participant.dogs.length > 1 ? "s" : ""}
                     </Body>
-                  ) : null}
-                </Body>
-                <StatusBadge status={RSVP_STATUS[participant.status]} />
-              </XStack>
+                  ) : undefined
+                }
+                trailing={<StatusBadge status={RSVP_STATUS[participant.status]} />}
+              />
             ))}
           </Card>
         </YStack>
@@ -364,26 +365,19 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
         </Pressable>
       </Modal>
 
-      <Modal visible={cancelModalOpen} transparent animationType="fade" onRequestClose={() => setCancelModalOpen(false)}>
-        <YStack flex={1} backgroundColor="rgba(0,0,0,0.4)" alignItems="center" justifyContent="center" padding="$6">
-          <YStack backgroundColor="$backgroundStrong" borderRadius="$5" padding="$5" gap="$4" width="100%">
-            <Title size="md">Annuler « {walk.locationText} » ?</Title>
-            <Body size="sm" tone="subtle">
-              {yesResponders.length > 0
-                ? `${yesResponders.join(" et ")} avaient confirmé. Cette balade sera retirée de la liste de tout le monde.`
-                : "Cette balade sera retirée de la liste de tout le monde."}
-            </Body>
-            <YStack gap="$2">
-              <Button backgroundColor="$danger" shadowColor="$danger" onPress={handleCancelWalk}>
-                Annuler la balade
-              </Button>
-              <Button variant="secondary" onPress={() => setCancelModalOpen(false)}>
-                Garder la balade
-              </Button>
-            </YStack>
-          </YStack>
-        </YStack>
-      </Modal>
+      <ConfirmDialog
+        open={cancelModalOpen}
+        title={`Annuler « ${walk.locationText} » ?`}
+        message={
+          yesResponders.length > 0
+            ? `${yesResponders.join(" et ")} avaient confirmé. Cette balade sera retirée de la liste de tout le monde.`
+            : "Cette balade sera retirée de la liste de tout le monde."
+        }
+        confirmLabel="Annuler la balade"
+        cancelLabel="Garder la balade"
+        onConfirm={handleCancelWalk}
+        onCancel={() => setCancelModalOpen(false)}
+      />
     </YStack>
   )
 }

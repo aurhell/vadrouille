@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker"
 import { useEffect, useState } from "react"
-import { Alert, Image, ScrollView } from "react-native"
+import { Image, ScrollView } from "react-native"
 import { YStack } from "tamagui"
 
 import { useSession } from "../providers/session-provider"
@@ -8,7 +8,7 @@ import { useProfile } from "../hooks/use-profile"
 import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
 import { useRegenerateInviteCode } from "@/friend/presentation/hooks/use-friend-mutations"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
-import { Body, Button, Card, ChoiceChipGroup, Label, ScreenHeader, TextField } from "@/shared/ui"
+import { Body, Button, Card, ChoiceChipGroup, ConfirmDialog, Label, ScreenHeader, TextField } from "@/shared/ui"
 
 const THEME_OPTIONS = [
   { value: "light" as const, label: "Clair" },
@@ -40,6 +40,7 @@ export function ProfileSettingsScreen() {
 
   const [username, setUsername] = useState("")
   const [avatarError, setAvatarError] = useState<string>()
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   useEffect(() => {
     if (profile) setUsername(profile.username)
   }, [profile])
@@ -87,14 +88,8 @@ export function ProfileSettingsScreen() {
   }
 
   function handleDeleteAccount() {
-    Alert.alert(
-      "Supprimer ton compte ?",
-      "Cette action est définitive : ton profil et tes données personnelles seront supprimés.",
-      [
-        { text: "Annuler", style: "cancel" },
-        { text: "Supprimer", style: "destructive", onPress: () => deleteAccount.mutate() },
-      ],
-    )
+    setDeleteDialogOpen(false)
+    deleteAccount.mutate()
   }
 
   return (
@@ -199,13 +194,22 @@ export function ProfileSettingsScreen() {
               minHeight="$tap"
               paddingVertical="$2"
               hitSlop={12}
-              onPress={handleDeleteAccount}
+              onPress={() => setDeleteDialogOpen(true)}
             >
               Supprimer mon compte
             </Body>
           </YStack>
         </YStack>
       </ScrollView>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        title="Supprimer ton compte ?"
+        message="Cette action est définitive : ton profil et tes données personnelles seront supprimés."
+        confirmLabel="Supprimer"
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setDeleteDialogOpen(false)}
+      />
     </YStack>
   )
 }

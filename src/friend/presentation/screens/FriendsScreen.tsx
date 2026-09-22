@@ -1,12 +1,24 @@
-import { useRef, useState } from "react"
-import { Alert, FlatList } from "react-native"
-import { Swipeable } from "react-native-gesture-handler"
+import { useState } from "react"
+import { FlatList } from "react-native"
 import { XStack, YStack } from "tamagui"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import type { Friend } from "../../domain/entities/friend"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Avatar, Body, Button, Card, EmptyState, RefreshControl, ScreenHeader, TextField, Title } from "@/shared/ui"
+import {
+  Avatar,
+  Body,
+  Button,
+  Card,
+  EmptyState,
+  InviteRequestCard,
+  PersonRow,
+  RefreshControl,
+  ScreenHeader,
+  SwipeToDeleteRow,
+  TextField,
+  Title,
+} from "@/shared/ui"
 import {
   useAcceptFriendRequest,
   useCancelFriendRequest,
@@ -26,60 +38,24 @@ const REDEEM_OUTCOME_MESSAGE: Record<string, string> = {
   created: "Invitation envoyée !",
 }
 
-function FriendRow({ friend }: { friend: Friend }) {
-  return (
-    <XStack alignItems="center" gap="$3" minHeight="$tap">
-      <Avatar friend={{ id: friend.id, username: friend.username, avatarUrl: friend.avatarUrl ?? undefined }} size="sm" />
-      <Body fontWeight="700" flex={1}>
-        {friend.username}
-      </Body>
-    </XStack>
-  )
+function toDisplayFriend(friend: Friend) {
+  return { id: friend.id, username: friend.username, avatarUrl: friend.avatarUrl ?? undefined }
 }
 
-const REMOVE_ACTION_WIDTH = 88
-
 function RemoveFriendRow({ friend, onRemove }: { friend: Friend; onRemove: (friend: Friend) => void }) {
-  const swipeableRef = useRef<Swipeable>(null)
-
-  function handlePress() {
-    swipeableRef.current?.close()
-    Alert.alert(`Retirer ${friend.username} ?`, "Vous ne serez plus amis. Tu pourras te réajouter plus tard avec un code d'invitation.", [
-      { text: "Annuler", style: "cancel" },
-      { text: "Retirer", style: "destructive", onPress: () => onRemove(friend) },
-    ])
-  }
-
   return (
-    <Swipeable
-      ref={swipeableRef}
-      friction={2}
-      overshootRight={false}
-      // The friend card itself is the front layer, sliding left to reveal this — that way the
-      // avatar/pseudo you're about to remove stay in view for the whole gesture, instead of
-      // scrolling off and leaving a disconnected "Retirer" button with no context (see
-      // friend.docs.md "Retrait d'un ami").
-      renderRightActions={() => (
-        <XStack
-          width={REMOVE_ACTION_WIDTH}
-          alignItems="center"
-          justifyContent="center"
-          backgroundColor="$danger"
-          borderRadius="$5"
-          onPress={handlePress}
-        >
-          <Body fontWeight="800" color="$colorInverse">
-            Retirer
-          </Body>
-        </XStack>
-      )}
+    <SwipeToDeleteRow
+      actionLabel="Retirer"
+      confirmTitle={`Retirer ${friend.username} ?`}
+      confirmMessage="Vous ne serez plus amis. Tu pourras l'ajouter à nouveau plus tard avec un code d'invitation."
+      onConfirm={() => onRemove(friend)}
     >
       {/* flat: sitting on top of the red action panel, not the page background — a drop
        * shadow here just bleeds an ugly halo onto the red as the card slides over it. */}
       <Card flat backgroundColor="$backgroundStrong">
-        <FriendRow friend={friend} />
+        <PersonRow person={toDisplayFriend(friend)} />
       </Card>
-    </Swipeable>
+    </SwipeToDeleteRow>
   )
 }
 
@@ -156,7 +132,7 @@ export function FriendsScreen() {
             {preview ? (
               <Card gap="$3">
                 <XStack alignItems="center" gap="$3">
-                  <Avatar friend={{ id: preview.id, username: preview.username, avatarUrl: preview.avatarUrl ?? undefined }} size="md" />
+                  <Avatar friend={toDisplayFriend(preview)} size="md" />
                   <Body flex={1} fontWeight="700">
                     Ajouter {preview.username} comme ami·e ?
                   </Body>
@@ -200,28 +176,16 @@ export function FriendsScreen() {
               <YStack gap="$3">
                 <Title size="sm">Invitations reçues</Title>
                 {receivedRequests.map((requester) => (
-                  <Card key={requester.id} gap="$3">
-                    <FriendRow friend={requester} />
-                    <XStack gap="$3">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        flex={1}
-                        disabled={declineFriendRequest.isPending}
-                        onPress={() => declineFriendRequest.mutate(requester.id)}
-                      >
-                        Refuser
-                      </Button>
-                      <Button
-                        size="sm"
-                        flex={1}
-                        disabled={acceptFriendRequest.isPending}
-                        onPress={() => acceptFriendRequest.mutate(requester.id)}
-                      >
-                        Accepter
-                      </Button>
-                    </XStack>
-                  </Card>
+                  <InviteRequestCard
+                    key={requester.id}
+                    person={toDisplayFriend(requester)}
+                    secondaryLabel="Refuser"
+                    secondaryDisabled={declineFriendRequest.isPending}
+                    onSecondary={() => declineFriendRequest.mutate(requester.id)}
+                    primaryLabel="Accepter"
+                    primaryDisabled={acceptFriendRequest.isPending}
+                    onPrimary={() => acceptFriendRequest.mutate(requester.id)}
+                  />
                 ))}
               </YStack>
             ) : null}
@@ -230,17 +194,13 @@ export function FriendsScreen() {
               <YStack gap="$3">
                 <Title size="sm">Invitations envoyées</Title>
                 {sentRequests.map((addressee) => (
-                  <Card key={addressee.id} gap="$3">
-                    <FriendRow friend={addressee} />
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      disabled={cancelFriendRequest.isPending}
-                      onPress={() => cancelFriendRequest.mutate(addressee.id)}
-                    >
-                      Retirer l'invitation
-                    </Button>
-                  </Card>
+                  <InviteRequestCard
+                    key={addressee.id}
+                    person={toDisplayFriend(addressee)}
+                    secondaryLabel="Retirer l'invitation"
+                    secondaryDisabled={cancelFriendRequest.isPending}
+                    onSecondary={() => cancelFriendRequest.mutate(addressee.id)}
+                  />
                 ))}
               </YStack>
             ) : null}

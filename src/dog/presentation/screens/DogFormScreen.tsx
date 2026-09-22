@@ -1,12 +1,12 @@
 import * as ImagePicker from "expo-image-picker"
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
-import { Alert, Image, ScrollView } from "react-native"
-import { XStack, YStack } from "tamagui"
+import { Image, ScrollView } from "react-native"
+import { YStack } from "tamagui"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { useFriends } from "@/friend/presentation/hooks/use-friends"
-import { Avatar, Body, Button, Card, ChoiceChipGroup, DateField, Label, ScreenHeader, TextField } from "@/shared/ui"
+import { Body, Button, Card, ChoiceChipGroup, ConfirmDialog, DateField, Label, PersonRow, ScreenHeader, TextField } from "@/shared/ui"
 import type { DogSex } from "../../domain/entities/dog"
 import { deleteDogMessage } from "../delete-dog-message"
 import { useCancelCoOwnerInvite, useInviteCoOwner, useLeaveCoOwnership } from "../hooks/use-co-owner-mutations"
@@ -64,24 +64,17 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
   const leaveCoOwnership = useLeaveCoOwnership(userId)
 
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [leaveDialogOpen, setLeaveDialogOpen] = useState(false)
 
   if (!existingDog) return null
 
   const alreadyLinkedIds = new Set([...existingDog.coOwners.map((c) => c.id), ...sentInvitesForThisDog.map((i) => i.otherUser.id)])
   const availableFriends = (friends ?? []).filter((friend) => !alreadyLinkedIds.has(friend.id))
 
-  function handleLeave() {
-    Alert.alert("Quitter le foyer partagé ?", `Tu ne seras plus co-owner de ${existingDog!.name}.`, [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Quitter",
-        style: "destructive",
-        onPress: async () => {
-          await leaveCoOwnership.mutateAsync(dogId)
-          router.back()
-        },
-      },
-    ])
+  async function handleLeave() {
+    setLeaveDialogOpen(false)
+    await leaveCoOwnership.mutateAsync(dogId)
+    router.back()
   }
 
   return (
@@ -90,12 +83,7 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
 
       {existingDog.coOwners.length > 0 ? (
         existingDog.coOwners.map((coOwner) => (
-          <XStack key={coOwner.id} alignItems="center" gap="$3" minHeight="$tap">
-            <Avatar friend={{ id: coOwner.id, username: coOwner.username, avatarUrl: coOwner.avatarUrl ?? undefined }} size="sm" />
-            <Body fontWeight="700" flex={1}>
-              {coOwner.username}
-            </Body>
-          </XStack>
+          <PersonRow key={coOwner.id} person={{ id: coOwner.id, username: coOwner.username, avatarUrl: coOwner.avatarUrl ?? undefined }} />
         ))
       ) : (
         <Body size="sm" tone="subtle">
@@ -107,15 +95,10 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
         <>
           {sentInvitesForThisDog.map((invite) => (
             <Card key={invite.otherUser.id} gap="$2">
-              <XStack alignItems="center" gap="$3">
-                <Avatar
-                  friend={{ id: invite.otherUser.id, username: invite.otherUser.username, avatarUrl: invite.otherUser.avatarUrl ?? undefined }}
-                  size="sm"
-                />
-                <Body flex={1} fontWeight="700">
-                  {invite.otherUser.username} — en attente
-                </Body>
-              </XStack>
+              <PersonRow
+                person={{ id: invite.otherUser.id, username: invite.otherUser.username, avatarUrl: invite.otherUser.avatarUrl ?? undefined }}
+                label={`${invite.otherUser.username} — en attente`}
+              />
               <Button
                 variant="secondary"
                 size="sm"
@@ -131,21 +114,14 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
             <YStack gap="$2">
               {availableFriends.length > 0 ? (
                 availableFriends.map((friend) => (
-                  <XStack
+                  <PersonRow
                     key={friend.id}
-                    alignItems="center"
-                    gap="$3"
-                    minHeight="$tap"
+                    person={{ id: friend.id, username: friend.username, avatarUrl: friend.avatarUrl ?? undefined }}
                     onPress={() => {
                       inviteCoOwner.mutate({ dogId, friendId: friend.id })
                       setPickerOpen(false)
                     }}
-                  >
-                    <Avatar friend={{ id: friend.id, username: friend.username, avatarUrl: friend.avatarUrl ?? undefined }} size="sm" />
-                    <Body flex={1} fontWeight="700">
-                      {friend.username}
-                    </Body>
-                  </XStack>
+                  />
                 ))
               ) : (
                 <Body size="sm" tone="subtle">
@@ -160,10 +136,19 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
           )}
         </>
       ) : (
-        <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={handleLeave}>
+        <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={() => setLeaveDialogOpen(true)}>
           Quitter le foyer partagé
         </Body>
       )}
+
+      <ConfirmDialog
+        open={leaveDialogOpen}
+        title="Quitter le foyer partagé ?"
+        message={`Tu ne seras plus co-owner de ${existingDog.name}.`}
+        confirmLabel="Quitter"
+        onConfirm={handleLeave}
+        onCancel={() => setLeaveDialogOpen(false)}
+      />
     </YStack>
   )
 }
@@ -181,6 +166,7 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
   const [sex, setSex] = useState<DogSex | "">("")
   const [nameError, setNameError] = useState<string>()
   const [photoError, setPhotoError] = useState<string>()
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (existingDog) {
@@ -242,19 +228,11 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
     router.back()
   }
 
-  function handleRemoveDog() {
-    if (!dogId || !existingDog) return
-    Alert.alert("Supprimer ce chien ?", deleteDogMessage(existingDog), [
-      { text: "Annuler", style: "cancel" },
-      {
-        text: "Supprimer",
-        style: "destructive",
-        onPress: async () => {
-          await removeDog.mutateAsync(dogId)
-          router.back()
-        },
-      },
-    ])
+  async function handleRemoveDog() {
+    if (!dogId) return
+    setDeleteDialogOpen(false)
+    await removeDog.mutateAsync(dogId)
+    router.back()
   }
 
   return (
@@ -330,13 +308,24 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
               minHeight="$tap"
               paddingVertical="$2"
               hitSlop={12}
-              onPress={handleRemoveDog}
+              onPress={() => setDeleteDialogOpen(true)}
             >
               Supprimer ce chien
             </Body>
           ) : null}
         </YStack>
       </ScrollView>
+
+      {existingDog ? (
+        <ConfirmDialog
+          open={deleteDialogOpen}
+          title="Supprimer ce chien ?"
+          message={deleteDogMessage(existingDog)}
+          confirmLabel="Supprimer"
+          onConfirm={handleRemoveDog}
+          onCancel={() => setDeleteDialogOpen(false)}
+        />
+      ) : null}
     </YStack>
   )
 }

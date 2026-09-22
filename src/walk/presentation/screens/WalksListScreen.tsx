@@ -1,19 +1,15 @@
 import { useRouter } from "expo-router"
-import { useRef } from "react"
-import { Alert, FlatList } from "react-native"
-import { Swipeable } from "react-native-gesture-handler"
-import { XStack, YStack } from "tamagui"
+import { FlatList } from "react-native"
+import { YStack } from "tamagui"
 
 import { useSession } from "@/account/presentation/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
-import { Body, EmptyState, RefreshControl, ScreenHeader, WalkCard } from "@/shared/ui"
+import { Body, EmptyState, RefreshControl, ScreenHeader, SwipeToDeleteRow, WalkCard } from "@/shared/ui"
 import type { Walk as DesignSystemWalk } from "@/shared/ui/types"
 import type { Walk } from "../../domain/entities/walk"
 import { useRemoveWalk } from "../hooks/use-walk-mutations"
 import { useWalks } from "../hooks/use-walks"
 import { toDisplayWalk } from "../to-display-walk"
-
-const REMOVE_ACTION_WIDTH = 88
 
 function WalkRow({
   walk,
@@ -26,44 +22,22 @@ function WalkRow({
   onPress: (walk: DesignSystemWalk) => void
   onRemove: (walk: Walk) => void
 }) {
-  const swipeableRef = useRef<Swipeable>(null)
-
   // Only the organizer can cancel — see walk.docs.md "Un participant non-organisateur tente
   // d'annuler" — so a plain participant's row has no swipe affordance at all.
   if (!isOrganizer) {
     return <WalkCard walk={toDisplayWalk(walk)} onPress={onPress} />
   }
 
-  function handlePress() {
-    swipeableRef.current?.close()
-    Alert.alert("Annuler cette balade ?", "Cette action est définitive, pour tous les participants.", [
-      { text: "Annuler", style: "cancel" },
-      { text: "Confirmer", style: "destructive", onPress: () => onRemove(walk) },
-    ])
-  }
-
   return (
-    <Swipeable
-      ref={swipeableRef}
-      friction={2}
-      overshootRight={false}
-      renderRightActions={() => (
-        <XStack
-          width={REMOVE_ACTION_WIDTH}
-          alignItems="center"
-          justifyContent="center"
-          backgroundColor="$danger"
-          borderRadius="$5"
-          onPress={handlePress}
-        >
-          <Body fontWeight="800" color="$colorInverse">
-            Annuler
-          </Body>
-        </XStack>
-      )}
+    <SwipeToDeleteRow
+      actionLabel="Annuler"
+      confirmTitle="Annuler cette balade ?"
+      confirmMessage="Cette action est définitive, pour tous les participants."
+      confirmActionLabel="Confirmer"
+      onConfirm={() => onRemove(walk)}
     >
       <WalkCard walk={toDisplayWalk(walk)} onPress={onPress} flat />
-    </Swipeable>
+    </SwipeToDeleteRow>
   )
 }
 

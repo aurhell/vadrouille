@@ -1,0 +1,81 @@
+import type { ReactNode } from 'react';
+import { useRef, useState } from 'react';
+import { Swipeable } from 'react-native-gesture-handler';
+import { XStack } from 'tamagui';
+import { Body } from './Text';
+import { ConfirmDialog } from './ConfirmDialog';
+
+const REMOVE_ACTION_WIDTH = 88;
+
+export interface SwipeToDeleteRowProps {
+  children: ReactNode;
+  /** red action-panel label, revealed on swipe (e.g. "Retirer", "Supprimer", "Annuler") */
+  actionLabel: string;
+  confirmTitle: string;
+  confirmMessage: string;
+  /** destructive button label inside the confirmation dialog — defaults to `actionLabel`,
+   * override when they need to read differently (e.g. panel "Annuler", dialog "Confirmer", since
+   * "Annuler" is already the dialog's own cancel button). */
+  confirmActionLabel?: string;
+  onConfirm: () => void;
+}
+
+/** Swipe-left-to-reveal a red delete/remove action, gated behind a styled confirmation dialog
+ * — walks, dogs, friends lists (see WalksListScreen, MyDogsScreen, FriendsScreen). The row
+ * closes itself before the dialog opens, so it doesn't sit revealed underneath a dialog the
+ * user might cancel. */
+export function SwipeToDeleteRow({
+  children,
+  actionLabel,
+  confirmTitle,
+  confirmMessage,
+  confirmActionLabel,
+  onConfirm,
+}: SwipeToDeleteRowProps) {
+  const swipeableRef = useRef<Swipeable>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  function handlePress() {
+    swipeableRef.current?.close();
+    setConfirmOpen(true);
+  }
+
+  function handleConfirm() {
+    setConfirmOpen(false);
+    onConfirm();
+  }
+
+  return (
+    <>
+      <Swipeable
+        ref={swipeableRef}
+        friction={2}
+        overshootRight={false}
+        renderRightActions={() => (
+          <XStack
+            width={REMOVE_ACTION_WIDTH}
+            alignItems="center"
+            justifyContent="center"
+            backgroundColor="$danger"
+            borderRadius="$5"
+            onPress={handlePress}
+          >
+            <Body fontWeight="800" color="$colorInverse">
+              {actionLabel}
+            </Body>
+          </XStack>
+        )}
+      >
+        {children}
+      </Swipeable>
+      <ConfirmDialog
+        open={confirmOpen}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel={confirmActionLabel ?? actionLabel}
+        onConfirm={handleConfirm}
+        onCancel={() => setConfirmOpen(false)}
+      />
+    </>
+  );
+}
