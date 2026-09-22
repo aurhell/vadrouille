@@ -111,6 +111,10 @@ Cinq événements déclenchent un envoi, chacun via une fonction trigger `SECURI
 
 **Best effort, pas de garantie de livraison** — cohérent avec le reste de l'app (pas de notification sur le retrait d'un ami, pas de notification sur l'annulation d'une balade par son organisateur en dehors du cas suppression de compte) : aucune re-tentative, aucun suivi de statut de livraison stocké. `pg_net` exécute l'appel HTTP de façon asynchrone (ne bloque jamais la transaction qui a déclenché le trigger) et journalise la réponse dans `net._http_response`, consultable manuellement en cas de debug, mais rien dans l'app ne la lit.
 
+⚠️ **`send_push_notifications()` (la fonction `SECURITY DEFINER` partagée par les cinq triggers ci-dessus) n'a plus aucun rôle autorisé à l'appeler directement** (`revoke execute ... from public, anon, authenticated, service_role`, migration `20260923090000_security_fixes.sql`) — elle est strictement interne, appelée uniquement depuis les fonctions trigger elles-mêmes (qui s'exécutent avec les privilèges de son propriétaire, donc n'ont besoin d'aucun grant explicite). À l'origine, sa seule migration ne posait aucune restriction du tout — n'importe quel client authentifié pouvait l'appeler en RPC directe (`supabase.rpc('send_push_notifications', {...})`) et envoyer un push arbitraire (titre/corps/deep-link) à n'importe quel(s) utilisateur(s), sans lien social ni autorisation. Voir la note ci-dessous sur le piège `revoke ... from public`.
+
+⚠️ **Piège découvert en corrigeant cette faille, avec impact plus large** : dans ce projet Supabase local, `revoke all on function ... from public` ne suffit **pas** à retirer l'accès de `anon`/`authenticated`/`service_role` — ce stack local accorde `EXECUTE` directement (et nommément) à ces rôles à la création de chaque fonction, pas via le pseudo-rôle `PUBLIC`, donc `revoke ... from public` est un no-op contre eux (vérifié directement sur `pg_proc.proacl`). Résultat : toutes les RPC `friendships`/`profiles` qui suivaient déjà ce pattern (`lookup_invite_code`, `redeem_invite_code`, `accept/decline/cancel_friend_request`, `remove_friend`, `regenerate_invite_code`) étaient en réalité restées appelables par `anon` depuis leur création — `lookup_invite_code` en particulier ne vérifie aucun `auth.uid()` par conception (n'importe qui avec le code doit pouvoir prévisualiser le profil), donc un appelant totalement anonyme (sans compte, juste la clé publique déjà dans le bundle de l'app) pouvait chercher n'importe quel profil par code d'invitation. Corrigé dans la même migration en nommant explicitement les rôles à révoquer. Toute future RPC restreinte doit faire pareil : `revoke execute on function ... from anon, service_role;` (en plus de `public`, par habitude), pas seulement `revoke ... from public`.
+
 ## Politiques d'accès (RLS)
 
 RLS activé sur toutes les tables. Principe général : on ne voit que ce qui touche directement son propre cercle (soi-même, ses amis, ses colocataires de balade ou de chien) — jamais de table "ouverte" par défaut.
@@ -141,7 +145,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 |---|---|
 | SELECT | `user_id = auth.uid()` **OU** `dog_id` fait partie des chiens de l'utilisateur (pour voir la liste complète des owners/co-owners d'un chien qu'on possède) |
 | INSERT (invitation) | Le demandeur est owner du `dog_id` (`EXISTS ... role='owner' AND user_id=auth.uid()`) **ET** la cible (`user_id` de la ligne insérée) est un ami **accepté** (`EXISTS` dans `friendships` avec `status='accepted'` — une demande d'ami encore `pending` ne compte pas) — la ligne est créée avec `role='co-owner'`, `status='pending'` |
-| UPDATE (acceptation) | `user_id = auth.uid()` **ET** `status` actuel = `'pending'` → passage à `'accepted'` |
+| UPDATE (acceptation) | `user_id = auth.uid()` **ET** `status` actuel = `'pending'` → passage à `'accepted'`. `dog_id`/`user_id` figés en immutable par un trigger `BEFORE UPDATE` (`prevent_dog_owners_key_change`, migration `20260923090000_security_fixes.sql`) — une policy RLS seule ne peut pas comparer l'ancienne et la nouvelle valeur d'une colonne dans un même `UPDATE`, donc rien n'empêchait autrement de faire dériver une invitation `pending` légitime sur un tout autre `dog_id` jamais proposé (faille corrigée, voir migration pour le détail) |
 | DELETE (refus, ou retrait volontaire) | `user_id = auth.uid()` — couvre le refus d'une invitation pending et le retrait volontaire d'un co-owner accepté. Le rôle `'owner'` ne peut jamais se retirer par cette voie (suppression du chien ou du compte uniquement) |
 | DELETE (annulation par l'owner) | Deuxième policy DELETE, OR'd avec celle ci-dessus : l'owner accepté du `dog_id` peut supprimer une ligne `pending` d'un autre utilisateur — permet de retirer une invitation avant réponse (voir `dog.docs.md` "Retirer une invitation en attente") |
 
@@ -164,7 +168,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 |---|---|
 | SELECT | `organizer_id = auth.uid()` **OU** l'utilisateur a une ligne dans `walk_participants` pour cette balade |
 | INSERT | N'importe quel utilisateur connecté, `WITH CHECK (organizer_id = auth.uid() AND start_time > now())` |
-| UPDATE | `organizer_id = auth.uid()` **ET** `start_time > now()` (sur la ligne existante) — c'est la policy "édition interdite après le départ" déjà posée plus haut |
+| UPDATE | `organizer_id = auth.uid()` **ET** `start_time > now()`, revérifié à la fois sur la ligne existante (`USING`) et sur la ligne reprogrammée (`WITH CHECK`, migration `20260923090000_security_fixes.sql` — le `WITH CHECK` d'origine ne revalidait que `organizer_id`, laissant un organisateur reprogrammer sa propre balade dans le passé) — c'est la policy "édition interdite après le départ" déjà posée plus haut |
 | DELETE | `organizer_id = auth.uid()` **ET** `start_time > now()` — l'organisateur peut annuler tant que la balade n'a pas débuté ; cascade sur `walk_participants`/`walk_dogs` (`ON DELETE CASCADE`), aucune notification aux participants au MVP. Les balades futures d'un compte supprimé sont annulées par l'Edge Function de suppression de compte, pas par ce chemin client |
 
 ### `walk_participants`
@@ -173,7 +177,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 |---|---|
 | SELECT | Visibilité alignée sur la balade parente : `user_id = auth.uid()` **OU** l'utilisateur a une autre ligne sur le même `walk_id` |
 | INSERT | Le demandeur est l'organisateur de `walk_id` (`EXISTS ... organizer_id = auth.uid()`) **ET** (`user_id = auth.uid()` **OU** lien d'amitié accepté vers `user_id`) — l'organisateur crée sa propre ligne (`status='yes'`) et celles de chaque ami invité (`status='pending'`) à la création de la balade ; impossible d'ajouter un non-ami comme participant, même par une requête forgée (même pattern que `dog_owners_insert_owner_invites_friend`) |
-| UPDATE (réponse RSVP) | `user_id = auth.uid()` **ET** fenêtre de réponse ouverte (`now() < start_time + 5min`, jointure sur `walks`) — policy déjà posée plus haut |
+| UPDATE (réponse RSVP) | `user_id = auth.uid()` **ET** fenêtre de réponse ouverte (`now() < start_time + 5min`, jointure sur `walks`) — policy déjà posée plus haut. `walk_id`/`user_id` figés en immutable par un trigger `BEFORE UPDATE` (`prevent_walk_participants_key_change`, migration `20260923090000_security_fixes.sql`), même raison et même faille que `dog_owners` ci-dessus — sans ça, un utilisateur avec une ligne sur n'importe quelle balade pouvait la retargeter vers l'UUID d'une balade privée et s'auto-inviter en `yes` |
 | DELETE | Aucune (le reset de statut passe par UPDATE, pas par suppression de ligne) |
 
 ### `walk_dogs`
@@ -181,7 +185,7 @@ RLS activé sur toutes les tables. Principe général : on ne voit que ce qui to
 | Opération | Règle |
 |---|---|
 | SELECT | Même visibilité que `walk_participants` (aligné sur la balade parente) |
-| INSERT / UPDATE (confirmer un chien, `yes`↔`maybe`) | Le demandeur est owner ou co-owner accepté du `dog_id` **ET** fenêtre de réponse ouverte **ET** quota non dépassé (trigger `COUNT`, déjà documenté plus haut) |
+| INSERT / UPDATE (confirmer un chien, `yes`↔`maybe`) | Le demandeur est owner ou co-owner accepté du `dog_id` **ET** fenêtre de réponse ouverte **ET** quota non dépassé (trigger `COUNT`, déjà documenté plus haut) **ET** le demandeur est déjà participant de la balade (`EXISTS` dans `walk_participants`, ajouté par la migration `20260923090000_security_fixes.sql` — cohérent avec le fait qu'on ne peut de toute façon pas `SELECT` une balade sans y participer, mais fermait un contournement par requête forgée directe connaissant juste l'UUID) |
 | DELETE (retirer un chien) | Owner ou co-owner accepté du `dog_id` **ET** fenêtre de réponse ouverte — un co-owner peut retirer un chien confirmé par l'autre co-owner (donnée partagée, cf. `walk.docs.md`) |
 
 ### `push_tokens`
