@@ -1,4 +1,5 @@
 import { vi } from "vitest"
+
 import type { WalkRepository } from "../domain/repositories/walk.repository"
 
 export function createWalkRepositoryMock(overrides: Partial<WalkRepository> = {}): WalkRepository {

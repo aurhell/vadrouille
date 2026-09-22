@@ -1,11 +1,12 @@
 import { Tabs } from "expo-router"
-import type { ColorValue } from "react-native"
 
-import { useSession } from "@/shared/providers/session-provider"
 import { useReceivedCoOwnerInvites } from "@/dog/presentation/hooks/use-co-owner-invites"
 import { useReceivedFriendRequests } from "@/friend/presentation/hooks/use-friends"
+import { useSession } from "@/shared/providers/session-provider"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { IconAmis, IconBalades, IconChiens, IconProfil, IconWithBadge, themes } from "@/shared/ui"
+
+import type { ColorValue } from "react-native"
 
 function DogsTabIcon({ color }: { color: ColorValue }) {
   const { session } = useSession()

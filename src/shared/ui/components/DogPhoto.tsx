@@ -1,39 +1,42 @@
-import { Svg, Circle } from 'react-native-svg';
-import { Image, YStack, styled } from 'tamagui';
-import { useThemePreference } from '@/shared/providers/theme-preference-provider';
-import { Body } from './Text';
-import type { Dog } from '../types';
+import { Svg, Circle } from "react-native-svg"
+import { Image, YStack, styled } from "tamagui"
+
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
+
+import { Body } from "./Text"
+
+import type { Dog } from "../types"
 
 const Frame = styled(YStack, {
-  name: 'DogPhoto',
-  alignItems: 'center',
-  justifyContent: 'center',
-  overflow: 'hidden',
-  backgroundColor: '$backgroundMuted',
+  name: "DogPhoto",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
+  backgroundColor: "$backgroundMuted",
   variants: {
     size: {
-      sm: { width: '$dogSm', height: '$dogSm' },
-      md: { width: '$dogMd', height: '$dogMd' },
-      lg: { width: '$dogLg', height: '$dogLg' },
+      sm: { width: "$dogSm", height: "$dogSm" },
+      md: { width: "$dogMd", height: "$dogMd" },
+      lg: { width: "$dogLg", height: "$dogLg" },
     },
     shape: {
       /** round = inside a walk (a face in a crowd) */
-      round: { borderRadius: '$round', borderWidth: 3, borderColor: '$warning' },
+      round: { borderRadius: "$round", borderWidth: 3, borderColor: "$warning" },
       /** rounded square = a dog record you can open */
-      card: { borderRadius: '$4', borderWidth: 0 },
+      card: { borderRadius: "$4", borderWidth: 0 },
     },
     /** Dims the plain border so the dashed ring (see DASH_SIZE below) reads as the only ring —
      * RN can't render a dashed border on a round YStack (dashes only draw on straight edges),
      * so the ring is a separate absolutely-positioned Svg circle instead. */
-    dashed: { true: { borderColor: 'transparent' } },
+    dashed: { true: { borderColor: "transparent" } },
   } as const,
-  defaultVariants: { size: 'md', shape: 'round' },
-});
+  defaultVariants: { size: "md", shape: "round" },
+})
 
-const DASH_SIZE: Record<'sm' | 'md' | 'lg', number> = { sm: 40, md: 56, lg: 70 };
-const TEAL = { light: '#3FBFA8', dark: '#4FD2B8' };
+const DASH_SIZE: Record<"sm" | "md" | "lg", number> = { sm: 40, md: 56, lg: 70 }
+const TEAL = { light: "#3FBFA8", dark: "#4FD2B8" }
 
-export interface DogPhotoProps extends React.ComponentProps<typeof Frame> {
+export type DogPhotoProps = {
   dog: Dog;
   showName?: boolean;
   /** Shared dog, not yet confirmed for this walk — dashed teal ring instead of the default
@@ -43,13 +46,13 @@ export interface DogPhotoProps extends React.ComponentProps<typeof Frame> {
   /** Green checkmark badge, bottom-right — same selection affordance as the friend picker
    * (see WalkFormScreen), instead of a coloured ring around the photo. */
   checked?: boolean;
-}
+} & React.ComponentProps<typeof Frame>
 
 export function DogPhoto({ dog, showName, dashed, checked, ...props }: DogPhotoProps) {
-  const { resolvedTheme } = useThemePreference();
-  const size = (props.size ?? 'md') as 'sm' | 'md' | 'lg';
-  const diameter = DASH_SIZE[size];
-  const radius = diameter / 2 - 1.5;
+  const { resolvedTheme } = useThemePreference()
+  const size = (props.size ?? "md") as "sm" | "md" | "lg"
+  const diameter = DASH_SIZE[size]
+  const radius = diameter / 2 - 1.5
   return (
     <YStack alignItems="center" gap="$2">
       <YStack position="relative" width={diameter} height={diameter}>
@@ -63,7 +66,7 @@ export function DogPhoto({ dog, showName, dashed, checked, ...props }: DogPhotoP
           )}
         </Frame>
         {dashed ? (
-          <Svg width={diameter} height={diameter} style={{ position: 'absolute', top: 0, left: 0 }}>
+          <Svg width={diameter} height={diameter} style={{ position: "absolute", top: 0, left: 0 }}>
             <Circle
               cx={diameter / 2}
               cy={diameter / 2}
@@ -101,7 +104,7 @@ export function DogPhoto({ dog, showName, dashed, checked, ...props }: DogPhotoP
         </Body>
       ) : null}
     </YStack>
-  );
+  )
 }
 
-export const DogPhotoFrame = Frame;
+export const DogPhotoFrame = Frame

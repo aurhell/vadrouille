@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
+
 import type { DogInput } from "@/dog/domain/repositories/dog.repository"
 
 /** `account` needs `dog`'s `domain`/`application` to create a first dog during onboarding,

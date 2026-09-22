@@ -1,4 +1,5 @@
 import { validateWalkCreation } from "../../domain/policies/walk-creation.policy"
+
 import type { Walk } from "../../domain/entities/walk"
 import type { WalkInput, WalkRepository } from "../../domain/repositories/walk.repository"
 

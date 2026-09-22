@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { parseAuthCallbackError } from "./parse-auth-callback-error"
 
 describe("parseAuthCallbackError", () => {

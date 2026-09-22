@@ -3,8 +3,9 @@ import { useState } from "react"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { YStack } from "tamagui"
 
-import { Body, Button, Display, TextField } from "@/shared/ui"
 import { useSession } from "@/shared/providers/session-provider"
+import { Body, Button, Display, TextField } from "@/shared/ui"
+
 import { useCreateDog } from "../hooks/use-create-dog"
 
 const ERROR_MESSAGE = {

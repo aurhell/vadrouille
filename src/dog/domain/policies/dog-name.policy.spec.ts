@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { validateDogName } from "./dog-name.policy"
 
 describe("validateDogName", () => {

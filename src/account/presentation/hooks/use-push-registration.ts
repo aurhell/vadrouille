@@ -1,8 +1,8 @@
 import Constants from "expo-constants"
 import * as Device from "expo-device"
 import * as Notifications from "expo-notifications"
-import { Platform } from "react-native"
 import { useEffect } from "react"
+import { Platform } from "react-native"
 
 import { useRegisterPushToken } from "./use-account-mutations"
 
@@ -10,7 +10,7 @@ import { useRegisterPushToken } from "./use-account-mutations"
 // registration, not something to re-run per render/user. Without it, a push that arrives
 // while the app is open and foregrounded shows nothing at all.
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
+  handleNotification: async() => ({
     shouldShowBanner: true,
     shouldShowList: true,
     shouldPlaySound: true,

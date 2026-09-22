@@ -1,11 +1,13 @@
-import type { ReactNode } from 'react';
-import { XStack } from 'tamagui';
-import { Button } from './Button';
-import { Card } from './Card';
-import { PersonRow } from './PersonRow';
-import type { Friend } from '../types';
+import { XStack } from "tamagui"
 
-export interface InviteRequestCardProps {
+import { Button } from "./Button"
+import { Card } from "./Card"
+import { PersonRow } from "./PersonRow"
+
+import type { Friend } from "../types"
+import type { ReactNode } from "react"
+
+export type InviteRequestCardProps = {
   person: Friend;
   /** overrides PersonRow's default "username" text — see PersonRow's `label` prop */
   label?: ReactNode;
@@ -48,5 +50,5 @@ export function InviteRequestCard({
         ) : null}
       </XStack>
     </Card>
-  );
+  )
 }

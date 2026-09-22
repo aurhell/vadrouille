@@ -32,11 +32,21 @@
     "tamagui": "^2.7.7"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@resvg/resvg-js": "^2.6.2",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/react": "~19.2.2",
+    "eslint": "^10.11.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "jiti": "^2.7.0",
     "serve": "^14.2.6",
     "supabase": "^2.117.0",
     "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.1",
     "vitest": "^5.0.0"
   },
   "scripts": {
@@ -48,6 +58,8 @@
     "design-system": "serve docs/design-system -l 4040",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "dev:clean-ports": "lsof -tiTCP:8081,8082,19000,19001,19002 -sTCP:LISTEN | xargs -r kill -9",
     "dev:login": "node scripts/dev-login.mjs",
     "dev:dual": "node scripts/dev-two-sims.mjs",

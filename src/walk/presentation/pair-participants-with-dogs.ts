@@ -1,6 +1,6 @@
 import type { Walk, WalkDog, WalkRsvpStatus } from "../domain/entities/walk"
 
-export interface ParticipantWithDogs {
+export type ParticipantWithDogs = {
   id: string
   username: string
   avatarUrl: string | null
@@ -8,7 +8,7 @@ export interface ParticipantWithDogs {
   dogs: WalkDog[]
 }
 
-export interface PairedWalkDogs {
+export type PairedWalkDogs = {
   participants: ParticipantWithDogs[]
   /** A confirmed dog whose confirming account has since been deleted (`updated_by` set to
    * null), or — in principle — one attributed to someone no longer a participant. Kept

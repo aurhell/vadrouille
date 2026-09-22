@@ -1,4 +1,5 @@
 import { validateImageFile } from "@/shared/domain/policies/image-file.policy"
+
 import type { Dog } from "../../domain/entities/dog"
 import type { DogPhotoStorageRepository } from "../../domain/repositories/dog-photo-storage.repository"
 import type { DogRepository } from "../../domain/repositories/dog.repository"

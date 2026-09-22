@@ -1,6 +1,8 @@
 import { describe, expect, test, vi } from "vitest"
-import { createWalkFixture } from "../../fixtures/walk.fixture"
+
 import { createWalkRepositoryMock } from "../../fixtures/walk-repository.fixture"
+import { createWalkFixture } from "../../fixtures/walk.fixture"
+
 import { UpdateWalk } from "./update-walk.use-case"
 
 const future = new Date(Date.now() + 60 * 60 * 1000).toISOString()
@@ -10,7 +12,7 @@ const validInput = { locationText: "Parc de la Tête d'Or", startTime: future, d
 
 describe("UpdateWalk", () => {
   describe("Given a valid input", () => {
-    test("When updating, Then the walk is updated and returned", async () => {
+    test("When updating, Then the walk is updated and returned", async() => {
       const walk = createWalkFixture()
       const walks = createWalkRepositoryMock({ update: vi.fn().mockResolvedValue(walk) })
       const useCase = new UpdateWalk(walks)
@@ -23,7 +25,7 @@ describe("UpdateWalk", () => {
   })
 
   describe("Given an empty location", () => {
-    test("When updating, Then it fails with reason 'location_required' and nothing is updated", async () => {
+    test("When updating, Then it fails with reason 'location_required' and nothing is updated", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new UpdateWalk(walks)
 
@@ -35,7 +37,7 @@ describe("UpdateWalk", () => {
   })
 
   describe("Given a start time already in the past", () => {
-    test("When updating, Then it fails with reason 'start_time_past' and nothing is updated", async () => {
+    test("When updating, Then it fails with reason 'start_time_past' and nothing is updated", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new UpdateWalk(walks)
 

@@ -6,10 +6,11 @@ import { XStack, YStack } from "tamagui"
 import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, ChoiceChipGroup, CloseButton, DateField, DogPhoto, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
+
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
-import { useCreateWalk } from "../hooks/use-walk-mutations"
 import { useDogs } from "../hooks/use-dogs"
 import { useFriends } from "../hooks/use-friends"
+import { useCreateWalk } from "../hooks/use-walk-mutations"
 
 const ERROR_MESSAGE = {
   location_required: "Le lieu est obligatoire",

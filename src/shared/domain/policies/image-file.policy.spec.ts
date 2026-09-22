@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { validateImageFile } from "./image-file.policy"
 
 describe("validateImageFile", () => {

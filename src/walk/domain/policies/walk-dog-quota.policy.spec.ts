@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { canConfirmDogForWalk, dogQuotaMessage } from "./walk-dog-quota.policy"
 
 describe("canConfirmDogForWalk", () => {

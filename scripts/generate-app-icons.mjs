@@ -1,11 +1,12 @@
 // One-off asset generator, not part of the build — run manually after the logo SVGs change
 // (assets/logo/svg/*.svg). Rasterizes the app icon set from source SVGs into assets/*.png.
 // See assets/logo/README.md for the source of truth on sizes/usage.
-import { Resvg } from "@resvg/resvg-js"
 import { execFileSync } from "node:child_process"
 import { readFileSync, writeFileSync } from "node:fs"
 import { join, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
+
+import { Resvg } from "@resvg/resvg-js"
 
 const root = dirname(fileURLToPath(import.meta.url))
 const logoDir = join(root, "..", "assets", "logo", "svg")

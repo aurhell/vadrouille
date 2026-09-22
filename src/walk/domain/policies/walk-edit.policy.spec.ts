@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { validateWalkEdit } from "./walk-edit.policy"
 
 const future = new Date(Date.now() + 60 * 60 * 1000).toISOString()

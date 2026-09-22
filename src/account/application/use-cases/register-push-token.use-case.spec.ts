@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from "vitest"
-import type { PushTokenRepository } from "../../domain/repositories/push-token.repository"
+
 import { RegisterPushToken } from "./register-push-token.use-case"
+
+import type { PushTokenRepository } from "../../domain/repositories/push-token.repository"
 
 describe("RegisterPushToken", () => {
   let pushTokens: PushTokenRepository
@@ -12,7 +14,7 @@ describe("RegisterPushToken", () => {
   })
 
   describe("Given a fresh Expo push token", () => {
-    test("When registering, Then it's stored against my account", async () => {
+    test("When registering, Then it's stored against my account", async() => {
       await registerPushToken.execute("ExponentPushToken[abc]")
 
       expect(pushTokens.register).toHaveBeenCalledWith("ExponentPushToken[abc]")

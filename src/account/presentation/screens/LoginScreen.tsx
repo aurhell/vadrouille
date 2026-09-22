@@ -1,12 +1,14 @@
 import { useState } from "react"
 import { YStack } from "tamagui"
 
-import { useThemePreference } from "@/shared/providers/theme-preference-provider"
-import { useRequestMagicLink } from "../hooks/use-account-mutations"
 import { useSession } from "@/shared/providers/session-provider"
-import { DevPasteMagicLink } from "./dev-paste-magic-link"
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { Body, Button, TextField, VadrouilleLockup } from "@/shared/ui"
 import { themes } from "@/shared/ui/themes"
+
+import { useRequestMagicLink } from "../hooks/use-account-mutations"
+
+import { DevPasteMagicLink } from "./dev-paste-magic-link"
 
 const ERROR_MESSAGE = {
   invalid_format: "Adresse email invalide",

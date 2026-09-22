@@ -5,11 +5,12 @@ import { Image } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { XStack, YStack } from "tamagui"
 
-import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { useSession } from "@/shared/providers/session-provider"
-import { useCreateProfile, useSignOut, useUpdateAvatar } from "../hooks/use-account-mutations"
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { Body, Button, Display, TextField, VadrouilleMark } from "@/shared/ui"
 import { themes } from "@/shared/ui/themes"
+
+import { useCreateProfile, useSignOut, useUpdateAvatar } from "../hooks/use-account-mutations"
 
 const ERROR_MESSAGE = {
   required: "Le pseudo est obligatoire",
@@ -115,7 +116,7 @@ export function OnboardingScreen() {
             alignItems="center"
             justifyContent="center"
             overflow="hidden"
-            onPress={async () => setPhoto((await pickPhoto()) ?? photo)}
+            onPress={async() => setPhoto((await pickPhoto()) ?? photo)}
           >
             {photo ? (
               <Image source={{ uri: photo.uri }} style={{ width: 104, height: 104 }} />

@@ -1,4 +1,4 @@
-export interface AuthCallbackTokens {
+export type AuthCallbackTokens = {
   accessToken: string
   refreshToken: string
 }

@@ -1,10 +1,12 @@
 import { describe, expect, test } from "vitest"
+
 import { createWalkRepositoryMock } from "../../fixtures/walk-repository.fixture"
+
 import { ToggleDogForWalk } from "./toggle-dog-for-walk.use-case"
 
 describe("ToggleDogForWalk", () => {
   describe("Given my dog isn't confirmed and the walk is below quota", () => {
-    test("When toggling, Then the dog is confirmed", async () => {
+    test("When toggling, Then the dog is confirmed", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new ToggleDogForWalk(walks)
 
@@ -16,7 +18,7 @@ describe("ToggleDogForWalk", () => {
   })
 
   describe("Given my dog isn't confirmed and the walk is already at quota (10)", () => {
-    test("When toggling, Then it fails with reason 'quota_exceeded' and nothing is confirmed", async () => {
+    test("When toggling, Then it fails with reason 'quota_exceeded' and nothing is confirmed", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new ToggleDogForWalk(walks)
 
@@ -28,7 +30,7 @@ describe("ToggleDogForWalk", () => {
   })
 
   describe("Given my dog is already confirmed", () => {
-    test("When toggling, Then the dog is removed from the walk, regardless of quota", async () => {
+    test("When toggling, Then the dog is removed from the walk, regardless of quota", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new ToggleDogForWalk(walks)
 

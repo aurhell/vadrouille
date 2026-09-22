@@ -1,11 +1,12 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
+import { toDog, type DogRow } from "./dog.mapper"
+
 import type { Dog, DogCoOwner } from "../../domain/entities/dog"
 import type { DogInput, DogRepository } from "../../domain/repositories/dog.repository"
-import { toDog, type DogRow } from "./dog.mapper"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 const DOG_COLUMNS = "id, name, breed, birth_date, sex, photo_url"
 
-interface CoOwnerRow {
+type CoOwnerRow = {
   id: string
   username: string
   avatar_url: string | null

@@ -1,6 +1,7 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
 import * as Linking from "expo-linking"
+
 import type { AuthRepository } from "../../domain/repositories/auth.repository"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 export class SupabaseAuthRepository implements AuthRepository {
   constructor(private readonly client: SupabaseClient) {}

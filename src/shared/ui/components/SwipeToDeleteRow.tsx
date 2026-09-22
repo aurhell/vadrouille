@@ -1,13 +1,13 @@
-import type { ReactNode } from 'react';
-import { useRef, useState } from 'react';
-import { Swipeable } from 'react-native-gesture-handler';
-import { XStack } from 'tamagui';
-import { Body } from './Text';
-import { ConfirmDialog } from './ConfirmDialog';
+import { useRef, useState, type ReactNode  } from "react"
+import { Swipeable } from "react-native-gesture-handler"
+import { XStack } from "tamagui"
 
-const REMOVE_ACTION_WIDTH = 88;
+import { ConfirmDialog } from "./ConfirmDialog"
+import { Body } from "./Text"
 
-export interface SwipeToDeleteRowProps {
+const REMOVE_ACTION_WIDTH = 88
+
+export type SwipeToDeleteRowProps = {
   children: ReactNode;
   /** red action-panel label, revealed on swipe (e.g. "Retirer", "Supprimer", "Annuler") */
   actionLabel: string;
@@ -32,17 +32,17 @@ export function SwipeToDeleteRow({
   confirmActionLabel,
   onConfirm,
 }: SwipeToDeleteRowProps) {
-  const swipeableRef = useRef<Swipeable>(null);
-  const [confirmOpen, setConfirmOpen] = useState(false);
+  const swipeableRef = useRef<Swipeable>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   function handlePress() {
-    swipeableRef.current?.close();
-    setConfirmOpen(true);
+    swipeableRef.current?.close()
+    setConfirmOpen(true)
   }
 
   function handleConfirm() {
-    setConfirmOpen(false);
-    onConfirm();
+    setConfirmOpen(false)
+    onConfirm()
   }
 
   return (
@@ -77,5 +77,5 @@ export function SwipeToDeleteRow({
         onCancel={() => setConfirmOpen(false)}
       />
     </>
-  );
+  )
 }

@@ -1,12 +1,14 @@
-import type { ReactNode } from 'react';
-import { XStack } from 'tamagui';
-import { Avatar, type AvatarProps } from './Avatar';
-import { Body } from './Text';
-import type { Friend } from '../types';
+import { XStack } from "tamagui"
 
-export interface PersonRowProps {
+import { Avatar, type AvatarProps } from "./Avatar"
+import { Body } from "./Text"
+
+import type { Friend } from "../types"
+import type { ReactNode } from "react"
+
+export type PersonRowProps = {
   person: Friend;
-  avatarSize?: AvatarProps['size'];
+  avatarSize?: AvatarProps["size"];
   /** Overrides the name text — e.g. "toi", "X — en attente", "X te propose de co-gérer Y".
    * Defaults to the person's username. */
   label?: ReactNode;
@@ -20,7 +22,7 @@ export interface PersonRowProps {
 /** Avatar + name row — participants, friends, co-owners, invites (see WalkDetailScreen,
  * FriendsScreen, DogFormScreen, MyDogsScreen). One line, `minHeight="$tap"` so it's a valid
  * tap target whenever `onPress` is set. */
-export function PersonRow({ person, avatarSize = 'sm', label, suffix, trailing, onPress }: PersonRowProps) {
+export function PersonRow({ person, avatarSize = "sm", label, suffix, trailing, onPress }: PersonRowProps) {
   return (
     <XStack alignItems="center" gap="$3" minHeight="$tap" onPress={onPress}>
       <Avatar friend={person} size={avatarSize} />
@@ -30,5 +32,5 @@ export function PersonRow({ person, avatarSize = 'sm', label, suffix, trailing, 
       </Body>
       {trailing}
     </XStack>
-  );
+  )
 }

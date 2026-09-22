@@ -1,13 +1,13 @@
-export type RsvpStatus = 'confirmed' | 'declined' | 'maybe' | 'pending';
+export type RsvpStatus = "confirmed" | "declined" | "maybe" | "pending"
 
-export interface Friend {
+export type Friend = {
   id: string;
   username: string;
   /** local require() or remote uri; undefined falls back to the initial */
   avatarUrl?: string;
 }
 
-export interface Dog {
+export type Dog = {
   id: string;
   name: string;
   breed: string;
@@ -17,14 +17,14 @@ export interface Dog {
   sharedWith?: Friend;
 }
 
-export interface WalkParticipant {
+export type WalkParticipant = {
   friend: Friend;
   status: RsvpStatus;
   /** dogs this friend is bringing, only meaningful when status === 'confirmed' */
   dogs: Dog[];
 }
 
-export interface Walk {
+export type Walk = {
   id: string;
   place: string;
   /** ISO 8601 start datetime */
@@ -39,8 +39,8 @@ export interface Walk {
 
 export const confirmedDogs = (walk: Walk): Dog[] =>
   walk.participants
-    .filter((p) => p.status === 'confirmed')
-    .flatMap((p) => p.dogs);
+    .filter((p) => p.status === "confirmed")
+    .flatMap((p) => p.dogs)
 
-export const respondents = (walk: Walk, status: RsvpStatus = 'confirmed'): Friend[] =>
-  walk.participants.filter((p) => p.status === status).map((p) => p.friend);
+export const respondents = (walk: Walk, status: RsvpStatus = "confirmed"): Friend[] =>
+  walk.participants.filter((p) => p.status === status).map((p) => p.friend)

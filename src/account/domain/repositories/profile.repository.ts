@@ -1,6 +1,6 @@
 import type { Profile } from "../entities/profile"
 
-export interface ProfileRepository {
+export type ProfileRepository = {
   create(input: { id: string; username: string }): Promise<Profile>
   findById(id: string): Promise<Profile | null>
   updateUsername(id: string, username: string): Promise<Profile>

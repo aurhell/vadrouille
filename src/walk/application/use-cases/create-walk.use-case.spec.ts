@@ -1,6 +1,8 @@
 import { describe, expect, test, vi } from "vitest"
-import { createWalkFixture } from "../../fixtures/walk.fixture"
+
 import { createWalkRepositoryMock } from "../../fixtures/walk-repository.fixture"
+import { createWalkFixture } from "../../fixtures/walk.fixture"
+
 import { CreateWalk } from "./create-walk.use-case"
 
 const future = new Date(Date.now() + 60 * 60 * 1000).toISOString()
@@ -10,7 +12,7 @@ const validInput = { locationText: "Parc de la Tête d'Or", startTime: future, d
 
 describe("CreateWalk", () => {
   describe("Given a valid input", () => {
-    test("When creating, Then the walk is created and returned", async () => {
+    test("When creating, Then the walk is created and returned", async() => {
       const walk = createWalkFixture()
       const walks = createWalkRepositoryMock({ create: vi.fn().mockResolvedValue(walk) })
       const useCase = new CreateWalk(walks)
@@ -23,7 +25,7 @@ describe("CreateWalk", () => {
   })
 
   describe("Given an empty location", () => {
-    test("When creating, Then it fails with reason 'location_required' and nothing is created", async () => {
+    test("When creating, Then it fails with reason 'location_required' and nothing is created", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new CreateWalk(walks)
 
@@ -35,7 +37,7 @@ describe("CreateWalk", () => {
   })
 
   describe("Given a start time already in the past", () => {
-    test("When creating, Then it fails with reason 'start_time_past' and nothing is created", async () => {
+    test("When creating, Then it fails with reason 'start_time_past' and nothing is created", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new CreateWalk(walks)
 
@@ -47,7 +49,7 @@ describe("CreateWalk", () => {
   })
 
   describe("Given more than 10 dogs selected", () => {
-    test("When creating, Then it fails with reason 'too_many_dogs' and nothing is created", async () => {
+    test("When creating, Then it fails with reason 'too_many_dogs' and nothing is created", async() => {
       const walks = createWalkRepositoryMock()
       const useCase = new CreateWalk(walks)
 

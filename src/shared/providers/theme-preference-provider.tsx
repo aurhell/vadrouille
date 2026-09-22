@@ -6,7 +6,7 @@ export type ThemePreference = "light" | "dark" | "system"
 
 const STORAGE_KEY = "vadrouille.theme-preference"
 
-interface ThemePreferenceContextValue {
+type ThemePreferenceContextValue = {
   preference: ThemePreference
   setPreference: (preference: ThemePreference) => void
   /** Always 'light' or 'dark' — 'system' resolved against the OS setting, ready to hand

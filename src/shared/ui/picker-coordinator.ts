@@ -7,7 +7,7 @@
 
 type Listener = () => void
 
-export interface Bounds {
+export type Bounds = {
   x: number
   y: number
   width: number

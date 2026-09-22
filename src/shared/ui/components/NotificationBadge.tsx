@@ -1,7 +1,8 @@
-import { YStack } from 'tamagui';
-import { Body } from './Text';
+import { YStack } from "tamagui"
 
-export interface NotificationBadgeProps {
+import { Body } from "./Text"
+
+export type NotificationBadgeProps = {
   /** Renders nothing when 0 or less — a badge only ever announces something pending. */
   count: number;
   /** Above this, show "max+" instead of the exact number (a tab icon has no room for "128"). */
@@ -10,8 +11,8 @@ export interface NotificationBadgeProps {
 
 /** Small numeric pill, meant to sit absolutely-positioned over an icon — see `IconWithBadge`. */
 export function NotificationBadge({ count, max = 9 }: NotificationBadgeProps) {
-  if (count <= 0) return null;
-  const label = count > max ? `${max}+` : String(count);
+  if (count <= 0) return null
+  const label = count > max ? `${max}+` : String(count)
 
   return (
     <YStack
@@ -30,5 +31,5 @@ export function NotificationBadge({ count, max = 9 }: NotificationBadgeProps) {
         {label}
       </Body>
     </YStack>
-  );
+  )
 }

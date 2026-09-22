@@ -1,5 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
 import type { PushTokenRepository } from "../../domain/repositories/push-token.repository"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 export class SupabasePushTokenRepository implements PushTokenRepository {
   constructor(private readonly client: SupabaseClient) {}

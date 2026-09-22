@@ -1,5 +1,5 @@
-import type { Walk as DesignSystemWalk, WalkParticipant as DesignSystemParticipant } from "@/shared/ui/types"
 import type { Walk, WalkRsvpStatus } from "../domain/entities/walk"
+import type { Walk as DesignSystemWalk, WalkParticipant as DesignSystemParticipant } from "@/shared/ui/types"
 
 const RSVP_STATUS: Record<WalkRsvpStatus, DesignSystemParticipant["status"]> = {
   yes: "confirmed",

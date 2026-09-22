@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
+
 import { profileQueryKey } from "./use-profile"
 
 export function useRequestMagicLink() {

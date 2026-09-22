@@ -1,7 +1,7 @@
 import type { Walk, WalkDog, WalkParticipant, WalkRsvpStatus } from "../../domain/entities/walk"
 
 /** Shape of a row from the `walks` table (see supabase/migrations/*_walks.sql). */
-export interface WalkRow {
+export type WalkRow = {
   id: string
   organizer_id: string | null
   location_text: string
@@ -9,12 +9,12 @@ export interface WalkRow {
   duration_minutes: number
 }
 
-export interface ParticipantRow {
+export type ParticipantRow = {
   status: WalkRsvpStatus
   user: { id: string; username: string; avatar_url: string | null }
 }
 
-export interface WalkDogRow {
+export type WalkDogRow = {
   status: "yes" | "maybe"
   updated_by: string | null
   dog: { id: string; name: string; photo_url: string | null }

@@ -4,10 +4,11 @@ import { Image, ScrollView } from "react-native"
 import { YStack } from "tamagui"
 
 import { useSession } from "@/shared/providers/session-provider"
-import { useProfile } from "../hooks/use-profile"
-import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
 import { useThemePreference } from "@/shared/providers/theme-preference-provider"
 import { Body, Button, Card, ChoiceChipGroup, ConfirmDialog, Label, ScreenHeader, TextField } from "@/shared/ui"
+
+import { useDeleteAccount, useRemoveAvatar, useSignOut, useUpdateAvatar, useUpdateUsername } from "../hooks/use-account-mutations"
+import { useProfile } from "../hooks/use-profile"
 import { useRegenerateInviteCode } from "../hooks/use-regenerate-invite-code"
 
 const THEME_OPTIONS = [

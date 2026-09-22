@@ -1,4 +1,5 @@
 import { validateDogName } from "../../domain/policies/dog-name.policy"
+
 import type { Dog } from "../../domain/entities/dog"
 import type { DogInput, DogRepository } from "../../domain/repositories/dog.repository"
 

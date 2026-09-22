@@ -1,12 +1,14 @@
-import type { Session } from "@supabase/supabase-js"
 import * as Linking from "expo-linking"
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
 import { supabase } from "@/shared/supabase/client"
+
 import { parseAuthCallbackError } from "./parse-auth-callback-error"
 import { parseAuthCallbackUrl } from "./parse-auth-callback-url"
 
-interface SessionContextValue {
+import type { Session } from "@supabase/supabase-js"
+
+type SessionContextValue = {
   session: Session | null
   /** true only until the initial session check resolves — not on later auth changes. */
   loading: boolean

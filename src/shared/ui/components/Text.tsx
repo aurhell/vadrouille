@@ -1,11 +1,11 @@
-import { styled, Text as TamaguiText } from 'tamagui';
+import { styled, Text as TamaguiText } from "tamagui"
 
 /** Display / screen titles. Baloo 2, tight leading. */
 export const Display = styled(TamaguiText, {
-  name: 'Display',
-  fontFamily: '$heading',
-  color: '$color',
-  fontWeight: '800',
+  name: "Display",
+  fontFamily: "$heading",
+  color: "$color",
+  fontWeight: "800",
   variants: {
     size: {
       // lineHeight needs real headroom above fontSize for Baloo 2: its ascenders sit
@@ -17,15 +17,15 @@ export const Display = styled(TamaguiText, {
       sm: { fontSize: 24, lineHeight: 30 },
     },
   } as const,
-  defaultVariants: { size: 'md' },
-});
+  defaultVariants: { size: "md" },
+})
 
 /** Card and section titles. */
 export const Title = styled(TamaguiText, {
-  name: 'Title',
-  fontFamily: '$heading',
-  color: '$color',
-  fontWeight: '700',
+  name: "Title",
+  fontFamily: "$heading",
+  color: "$color",
+  fontWeight: "700",
   variants: {
     size: {
       // Same headroom fix as Display, see comment there.
@@ -34,15 +34,15 @@ export const Title = styled(TamaguiText, {
       sm: { fontSize: 15, lineHeight: 20 },
     },
   } as const,
-  defaultVariants: { size: 'md' },
-});
+  defaultVariants: { size: "md" },
+})
 
 /** Everything else: body copy, list rows, helper text. Nunito. */
 export const Body = styled(TamaguiText, {
-  name: 'Body',
-  fontFamily: '$body',
-  color: '$color',
-  fontWeight: '600',
+  name: "Body",
+  fontFamily: "$body",
+  color: "$color",
+  fontWeight: "600",
   variants: {
     size: {
       lg: { fontSize: 16, lineHeight: 24 },
@@ -51,21 +51,21 @@ export const Body = styled(TamaguiText, {
       xs: { fontSize: 12, lineHeight: 17 },
     },
     tone: {
-      default: { color: '$color' },
-      subtle: { color: '$colorSubtle' },
-      accent: { color: '$accent' },
-      inverse: { color: '$colorInverse' },
+      default: { color: "$color" },
+      subtle: { color: "$colorSubtle" },
+      accent: { color: "$accent" },
+      inverse: { color: "$colorInverse" },
     },
   } as const,
-  defaultVariants: { size: 'md', tone: 'default' },
-});
+  defaultVariants: { size: "md", tone: "default" },
+})
 
 /** Small uppercase field labels ("Où ?", "Durée"). */
 export const Label = styled(TamaguiText, {
-  name: 'Label',
-  fontFamily: '$body',
-  fontWeight: '800',
+  name: "Label",
+  fontFamily: "$body",
+  fontWeight: "800",
   fontSize: 13,
   lineHeight: 17,
-  color: '$colorSubtle',
-});
+  color: "$colorSubtle",
+})

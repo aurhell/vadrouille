@@ -1,4 +1,5 @@
 import { vi } from "vitest"
+
 import type { FriendRepository } from "../domain/repositories/friend.repository"
 
 export function createFriendRepositoryMock(overrides: Partial<FriendRepository> = {}): FriendRepository {

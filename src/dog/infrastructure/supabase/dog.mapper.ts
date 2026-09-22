@@ -1,7 +1,7 @@
 import type { Dog, DogCoOwner, DogSex } from "../../domain/entities/dog"
 
 /** Shape of a row from the `dogs` table (see supabase/migrations/*_dogs.sql). */
-export interface DogRow {
+export type DogRow = {
   id: string
   name: string
   breed: string | null

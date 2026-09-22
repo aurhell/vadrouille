@@ -1,8 +1,10 @@
-import type { ReactNode } from 'react';
-import { YStack } from 'tamagui';
-import { NotificationBadge } from './NotificationBadge';
+import { YStack } from "tamagui"
 
-export interface IconWithBadgeProps {
+import { NotificationBadge } from "./NotificationBadge"
+
+import type { ReactNode } from "react"
+
+export type IconWithBadgeProps = {
   count: number;
   children: ReactNode;
 }
@@ -16,5 +18,5 @@ export function IconWithBadge({ count, children }: IconWithBadgeProps) {
       {children}
       <NotificationBadge count={count} />
     </YStack>
-  );
+  )
 }

@@ -1,13 +1,15 @@
-import { XStack, YStack } from 'tamagui';
-import { Avatar } from './Avatar';
-import { Body, Label } from './Text';
-import type { Friend } from '../types';
+import { XStack, YStack } from "tamagui"
+
+import { Avatar } from "./Avatar"
+import { Body, Label } from "./Text"
+
+import type { Friend } from "../types"
 
 function toggle(ids: string[], id: string): string[] {
-  return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id];
+  return ids.includes(id) ? ids.filter((existing) => existing !== id) : [...ids, id]
 }
 
-export interface PersonPickerProps {
+export type PersonPickerProps = {
   /** field label, e.g. "Qui on invite ?" */
   label: string;
   people: Friend[];
@@ -28,14 +30,14 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
         <Label>{label}</Label>
         {selectedIds.length > 0 ? (
           <Body size="sm" fontWeight="800" tone="accent">
-            {selectedIds.length} sélectionné{selectedIds.length > 1 ? 's' : ''}
+            {selectedIds.length} sélectionné{selectedIds.length > 1 ? "s" : ""}
           </Body>
         ) : null}
       </XStack>
       {people.length > 0 ? (
         <XStack gap="$4" flexWrap="wrap">
           {people.map((person) => {
-            const selected = selectedIds.includes(person.id);
+            const selected = selectedIds.includes(person.id)
             return (
               <YStack
                 key={person.id}
@@ -45,7 +47,7 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
                 onPress={() => onChange(toggle(selectedIds, person.id))}
               >
                 <YStack position="relative">
-                  <Avatar friend={person} size="lg" tone={selected ? undefined : 'muted'} opacity={selected ? 1 : 0.5} />
+                  <Avatar friend={person} size="lg" tone={selected ? undefined : "muted"} opacity={selected ? 1 : 0.5} />
                   {selected ? (
                     <YStack
                       position="absolute"
@@ -66,11 +68,11 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
                     </YStack>
                   ) : null}
                 </YStack>
-                <Body size="xs" fontWeight="700" color={selected ? '$color' : '$colorFaint'} numberOfLines={1}>
+                <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorFaint"} numberOfLines={1}>
                   {person.username}
                 </Body>
               </YStack>
-            );
+            )
           })}
         </XStack>
       ) : (
@@ -79,5 +81,5 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
         </Body>
       )}
     </YStack>
-  );
+  )
 }

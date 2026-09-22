@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import type { Profile } from "@/account/domain/entities/profile"
 import { container } from "@/shared/di/container"
+
 import { profileQueryKey } from "./use-profile"
+
+import type { Profile } from "@/account/domain/entities/profile"
 
 /** `account` needs `friend`'s `domain`/`application` to regenerate the invite code carried on
  * the profile, never `friend`'s `presentation` — this local hook (rather than importing

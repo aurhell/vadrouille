@@ -1,6 +1,6 @@
 import type { Walk, WalkRsvpStatus } from "../entities/walk"
 
-export interface WalkInput {
+export type WalkInput = {
   locationText: string
   startTime: string
   durationMinutes: number
@@ -8,7 +8,7 @@ export interface WalkInput {
   friendIds: string[]
 }
 
-export interface UpdateWalkInput {
+export type UpdateWalkInput = {
   locationText: string
   startTime: string
   durationMinutes: number
@@ -17,7 +17,7 @@ export interface UpdateWalkInput {
   newFriendIds: string[]
 }
 
-export interface WalkRepository {
+export type WalkRepository = {
   /** Upcoming walks (organizer or invited participant), soonest first. */
   list(): Promise<Walk[]>
   /** Past walks (organizer or invited participant) — start_time already elapsed, most recent

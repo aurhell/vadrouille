@@ -16,8 +16,8 @@
 //   SIM_DEVICE_1="iPhone 16" SIM_DEVICE_2="iPhone 16 Pro" pnpm dev:dual
 
 import { execFileSync, spawn } from "node:child_process"
-import { createConnection } from "node:net"
 import { openSync } from "node:fs"
+import { createConnection } from "node:net"
 
 const args = process.argv.slice(2)
 const reset = args.includes("--reset")
@@ -38,7 +38,7 @@ async function retry(fn, { attempts = 3, delayMs = 2000 } = {}) {
   for (let i = 1; i <= attempts; i++) {
     try {
       return fn()
-    } catch (error) {
+    } catch(error) {
       if (i === attempts) throw error
       await new Promise((r) => setTimeout(r, delayMs))
     }
@@ -95,7 +95,7 @@ console.log(`Devices: "${device1}" + "${device2}"`)
 function boot(deviceName) {
   try {
     sh("xcrun", ["simctl", "boot", deviceName])
-  } catch (error) {
+  } catch(error) {
     if (!String(error.stderr ?? error.message).includes("current state: Booted")) {
       console.error(String(error.stderr ?? error.message))
       throw error

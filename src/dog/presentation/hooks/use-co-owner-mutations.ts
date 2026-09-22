@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
-import { dogQueryKey, dogsQueryKey } from "./use-dogs"
+
 import { receivedCoOwnerInvitesQueryKey, sentCoOwnerInvitesQueryKey } from "./use-co-owner-invites"
+import { dogQueryKey, dogsQueryKey } from "./use-dogs"
 
 export function useInviteCoOwner(userId: string | undefined) {
   const queryClient = useQueryClient()

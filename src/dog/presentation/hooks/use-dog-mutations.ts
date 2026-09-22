@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { container } from "@/shared/di/container"
-import type { DogInput } from "../../domain/repositories/dog.repository"
+
 import { dogQueryKey, dogsQueryKey } from "./use-dogs"
+
+import type { DogInput } from "../../domain/repositories/dog.repository"
 
 export function useCreateDog(userId: string | undefined) {
   const queryClient = useQueryClient()

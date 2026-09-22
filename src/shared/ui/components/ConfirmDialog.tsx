@@ -1,9 +1,10 @@
-import { Modal } from 'react-native';
-import { YStack } from 'tamagui';
-import { Body, Title } from './Text';
-import { Button } from './Button';
+import { Modal } from "react-native"
+import { YStack } from "tamagui"
 
-export interface ConfirmDialogProps {
+import { Button } from "./Button"
+import { Body, Title } from "./Text"
+
+export type ConfirmDialogProps = {
   open: boolean;
   title: string;
   message?: string;
@@ -23,7 +24,7 @@ export function ConfirmDialog({
   title,
   message,
   confirmLabel,
-  cancelLabel = 'Annuler',
+  cancelLabel = "Annuler",
   destructive = true,
   onConfirm,
   onCancel,
@@ -40,9 +41,9 @@ export function ConfirmDialog({
           ) : null}
           <YStack gap="$2">
             <Button
-              backgroundColor={destructive ? '$danger' : undefined}
-              shadowColor={destructive ? '$danger' : undefined}
-              variant={destructive ? undefined : 'primary'}
+              backgroundColor={destructive ? "$danger" : undefined}
+              shadowColor={destructive ? "$danger" : undefined}
+              variant={destructive ? undefined : "primary"}
               onPress={onConfirm}
             >
               {confirmLabel}
@@ -54,5 +55,5 @@ export function ConfirmDialog({
         </YStack>
       </YStack>
     </Modal>
-  );
+  )
 }

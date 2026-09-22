@@ -1,4 +1,5 @@
 import { canConfirmDogForWalk } from "../../domain/policies/walk-dog-quota.policy"
+
 import type { WalkRepository } from "../../domain/repositories/walk.repository"
 
 export type ToggleDogForWalkInput = { walkId: string; dogId: string; isConfirmed: boolean; confirmedDogsCount: number }

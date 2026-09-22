@@ -1,40 +1,42 @@
-import { Theme, XStack, YStack, styled } from 'tamagui';
-import { useThemePreference } from '@/shared/providers/theme-preference-provider';
-import { Body, Title } from './Text';
-import { AvatarStack, Avatar } from './Avatar';
-import { DogPhoto } from './DogPhoto';
-import { IconChevronRight } from './Icons';
-import { WalkMetaLine } from './WalkMetaLine';
-import type { Dog, Walk } from '../types';
-import { respondents } from '../types';
-import { themes } from '../themes';
+import { Theme, XStack, YStack, styled } from "tamagui"
+
+import { useThemePreference } from "@/shared/providers/theme-preference-provider"
+
+import { themes } from "../themes"
+import { type Dog, type Walk, respondents  } from "../types"
+
+import { AvatarStack, Avatar } from "./Avatar"
+import { DogPhoto } from "./DogPhoto"
+import { IconChevronRight } from "./Icons"
+import { Body, Title } from "./Text"
+import { WalkMetaLine } from "./WalkMetaLine"
 
 export const Card = styled(YStack, {
-  name: 'Card',
-  backgroundColor: '$backgroundStrong',
-  borderRadius: '$5',
-  padding: '$4',
-  shadowColor: '$shadowColor',
+  name: "Card",
+  backgroundColor: "$backgroundStrong",
+  borderRadius: "$5",
+  padding: "$4",
+  shadowColor: "$shadowColor",
   shadowOpacity: 0.15,
   shadowRadius: 6,
   shadowOffset: { width: 0, height: 2 },
   variants: {
     interactive: {
       true: {
-        cursor: 'pointer',
-        transition: 'fast',
-        pressStyle: { scale: 0.985, backgroundColor: '$backgroundSoft' },
+        cursor: "pointer",
+        transition: "fast",
+        pressStyle: { scale: 0.985, backgroundColor: "$backgroundSoft" },
       },
     },
     /** shared household: dashed teal outline, the one dashed border that means "co-owned" */
     shared: {
-      true: { borderWidth: 2.5, borderStyle: 'dashed', borderColor: '$success' },
+      true: { borderWidth: 2.5, borderStyle: "dashed", borderColor: "$success" },
     },
-    flat: { true: { shadowOpacity: 0, borderWidth: 1, borderColor: '$borderColor' } },
+    flat: { true: { shadowOpacity: 0, borderWidth: 1, borderColor: "$borderColor" } },
   } as const,
-});
+})
 
-export interface WalkCardProps {
+export type WalkCardProps = {
   walk: Walk;
   onPress?: (walk: Walk) => void;
   /** true when this card is the front layer of a swipe-to-delete row — see DogCard for why. */
@@ -42,7 +44,7 @@ export interface WalkCardProps {
 }
 
 export function WalkCard({ walk, onPress, flat }: WalkCardProps) {
-  const yes = respondents(walk, 'confirmed');
+  const yes = respondents(walk, "confirmed")
   return (
     <Card interactive flat={flat} onPress={() => onPress?.(walk)}>
       <Title size="lg">{walk.place}</Title>
@@ -52,14 +54,14 @@ export function WalkCard({ walk, onPress, flat }: WalkCardProps) {
       <XStack alignItems="center" gap="$2" marginTop="$4">
         <AvatarStack friends={yes} max={3} />
         <Body size="sm" tone="subtle">
-          {yes.length > 1 ? 'ont dit oui' : 'a dit oui'}
+          {yes.length > 1 ? "ont dit oui" : "a dit oui"}
         </Body>
       </XStack>
     </Card>
-  );
+  )
 }
 
-export interface DogCardProps {
+export type DogCardProps = {
   dog: Dog;
   onPress?: (dog: Dog) => void;
   /** true when this card is the front layer of a swipe-to-delete row — see FriendsScreen's
@@ -68,9 +70,9 @@ export interface DogCardProps {
 }
 
 export function DogCard({ dog, onPress, flat }: DogCardProps) {
-  const shared = !!dog.sharedWith;
-  const { resolvedTheme } = useThemePreference();
-  const theme = themes[resolvedTheme];
+  const shared = !!dog.sharedWith
+  const { resolvedTheme } = useThemePreference()
+  const theme = themes[resolvedTheme]
   return (
     <Card interactive flat={flat} shared={shared} onPress={() => onPress?.(dog)} padding="$3">
       <XStack gap="$4" alignItems="center">
@@ -78,7 +80,7 @@ export function DogCard({ dog, onPress, flat }: DogCardProps) {
         <YStack flex={1} gap="$1">
           <Title size="lg">{dog.name}</Title>
           <Body size="sm" tone="subtle">
-            {dog.breed} · {dog.ageYears} an{dog.ageYears > 1 ? 's' : ''}
+            {dog.breed} · {dog.ageYears} an{dog.ageYears > 1 ? "s" : ""}
           </Body>
           {shared ? (
             <Theme name="confirmed">
@@ -103,5 +105,5 @@ export function DogCard({ dog, onPress, flat }: DogCardProps) {
         {shared ? null : <IconChevronRight size={20} color={theme.borderColor} />}
       </XStack>
     </Card>
-  );
+  )
 }

@@ -8,7 +8,7 @@ export type RedeemInviteCodeOutcome =
   | { outcome: "invalid_code" }
   | { outcome: "own_code" }
 
-export interface FriendRepository {
+export type FriendRepository = {
   /** Always the current authenticated user's own accepted friends — never someone else's. */
   list(): Promise<Friend[]>
   /** Pending requests I sent, still awaiting the other person's response. */

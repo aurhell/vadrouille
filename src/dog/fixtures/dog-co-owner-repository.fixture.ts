@@ -1,4 +1,5 @@
 import { vi } from "vitest"
+
 import type { DogCoOwnerRepository } from "../domain/repositories/dog-co-owner.repository"
 
 export function createDogCoOwnerRepositoryMock(overrides: Partial<DogCoOwnerRepository> = {}): DogCoOwnerRepository {

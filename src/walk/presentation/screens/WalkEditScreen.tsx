@@ -6,6 +6,7 @@ import { XStack, YStack } from "tamagui"
 import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, ChoiceChipGroup, CloseButton, DateField, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
+
 import { useFriends } from "../hooks/use-friends"
 import { useUpdateWalk } from "../hooks/use-walk-mutations"
 import { useWalk } from "../hooks/use-walks"

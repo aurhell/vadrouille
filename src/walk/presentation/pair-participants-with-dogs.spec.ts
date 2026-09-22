@@ -1,5 +1,7 @@
 import { describe, expect, test } from "vitest"
+
 import { createWalkFixture } from "../fixtures/walk.fixture"
+
 import { organizerDisplayName, pairParticipantsWithDogs } from "./pair-participants-with-dogs"
 
 describe("pairParticipantsWithDogs", () => {

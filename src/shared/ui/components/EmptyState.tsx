@@ -1,8 +1,9 @@
-import { YStack } from 'tamagui';
-import { Body, Display } from './Text';
-import { Button } from './Button';
+import { YStack } from "tamagui"
 
-export interface EmptyStateProps {
+import { Button } from "./Button"
+import { Body, Display } from "./Text"
+
+export type EmptyStateProps = {
   emoji?: string;
   title: string;
   body: string;
@@ -12,7 +13,7 @@ export interface EmptyStateProps {
 
 /** Empty is an invitation, not an error: big friendly mark, one clear action. */
 export function EmptyState({
-  emoji = '🦮',
+  emoji = "🦮",
   title,
   body,
   actionLabel,
@@ -44,5 +45,5 @@ export function EmptyState({
         </Button>
       ) : null}
     </YStack>
-  );
+  )
 }

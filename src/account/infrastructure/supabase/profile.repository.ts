@@ -1,7 +1,8 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
+import { toProfile, type ProfileRow } from "./profile.mapper"
+
 import type { Profile } from "../../domain/entities/profile"
 import type { ProfileRepository } from "../../domain/repositories/profile.repository"
-import { toProfile, type ProfileRow } from "./profile.mapper"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 export class SupabaseProfileRepository implements ProfileRepository {
   constructor(private readonly client: SupabaseClient) {}

@@ -1,7 +1,8 @@
-import { RefreshControl as NativeRefreshControl, useColorScheme } from 'react-native';
-import { palette } from '../tokens';
+import { RefreshControl as NativeRefreshControl, useColorScheme } from "react-native"
 
-export interface RefreshControlProps {
+import { palette } from "../tokens"
+
+export type RefreshControlProps = {
   refreshing: boolean;
   onRefresh: () => void;
 }
@@ -14,9 +15,9 @@ export interface RefreshControlProps {
  * completion tick.
  */
 export function RefreshControl({ refreshing, onRefresh }: RefreshControlProps) {
-  const dark = useColorScheme() === 'dark';
-  const tint = dark ? palette.amber500 : palette.coral500;
-  const titleColor = dark ? palette.sand400 : palette.brown500;
+  const dark = useColorScheme() === "dark"
+  const tint = dark ? palette.amber500 : palette.coral500
+  const titleColor = dark ? palette.sand400 : palette.brown500
 
   return (
     <NativeRefreshControl
@@ -27,5 +28,5 @@ export function RefreshControl({ refreshing, onRefresh }: RefreshControlProps) {
       title="Ça vadrouille…"
       titleColor={titleColor}
     />
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
+import Svg, { Circle, G, Path, Rect } from "react-native-svg"
 
 /**
  * Two families, on the same 24px grid (see design handoff, "icônes — variante 1C"):
@@ -11,7 +11,7 @@ import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
  * (2.8:1 on white), not legible enough as icon/text ink.
  */
 
-export interface IconProps {
+export type IconProps = {
   /** rendered square size in px. Default 24. */
   size?: number;
   /** any RN colour string — pass a theme token's resolved value. */
@@ -22,20 +22,20 @@ const S = ({ size = 24, children }: { size?: number; children: React.ReactNode }
   <Svg width={size} height={size} viewBox="0 0 24 24">
     {children}
   </Svg>
-);
+)
 
 /* ---------- Navigation — solid ---------- */
 
-export const IconBalades = ({ size = 24, color = '#2B2118' }: IconProps) => (
+export const IconBalades = ({ size = 24, color = "#2B2118" }: IconProps) => (
   <S size={size}>
     <Path
       d="M12 2.6c-3.6 0-6.5 2.9-6.5 6.5 0 4.8 5.6 10.1 5.8 10.3.4.4 1 .4 1.4 0 .2-.2 5.8-5.5 5.8-10.3 0-3.6-2.9-6.5-6.5-6.5zm0 9.2a2.7 2.7 0 110-5.4 2.7 2.7 0 010 5.4z"
       fill={color}
     />
   </S>
-);
+)
 
-export const IconChiens = ({ size = 24, color = '#2B2118' }: IconProps) => (
+export const IconChiens = ({ size = 24, color = "#2B2118" }: IconProps) => (
   <S size={size}>
     <Circle cx={6.9} cy={8.6} r={2.25} fill={color} />
     <Circle cx={11.1} cy={6.5} r={2.35} fill={color} />
@@ -46,9 +46,9 @@ export const IconChiens = ({ size = 24, color = '#2B2118' }: IconProps) => (
       fill={color}
     />
   </S>
-);
+)
 
-export const IconAmis = ({ size = 24, color = '#2B2118' }: IconProps) => (
+export const IconAmis = ({ size = 24, color = "#2B2118" }: IconProps) => (
   <S size={size}>
     <Circle cx={9.1} cy={8.9} r={3.5} fill={color} />
     <Path
@@ -61,9 +61,9 @@ export const IconAmis = ({ size = 24, color = '#2B2118' }: IconProps) => (
       fill={color}
     />
   </S>
-);
+)
 
-export const IconProfil = ({ size = 24, color = '#2B2118' }: IconProps) => (
+export const IconProfil = ({ size = 24, color = "#2B2118" }: IconProps) => (
   <S size={size}>
     <Circle cx={12} cy={8.4} r={4} fill={color} />
     <Path
@@ -71,65 +71,65 @@ export const IconProfil = ({ size = 24, color = '#2B2118' }: IconProps) => (
       fill={color}
     />
   </S>
-);
+)
 
 export const tabIcons = {
   balades: IconBalades,
   chiens: IconChiens,
   amis: IconAmis,
   profil: IconProfil,
-} as const;
+} as const
 
-export type TabKey = keyof typeof tabIcons;
+export type TabKey = keyof typeof tabIcons
 
 /* ---------- Metadata — 2px stroke ---------- */
 
 const strokeProps = (color: string) => ({
-  fill: 'none' as const,
+  fill: "none" as const,
   stroke: color,
   strokeWidth: 2,
-  strokeLinecap: 'round' as const,
-  strokeLinejoin: 'round' as const,
-});
+  strokeLinecap: "round" as const,
+  strokeLinejoin: "round" as const,
+})
 
-export const IconCalendar = ({ size = 24, color = '#C8391A' }: IconProps) => (
+export const IconCalendar = ({ size = 24, color = "#C8391A" }: IconProps) => (
   <S size={size}>
     <G {...strokeProps(color)}>
       <Rect x={3.2} y={5} width={17.6} height={16} rx={4} />
       <Path d="M3.2 10h17.6M8 3v4M16 3v4" />
     </G>
   </S>
-);
+)
 
-export const IconClock = ({ size = 24, color = '#C8391A' }: IconProps) => (
+export const IconClock = ({ size = 24, color = "#C8391A" }: IconProps) => (
   <S size={size}>
     <G {...strokeProps(color)}>
       <Circle cx={12} cy={12} r={8.6} />
       <Path d="M12 7.4V12l3.1 2.1" />
     </G>
   </S>
-);
+)
 
-export const IconDuration = ({ size = 24, color = '#C8391A' }: IconProps) => (
+export const IconDuration = ({ size = 24, color = "#C8391A" }: IconProps) => (
   <S size={size}>
     <G {...strokeProps(color)}>
       <Circle cx={12} cy={13.6} r={7.4} />
       <Path d="M12 10.3v3.3l2.2 1.5M9.6 2.8h4.8M12 2.8v3.4M18.6 7L20 5.6" />
     </G>
   </S>
-);
+)
 
-export const IconChevronRight = ({ size = 24, color = '#EADDD0' }: IconProps) => (
+export const IconChevronRight = ({ size = 24, color = "#EADDD0" }: IconProps) => (
   <S size={size}>
     <G {...strokeProps(color)}>
       <Path d="M9.5 5.5l6 6.5-6 6.5" />
     </G>
   </S>
-);
+)
 
 /* ---------- Action — solid ---------- */
 
-export const IconSettings = ({ size = 24, color = '#FFFFFF' }: IconProps) => (
+export const IconSettings = ({ size = 24, color = "#FFFFFF" }: IconProps) => (
   <S size={size}>
     <Path
       fillRule="evenodd"
@@ -138,4 +138,4 @@ export const IconSettings = ({ size = 24, color = '#FFFFFF' }: IconProps) => (
       fill={color}
     />
   </S>
-);
+)

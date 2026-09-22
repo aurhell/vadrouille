@@ -1,8 +1,8 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
 import type { DogCoOwner, DogCoOwnerInvite } from "../../domain/entities/dog"
 import type { DogCoOwnerRepository } from "../../domain/repositories/dog-co-owner.repository"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
-interface UserRow {
+type UserRow = {
   id: string
   username: string
   avatar_url: string | null

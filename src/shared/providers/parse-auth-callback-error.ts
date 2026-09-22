@@ -1,4 +1,4 @@
-export interface AuthCallbackError {
+export type AuthCallbackError = {
   code: string
   description: string
 }

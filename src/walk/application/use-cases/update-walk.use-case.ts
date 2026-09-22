@@ -1,4 +1,5 @@
 import { validateWalkEdit } from "../../domain/policies/walk-edit.policy"
+
 import type { Walk } from "../../domain/entities/walk"
 import type { UpdateWalkInput, WalkRepository } from "../../domain/repositories/walk.repository"
 

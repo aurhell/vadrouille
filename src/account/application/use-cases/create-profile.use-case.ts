@@ -1,4 +1,5 @@
 import { validateUsername } from "../../domain/policies/username.policy"
+
 import type { Profile } from "../../domain/entities/profile"
 import type { ProfileRepository } from "../../domain/repositories/profile.repository"
 

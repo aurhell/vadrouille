@@ -1,12 +1,12 @@
 export type DogSex = "male" | "female"
 
-export interface DogCoOwner {
+export type DogCoOwner = {
   id: string
   username: string
   avatarUrl: string | null
 }
 
-export interface Dog {
+export type Dog = {
   id: string
   name: string
   breed: string | null
@@ -19,7 +19,7 @@ export interface Dog {
   coOwners: DogCoOwner[]
 }
 
-export interface DogCoOwnerInvite {
+export type DogCoOwnerInvite = {
   dogId: string
   dogName: string
   dogPhotoUrl: string | null

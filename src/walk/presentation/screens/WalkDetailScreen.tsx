@@ -4,18 +4,20 @@ import { Alert, LayoutAnimation, Modal, Platform, Pressable, ScrollView, UIManag
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { XStack, YStack } from "tamagui"
 
-import type { Dog } from "@/dog/domain/entities/dog"
-import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, Button, Card, ConfirmDialog, DogPhoto, Label, PersonRow, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
-import type { RsvpStatus } from "@/shared/ui/types"
+
 import { canRespondToWalk } from "../../domain/policies/response-window.policy"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
-import type { WalkRsvpStatus } from "../../domain/entities/walk"
 import { useDogs } from "../hooks/use-dogs"
 import { useRemoveWalk, useRespondToWalk, useToggleDogForWalk } from "../hooks/use-walk-mutations"
 import { useWalk } from "../hooks/use-walks"
 import { pairParticipantsWithDogs } from "../pair-participants-with-dogs"
+
+import type { WalkRsvpStatus } from "../../domain/entities/walk"
+import type { Dog } from "@/dog/domain/entities/dog"
+import type { RsvpStatus } from "@/shared/ui/types"
 
 if (Platform.OS === "android") {
   UIManager.setLayoutAnimationEnabledExperimental?.(true)

@@ -1,14 +1,16 @@
 import { describe, expect, test, vi } from "vitest"
-import { createDogFixture } from "../../fixtures/dog.fixture"
-import { createDogRepositoryMock } from "../../fixtures/dog-repository.fixture"
+
 import { createDogPhotoStorageRepositoryMock } from "../../fixtures/dog-photo-storage-repository.fixture"
+import { createDogRepositoryMock } from "../../fixtures/dog-repository.fixture"
+import { createDogFixture } from "../../fixtures/dog.fixture"
+
 import { UpdateDogPhoto } from "./update-dog-photo.use-case"
 
 const FILE = { uri: "file://photo.jpg", mimeType: "image/jpeg", sizeBytes: 1_000 }
 
 describe("UpdateDogPhoto", () => {
   describe("Given a valid image and no previous photo", () => {
-    test("When updating, Then the photo is uploaded and the dog updated, without deleting anything", async () => {
+    test("When updating, Then the photo is uploaded and the dog updated, without deleting anything", async() => {
       const dog = createDogFixture({ photoUrl: "https://cdn/new.jpg" })
       const dogs = createDogRepositoryMock({
         findById: vi.fn().mockResolvedValue(createDogFixture({ photoUrl: null })),
@@ -26,7 +28,7 @@ describe("UpdateDogPhoto", () => {
   })
 
   describe("Given a valid image and an existing previous photo", () => {
-    test("When updating, Then the old photo is deleted after the new one is uploaded", async () => {
+    test("When updating, Then the old photo is deleted after the new one is uploaded", async() => {
       const dog = createDogFixture({ photoUrl: "https://cdn/new.jpg" })
       const dogs = createDogRepositoryMock({
         findById: vi.fn().mockResolvedValue(createDogFixture({ photoUrl: "https://cdn/old.jpg" })),
@@ -42,7 +44,7 @@ describe("UpdateDogPhoto", () => {
   })
 
   describe("Given an unsupported file format", () => {
-    test("When updating, Then it fails with reason 'unsupported_format' and nothing is uploaded", async () => {
+    test("When updating, Then it fails with reason 'unsupported_format' and nothing is uploaded", async() => {
       const dogs = createDogRepositoryMock()
       const storage = createDogPhotoStorageRepositoryMock()
       const useCase = new UpdateDogPhoto(dogs, storage)
@@ -55,7 +57,7 @@ describe("UpdateDogPhoto", () => {
   })
 
   describe("Given a file exceeding the maximum allowed size", () => {
-    test("When updating, Then it fails with reason 'too_large' and nothing is uploaded", async () => {
+    test("When updating, Then it fails with reason 'too_large' and nothing is uploaded", async() => {
       const dogs = createDogRepositoryMock()
       const storage = createDogPhotoStorageRepositoryMock()
       const useCase = new UpdateDogPhoto(dogs, storage)

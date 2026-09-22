@@ -2,16 +2,18 @@ import { useRouter } from "expo-router"
 import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
-import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, DogCard, EmptyState, InviteRequestCard, RefreshControl, ScreenHeader, SwipeToDeleteRow, Title } from "@/shared/ui"
-import type { Dog as DesignSystemDog } from "@/shared/ui/types"
-import type { Dog, DogCoOwnerInvite } from "../../domain/entities/dog"
+
 import { deleteDogMessage } from "../delete-dog-message"
-import { useAcceptCoOwnerInvite, useDeclineCoOwnerInvite } from "../hooks/use-co-owner-mutations"
 import { useReceivedCoOwnerInvites } from "../hooks/use-co-owner-invites"
+import { useAcceptCoOwnerInvite, useDeclineCoOwnerInvite } from "../hooks/use-co-owner-mutations"
 import { useRemoveDog } from "../hooks/use-dog-mutations"
 import { useDogs } from "../hooks/use-dogs"
+
+import type { Dog, DogCoOwnerInvite } from "../../domain/entities/dog"
+import type { Dog as DesignSystemDog } from "@/shared/ui/types"
 
 function ageYearsFrom(birthDate: string | null): number {
   if (!birthDate) return 0

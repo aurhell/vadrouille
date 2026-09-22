@@ -1,4 +1,4 @@
-import { palette } from './tokens';
+import { palette } from "./tokens"
 
 /**
  * Semantic tokens. Components only ever reference these names, so light,
@@ -11,7 +11,7 @@ import { palette } from './tokens';
  * accent / accentText / accentSoft / accentSoftText, so any component that
  * styles itself from those four reacts to <Theme name="confirmed">.
  */
-interface ThemeTokens {
+type ThemeTokens = {
   background: string;
   backgroundStrong: string;
   backgroundSoft: string;
@@ -57,7 +57,7 @@ const light = {
 
   borderColor: palette.cream300,
   borderColorStrong: palette.cream400,
-  shadowColor: 'rgba(43,33,24,0.12)',
+  shadowColor: "rgba(43,33,24,0.12)",
 
   accent: palette.coral500,
   accentPress: palette.coral600,
@@ -74,12 +74,12 @@ const light = {
   warningSoftText: palette.amber700,
 
   danger: palette.coral600,
-  dangerSoft: '#FFE9E4',
+  dangerSoft: "#FFE9E4",
   dangerSoftText: palette.coral700,
 
   neutralSoft: palette.cream200,
   neutralSoftText: palette.brown500,
-} satisfies ThemeTokens;
+} satisfies ThemeTokens
 
 const dark = {
   background: palette.night900,
@@ -89,40 +89,40 @@ const dark = {
 
   color: palette.sand200,
   colorSubtle: palette.sand400,
-  colorFaint: '#8C7A70',
+  colorFaint: "#8C7A70",
   colorInverse: palette.night900,
 
   borderColor: palette.night600,
   borderColorStrong: palette.night500,
-  shadowColor: 'rgba(0,0,0,0.45)',
+  shadowColor: "rgba(0,0,0,0.45)",
 
   /** amber leads in the dark theme: coral on aubergine loses too much contrast */
   accent: palette.amber500,
   accentPress: palette.amber600,
-  accentText: '#241019',
-  accentSoft: '#3A2A1C',
+  accentText: "#241019",
+  accentSoft: "#3A2A1C",
   accentSoftText: palette.amber500,
 
-  success: '#4FD2B8',
-  successSoft: '#1F3A36',
-  successSoftText: '#7FE6D0',
+  success: "#4FD2B8",
+  successSoft: "#1F3A36",
+  successSoftText: "#7FE6D0",
 
   warning: palette.amber500,
-  warningSoft: '#3A2A1C',
+  warningSoft: "#3A2A1C",
   warningSoftText: palette.amber500,
 
-  danger: '#FF8A6A',
-  dangerSoft: '#3A1F1A',
-  dangerSoftText: '#FFB09A',
+  danger: "#FF8A6A",
+  dangerSoft: "#3A1F1A",
+  dangerSoftText: "#FFB09A",
 
   neutralSoft: palette.night700,
   neutralSoftText: palette.sand400,
-} satisfies ThemeTokens;
+} satisfies ThemeTokens
 
 type StatusOverrides = Pick<
   ThemeTokens,
-  'accent' | 'accentPress' | 'accentText' | 'accentSoft' | 'accentSoftText'
->;
+  "accent" | "accentPress" | "accentText" | "accentSoft" | "accentSoftText"
+>
 
 const statusLight: Record<string, StatusOverrides> = {
   confirmed: {
@@ -143,7 +143,7 @@ const statusLight: Record<string, StatusOverrides> = {
     accent: palette.coral600,
     accentPress: palette.coral700,
     accentText: palette.cream50,
-    accentSoft: '#FFE9E4',
+    accentSoft: "#FFE9E4",
     accentSoftText: palette.coral700,
   },
   pending: {
@@ -153,29 +153,29 @@ const statusLight: Record<string, StatusOverrides> = {
     accentSoft: palette.cream200,
     accentSoftText: palette.brown500,
   },
-};
+}
 
 const statusDark: Record<string, StatusOverrides> = {
   confirmed: {
-    accent: '#4FD2B8',
-    accentPress: '#3BB9A0',
+    accent: "#4FD2B8",
+    accentPress: "#3BB9A0",
     accentText: palette.night900,
-    accentSoft: '#1F3A36',
-    accentSoftText: '#7FE6D0',
+    accentSoft: "#1F3A36",
+    accentSoftText: "#7FE6D0",
   },
   maybe: {
     accent: palette.amber500,
     accentPress: palette.amber600,
     accentText: palette.night900,
-    accentSoft: '#3A2A1C',
+    accentSoft: "#3A2A1C",
     accentSoftText: palette.amber500,
   },
   declined: {
-    accent: '#FF8A6A',
-    accentPress: '#E8704F',
+    accent: "#FF8A6A",
+    accentPress: "#E8704F",
     accentText: palette.night900,
-    accentSoft: '#3A1F1A',
-    accentSoftText: '#FFB09A',
+    accentSoft: "#3A1F1A",
+    accentSoftText: "#FFB09A",
   },
   pending: {
     accent: palette.night500,
@@ -184,7 +184,7 @@ const statusDark: Record<string, StatusOverrides> = {
     accentSoft: palette.night700,
     accentSoftText: palette.sand400,
   },
-};
+}
 
 export const themes = {
   light,
@@ -197,6 +197,6 @@ export const themes = {
   dark_maybe: { ...dark, ...statusDark.maybe },
   dark_declined: { ...dark, ...statusDark.declined },
   dark_pending: { ...dark, ...statusDark.pending },
-};
+}
 
-export type AppThemes = typeof themes;
+export type AppThemes = typeof themes

@@ -1,7 +1,7 @@
 import type { Profile } from "../../domain/entities/profile"
 
 /** Shape of a row from the `profiles` table (see supabase/migrations/*_profiles.sql). */
-export interface ProfileRow {
+export type ProfileRow = {
   id: string
   username: string
   avatar_url: string | null

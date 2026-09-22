@@ -1,5 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
 import type { DogPhotoStorageRepository } from "../../domain/repositories/dog-photo-storage.repository"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 const BUCKET = "dog-photos"
 

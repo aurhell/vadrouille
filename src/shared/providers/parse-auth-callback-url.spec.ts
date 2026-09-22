@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { parseAuthCallbackUrl } from "./parse-auth-callback-url"
 
 describe("parseAuthCallbackUrl", () => {

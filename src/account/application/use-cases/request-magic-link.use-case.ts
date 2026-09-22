@@ -1,4 +1,5 @@
 import { validateEmail } from "../../domain/policies/email.policy"
+
 import type { AuthRepository } from "../../domain/repositories/auth.repository"
 
 export type RequestMagicLinkInput = { email: string }

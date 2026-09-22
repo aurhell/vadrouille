@@ -2,14 +2,16 @@ import { useRouter } from "expo-router"
 import { FlatList } from "react-native"
 import { YStack } from "tamagui"
 
-import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, EmptyState, RefreshControl, ScreenHeader, SwipeToDeleteRow, WalkCard } from "@/shared/ui"
-import type { Walk as DesignSystemWalk } from "@/shared/ui/types"
-import type { Walk } from "../../domain/entities/walk"
+
 import { useRemoveWalk } from "../hooks/use-walk-mutations"
 import { useWalks } from "../hooks/use-walks"
 import { toDisplayWalk } from "../to-display-walk"
+
+import type { Walk } from "../../domain/entities/walk"
+import type { Walk as DesignSystemWalk } from "@/shared/ui/types"
 
 function WalkRow({
   walk,

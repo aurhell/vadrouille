@@ -1,7 +1,8 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
+import { toWalk, type ParticipantRow, type WalkDogRow, type WalkRow } from "./walk.mapper"
+
 import type { Walk, WalkRsvpStatus } from "../../domain/entities/walk"
 import type { UpdateWalkInput, WalkInput, WalkRepository } from "../../domain/repositories/walk.repository"
-import { toWalk, type ParticipantRow, type WalkDogRow, type WalkRow } from "./walk.mapper"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 const WALK_COLUMNS = "id, organizer_id, location_text, start_time, duration_minutes"
 

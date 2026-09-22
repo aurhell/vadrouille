@@ -2,7 +2,7 @@ import type { Friend } from "../../domain/entities/friend"
 
 /** Shape of a row from the `profiles` table, as selected through a `friendships` join
  * (see supabase/migrations/*_friendships.sql). */
-export interface FriendRow {
+export type FriendRow = {
   id: string
   username: string
   avatar_url: string | null

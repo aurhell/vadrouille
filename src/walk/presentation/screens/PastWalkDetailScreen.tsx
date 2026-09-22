@@ -2,13 +2,15 @@ import { useRouter } from "expo-router"
 import { ScrollView } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/shared/providers/session-provider"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useSession } from "@/shared/providers/session-provider"
 import { Body, Card, DogPhoto, PersonRow, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
-import type { RsvpStatus } from "@/shared/ui/types"
-import type { WalkRsvpStatus } from "../../domain/entities/walk"
+
 import { useWalk } from "../hooks/use-walks"
 import { organizerDisplayName, pairParticipantsWithDogs } from "../pair-participants-with-dogs"
+
+import type { WalkRsvpStatus } from "../../domain/entities/walk"
+import type { RsvpStatus } from "@/shared/ui/types"
 
 const RSVP_STATUS: Record<WalkRsvpStatus, RsvpStatus> = {
   yes: "confirmed",

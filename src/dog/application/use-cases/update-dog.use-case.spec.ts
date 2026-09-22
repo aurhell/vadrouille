@@ -1,11 +1,13 @@
 import { describe, expect, test, vi } from "vitest"
-import { createDogFixture } from "../../fixtures/dog.fixture"
+
 import { createDogRepositoryMock } from "../../fixtures/dog-repository.fixture"
+import { createDogFixture } from "../../fixtures/dog.fixture"
+
 import { UpdateDog } from "./update-dog.use-case"
 
 describe("UpdateDog", () => {
   describe("Given a non-empty name", () => {
-    test("When updating, Then the dog is updated and returned", async () => {
+    test("When updating, Then the dog is updated and returned", async() => {
       const dog = createDogFixture({ name: "Rexy" })
       const dogs = createDogRepositoryMock({ update: vi.fn().mockResolvedValue(dog) })
       const useCase = new UpdateDog(dogs)
@@ -18,7 +20,7 @@ describe("UpdateDog", () => {
   })
 
   describe("Given an empty name", () => {
-    test("When updating, Then it fails with reason 'required' and nothing is updated", async () => {
+    test("When updating, Then it fails with reason 'required' and nothing is updated", async() => {
       const dogs = createDogRepositoryMock()
       const useCase = new UpdateDog(dogs)
 

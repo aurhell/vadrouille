@@ -11,6 +11,7 @@
 //   pnpm dev:login someone@else.test  a different fixture email (own onboarding each time)
 
 import { execSync } from "node:child_process"
+
 import { createClient } from "@supabase/supabase-js"
 
 const args = process.argv.slice(2)

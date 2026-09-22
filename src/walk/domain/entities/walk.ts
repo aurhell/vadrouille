@@ -1,13 +1,13 @@
 export type WalkRsvpStatus = "pending" | "yes" | "no" | "maybe"
 
-export interface WalkParticipant {
+export type WalkParticipant = {
   id: string
   username: string
   avatarUrl: string | null
   status: WalkRsvpStatus
 }
 
-export interface WalkDog {
+export type WalkDog = {
   id: string
   name: string
   photoUrl: string | null
@@ -18,7 +18,7 @@ export interface WalkDog {
   updatedBy: string | null
 }
 
-export interface Walk {
+export type Walk = {
   id: string
   locationText: string
   startTime: string

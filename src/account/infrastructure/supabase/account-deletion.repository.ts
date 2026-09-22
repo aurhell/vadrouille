@@ -1,5 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js"
 import type { AccountDeletionRepository } from "../../domain/repositories/account-deletion.repository"
+import type { SupabaseClient } from "@supabase/supabase-js"
 
 export class SupabaseAccountDeletionRepository implements AccountDeletionRepository {
   constructor(private readonly client: SupabaseClient) {}

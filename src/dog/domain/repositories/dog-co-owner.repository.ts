@@ -1,6 +1,6 @@
 import type { DogCoOwnerInvite } from "../entities/dog"
 
-export interface DogCoOwnerRepository {
+export type DogCoOwnerRepository = {
   /** Pending invites I (as owner) sent for my dogs, awaiting the invitee's response. */
   listSentInvites(): Promise<DogCoOwnerInvite[]>
   /** Pending invites I received, awaiting my accept/decline. */

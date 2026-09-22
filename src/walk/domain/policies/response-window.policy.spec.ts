@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest"
+
 import { canRespondToWalk } from "./response-window.policy"
 
 describe("canRespondToWalk", () => {

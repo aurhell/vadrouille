@@ -2,9 +2,8 @@ import { useState } from "react"
 import { FlatList } from "react-native"
 import { XStack, YStack } from "tamagui"
 
-import { useSession } from "@/shared/providers/session-provider"
-import type { Friend } from "../../domain/entities/friend"
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
+import { useSession } from "@/shared/providers/session-provider"
 import {
   Avatar,
   Body,
@@ -19,6 +18,7 @@ import {
   TextField,
   Title,
 } from "@/shared/ui"
+
 import {
   useAcceptFriendRequest,
   useCancelFriendRequest,
@@ -28,6 +28,8 @@ import {
   useRemoveFriend,
 } from "../hooks/use-friend-mutations"
 import { useFriends, useReceivedFriendRequests, useSentFriendRequests } from "../hooks/use-friends"
+
+import type { Friend } from "../../domain/entities/friend"
 
 const REDEEM_OUTCOME_MESSAGE: Record<string, string> = {
   invalid_code: "Code invalide",

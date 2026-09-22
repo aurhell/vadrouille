@@ -12,7 +12,7 @@ const MIN_VISIBLE_MS = 600
 export function usePullToRefresh(refetch: () => Promise<unknown>) {
   const [refreshing, setRefreshing] = useState(false)
 
-  const onRefresh = useCallback(async () => {
+  const onRefresh = useCallback(async() => {
     setRefreshing(true)
     const startedAt = Date.now()
     try {
