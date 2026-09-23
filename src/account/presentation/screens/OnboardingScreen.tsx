@@ -117,6 +117,8 @@ export function OnboardingScreen() {
             justifyContent="center"
             overflow="hidden"
             onPress={async() => setPhoto((await pickPhoto()) ?? photo)}
+            accessibilityRole="button"
+            accessibilityLabel="Ajouter une photo de profil"
           >
             {photo ? (
               <Image source={{ uri: photo.uri }} style={{ width: 104, height: 104 }} />
@@ -163,6 +165,7 @@ export function OnboardingScreen() {
             paddingVertical="$2"
             hitSlop={12}
             onPress={() => signOut.mutate()}
+            accessibilityRole="button"
           >
             Ce n'est pas moi — se déconnecter
           </Body>

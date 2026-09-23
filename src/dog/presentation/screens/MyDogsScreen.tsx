@@ -78,7 +78,15 @@ export function MyDogsScreen() {
       <ScreenHeader
         title="Mes chiens"
         rightSlot={
-          <Body fontWeight="800" tone="accent" onPress={() => router.push("/dogs/new")} minHeight="$tap" paddingVertical="$2" hitSlop={12}>
+          <Body
+            fontWeight="800"
+            tone="accent"
+            onPress={() => router.push("/dogs/new")}
+            minHeight="$tap"
+            paddingVertical="$2"
+            hitSlop={12}
+            accessibilityRole="button"
+          >
             ＋ Ajouter
           </Body>
         }

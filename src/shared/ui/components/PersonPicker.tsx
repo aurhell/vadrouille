@@ -45,6 +45,7 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
                 gap="$2"
                 width={64}
                 onPress={() => onChange(toggle(selectedIds, person.id))}
+                accessibilityRole="button"
               >
                 <YStack position="relative">
                   <Avatar friend={person} size="lg" tone={selected ? undefined : "muted"} opacity={selected ? 1 : 0.5} />
@@ -68,7 +69,7 @@ export function PersonPicker({ label, people, selectedIds, onChange, emptyLabel 
                     </YStack>
                   ) : null}
                 </YStack>
-                <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorFaint"} numberOfLines={1}>
+                <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorSubtle"} numberOfLines={1}>
                   {person.username}
                 </Body>
               </YStack>

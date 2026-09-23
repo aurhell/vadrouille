@@ -132,13 +132,31 @@ function CoOwnersSection({ dogId, userId, canManage }: { dogId: string; userId: 
               )}
             </YStack>
           ) : (
-            <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={() => setPickerOpen(true)}>
+            <Body
+              size="sm"
+              tone="accent"
+              fontWeight="700"
+              minHeight="$tap"
+              paddingVertical="$2"
+              hitSlop={12}
+              onPress={() => setPickerOpen(true)}
+              accessibilityRole="button"
+            >
               ＋ Inviter un ami
             </Body>
           )}
         </>
       ) : (
-        <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={() => setLeaveDialogOpen(true)}>
+        <Body
+          size="sm"
+          tone="accent"
+          fontWeight="700"
+          minHeight="$tap"
+          paddingVertical="$2"
+          hitSlop={12}
+          onPress={() => setLeaveDialogOpen(true)}
+          accessibilityRole="button"
+        >
           Quitter le foyer partagé
         </Body>
       )}
@@ -254,6 +272,8 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
                 justifyContent="center"
                 overflow="hidden"
                 onPress={handleChangePhoto}
+                accessibilityRole="button"
+                accessibilityLabel="Changer la photo du chien"
               >
                 {existingDog?.photoUrl ? (
                   <Image source={{ uri: existingDog.photoUrl }} style={{ width: 104, height: 104 }} />
@@ -264,7 +284,16 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
                 )}
               </YStack>
               {existingDog?.photoUrl ? (
-                <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={handleRemovePhoto}>
+                <Body
+                  size="sm"
+                  tone="accent"
+                  fontWeight="700"
+                  minHeight="$tap"
+                  paddingVertical="$2"
+                  hitSlop={12}
+                  onPress={handleRemovePhoto}
+                  accessibilityRole="button"
+                >
                   Supprimer la photo
                 </Body>
               ) : null}
@@ -311,6 +340,7 @@ export function DogFormScreen({ dogId }: { dogId?: string }) {
               paddingVertical="$2"
               hitSlop={12}
               onPress={() => setDeleteDialogOpen(true)}
+              accessibilityRole="button"
             >
               Supprimer ce chien
             </Body>

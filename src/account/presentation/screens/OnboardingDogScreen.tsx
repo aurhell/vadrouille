@@ -78,6 +78,7 @@ export function OnboardingDogScreen() {
             paddingVertical="$2"
             hitSlop={12}
             onPress={handleSkip}
+            accessibilityRole="button"
           >
             Plus tard
           </Body>

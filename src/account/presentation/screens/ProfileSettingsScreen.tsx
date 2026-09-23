@@ -114,6 +114,8 @@ export function ProfileSettingsScreen() {
               justifyContent="center"
               overflow="hidden"
               onPress={handleChangeAvatar}
+              accessibilityRole="button"
+              accessibilityLabel="Changer la photo de profil"
             >
               {profile?.avatarUrl ? (
                 <Image source={{ uri: profile.avatarUrl }} style={{ width: 104, height: 104 }} />
@@ -124,7 +126,16 @@ export function ProfileSettingsScreen() {
               )}
             </YStack>
             {profile?.avatarUrl ? (
-              <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" paddingVertical="$2" hitSlop={12} onPress={handleRemoveAvatar}>
+              <Body
+                size="sm"
+                tone="accent"
+                fontWeight="700"
+                minHeight="$tap"
+                paddingVertical="$2"
+                hitSlop={12}
+                onPress={handleRemoveAvatar}
+                accessibilityRole="button"
+              >
                 Supprimer la photo
               </Body>
             ) : null}
@@ -172,6 +183,7 @@ export function ProfileSettingsScreen() {
                 paddingVertical="$2"
                 hitSlop={12}
                 onPress={() => regenerateInviteCode.mutate()}
+                accessibilityRole="button"
               >
                 {regenerateInviteCode.isPending ? "Régénération..." : "Régénérer le code"}
               </Body>
@@ -196,6 +208,7 @@ export function ProfileSettingsScreen() {
               paddingVertical="$2"
               hitSlop={12}
               onPress={() => setDeleteDialogOpen(true)}
+              accessibilityRole="button"
             >
               Supprimer mon compte
             </Body>

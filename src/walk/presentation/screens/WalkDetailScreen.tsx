@@ -64,7 +64,7 @@ function animateNext() {
 function DogPill({ dog, selected, disabled, onPress }: { dog: Dog; selected: boolean; disabled: boolean; onPress: () => void }) {
   const shared = dog.coOwners.length > 0
   return (
-    <YStack alignItems="center" gap="$2" opacity={disabled ? 0.6 : 1} onPress={disabled ? undefined : onPress}>
+    <YStack alignItems="center" gap="$2" opacity={disabled ? 0.6 : 1} onPress={disabled ? undefined : onPress} accessibilityRole="button">
       <DogPhoto
         dog={{ id: dog.id, name: dog.name, breed: dog.breed ?? "", ageYears: 0, photoUrl: dog.photoUrl ?? undefined }}
         size="md"
@@ -72,7 +72,7 @@ function DogPill({ dog, selected, disabled, onPress }: { dog: Dog; selected: boo
         opacity={selected ? 1 : 0.45}
         dashed={shared}
       />
-      <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorFaint"} numberOfLines={1} textAlign="center" width={64}>
+      <Body size="xs" fontWeight="700" color={selected ? "$color" : "$colorSubtle"} numberOfLines={1} textAlign="center" width={64}>
         {dog.name}
       </Body>
     </YStack>
@@ -203,6 +203,8 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
               justifyContent="center"
               hitSlop={12}
               onPress={() => setMenuOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Options de la balade"
             >
               <Body fontSize={20} fontWeight="800" color="$accentText">
                 •••
@@ -305,7 +307,15 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
                   ))}
                 </XStack>
               ) : (
-                <Body size="sm" tone="accent" fontWeight="700" minHeight="$tap" hitSlop={12} onPress={() => router.push("/dogs/new")}>
+                <Body
+                  size="sm"
+                  tone="accent"
+                  fontWeight="700"
+                  minHeight="$tap"
+                  hitSlop={12}
+                  onPress={() => router.push("/dogs/new")}
+                  accessibilityRole="button"
+                >
                   ＋ Ajouter un chien
                 </Body>
               )}
@@ -393,6 +403,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
                 setMenuOpen(false)
                 router.push(`/walks/${walkId}/edit`)
               }}
+              accessibilityRole="button"
             >
               <Body fontWeight="700">Modifier</Body>
             </XStack>
@@ -404,6 +415,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
                 setMenuOpen(false)
                 setCancelModalOpen(true)
               }}
+              accessibilityRole="button"
             >
               <Body fontWeight="700" color="$danger">
                 Annuler cette balade

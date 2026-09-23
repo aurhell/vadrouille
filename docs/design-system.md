@@ -147,12 +147,14 @@ Le nombre vient directement du cache TanStack Query déjà chargé par l'écran 
 | `$accentText` sur `$accent` | 3,2:1 | AA large |
 | `$accentSoftText` sur `$accentSoft` | 6,1:1 | AA |
 | `successSoftText` sur `successSoft` | 5,4:1 | AA |
+| `$colorFaint` sur `$background` | ~2,6:1 (clair) / ~4,5:1 (sombre) | **Échoue AA** |
 
 **Règles** :
 - Texte sur aplat corail : blanc plein, taille 16 minimum, graisse 800 (le ratio 3,2:1 n'est conforme qu'en "large text"). Pour un libellé plus petit sur corail → `$accentSoft` + `$accentSoftText`
 - Token `$tap = 44` : toute zone cliquable en hérite via `minHeight="$tap"`. Les glyphes seuls (✕, ‹) reçoivent un `hitSlop` de 12
 - Aucune information portée par la couleur seule : les statuts cumulent teinte, glyphe et mot ; la barre de quota est toujours accompagnée du ratio écrit
-- Emojis décoratifs masqués aux lecteurs d'écran, `accessibilityLabel` explicite sur les pressables sans texte
+- Emojis décoratifs masqués aux lecteurs d'écran, `accessibilityLabel` explicite sur les pressables sans texte (toute zone cliquable custom — `YStack`/`XStack`/`Body` avec `onPress`, pas un `<Button>` — porte aussi `accessibilityRole="button"`)
+- **`$colorFaint` n'a jamais été validé pour du texte informatif** (ajouté après le passage de contraste initial, absent du tableau ci-dessus jusqu'à ce qu'un audit accessibilité le repère) — n'échoue AA qu'en clair. Réservé au texte réellement non-informatif (placeholder de champ vide, voir `Input`/`DateField`) ; tout texte qui nomme quelque chose (nom de chien/ami non sélectionné dans `DogPill`/`PersonPicker`, etc.) doit utiliser `$colorSubtle` à la place
 
 ## Écrans de référence
 

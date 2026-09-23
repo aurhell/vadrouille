@@ -47,6 +47,7 @@ export function ScreenHeader({ title, subtitle, onBack, rightSlot, ...props }: S
           color={accent ? "$accentText" : "$colorSubtle"}
           onPress={onBack}
           hitSlop={12}
+          accessibilityRole="button"
         >
           ‹ Retour
         </Body>

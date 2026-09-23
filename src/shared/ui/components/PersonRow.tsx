@@ -24,7 +24,7 @@ export type PersonRowProps = {
  * tap target whenever `onPress` is set. */
 export function PersonRow({ person, avatarSize = "sm", label, suffix, trailing, onPress }: PersonRowProps) {
   return (
-    <XStack alignItems="center" gap="$3" minHeight="$tap" onPress={onPress}>
+    <XStack alignItems="center" gap="$3" minHeight="$tap" onPress={onPress} accessibilityRole={onPress ? "button" : undefined}>
       <Avatar friend={person} size={avatarSize} />
       <Body flex={1} fontWeight="700">
         {label ?? person.username}

@@ -133,6 +133,7 @@ export function WalkFormScreen() {
                     borderColor={selected ? "$success" : "transparent"}
                     padding="$3"
                     onPress={() => setDogIds((ids) => toggle(ids, dog.id))}
+                    accessibilityRole="button"
                   >
                     <DogPhoto dog={{ id: dog.id, name: dog.name, breed: dog.breed ?? "", ageYears: 0, photoUrl: dog.photoUrl ?? undefined }} size="sm" />
                     <Body flex={1} fontWeight="700">

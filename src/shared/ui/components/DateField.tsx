@@ -76,6 +76,7 @@ export function DateField({
           justifyContent="center"
           cursor="pointer"
           onPress={() => setCompactSheetOpen(true)}
+          accessibilityRole="button"
         >
           <Body color={value ? "$color" : "$colorFaint"} fontWeight="700">{value ? formatValue(value, mode) : resolvedPlaceholder}</Body>
         </XStack>
@@ -143,6 +144,7 @@ export function DateField({
         alignItems="center"
         cursor="pointer"
         onPress={handlePress}
+        accessibilityRole="button"
       >
         <Body color={value ? "$color" : "$colorFaint"} fontWeight="600">
           {value ? formatValue(value, mode) : resolvedPlaceholder}

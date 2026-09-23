@@ -8,31 +8,36 @@ import { IconAmis, IconBalades, IconChiens, IconProfil, IconWithBadge, themes } 
 
 import type { ColorValue } from "react-native"
 
-function DogsTabIcon({ color }: { color: ColorValue }) {
-  const { session } = useSession()
-  const { data: receivedInvites } = useReceivedCoOwnerInvites(session?.user.id)
-
+function DogsTabIcon({ color, count }: { color: ColorValue; count: number }) {
   return (
-    <IconWithBadge count={receivedInvites?.length ?? 0}>
+    <IconWithBadge count={count}>
       <IconChiens size={27} color={color as string} />
     </IconWithBadge>
   )
 }
 
-function FriendsTabIcon({ color }: { color: ColorValue }) {
-  const { session } = useSession()
-  const { data: receivedRequests } = useReceivedFriendRequests(session?.user.id)
-
+function FriendsTabIcon({ color, count }: { color: ColorValue; count: number }) {
   return (
-    <IconWithBadge count={receivedRequests?.length ?? 0}>
+    <IconWithBadge count={count}>
       <IconAmis size={27} color={color as string} />
     </IconWithBadge>
   )
 }
 
+/** A VoiceOver/TalkBack user hears just "Chiens"/"Amis" for the tab — the badge is purely
+ * visual, so any pending count is appended into the label itself instead. */
+function tabLabelWithCount(title: string, count: number): string {
+  return count > 0 ? `${title}, ${count} en attente` : title
+}
+
 export default function TabsLayout() {
   const { resolvedTheme } = useThemePreference()
   const theme = themes[resolvedTheme]
+  const { session } = useSession()
+  const { data: receivedInvites } = useReceivedCoOwnerInvites(session?.user.id)
+  const { data: receivedRequests } = useReceivedFriendRequests(session?.user.id)
+  const dogsPendingCount = receivedInvites?.length ?? 0
+  const friendsPendingCount = receivedRequests?.length ?? 0
 
   return (
     <Tabs
@@ -58,14 +63,16 @@ export default function TabsLayout() {
         name="dogs"
         options={{
           title: "Chiens",
-          tabBarIcon: ({ color }) => <DogsTabIcon color={color} />,
+          tabBarAccessibilityLabel: tabLabelWithCount("Chiens", dogsPendingCount),
+          tabBarIcon: ({ color }) => <DogsTabIcon color={color} count={dogsPendingCount} />,
         }}
       />
       <Tabs.Screen
         name="friends"
         options={{
           title: "Amis",
-          tabBarIcon: ({ color }) => <FriendsTabIcon color={color} />,
+          tabBarAccessibilityLabel: tabLabelWithCount("Amis", friendsPendingCount),
+          tabBarIcon: ({ color }) => <FriendsTabIcon color={color} count={friendsPendingCount} />,
         }}
       />
       <Tabs.Screen

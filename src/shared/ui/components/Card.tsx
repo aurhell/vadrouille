@@ -24,6 +24,7 @@ export const Card = styled(YStack, {
     interactive: {
       true: {
         cursor: "pointer",
+        role: "button",
         transition: "fast",
         pressStyle: { scale: 0.985, backgroundColor: "$backgroundSoft" },
       },

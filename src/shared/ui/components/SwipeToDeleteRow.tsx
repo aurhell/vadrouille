@@ -1,4 +1,5 @@
 import { useRef, useState, type ReactNode  } from "react"
+import { View } from "react-native"
 import { Swipeable } from "react-native-gesture-handler"
 import { XStack } from "tamagui"
 
@@ -47,27 +48,41 @@ export function SwipeToDeleteRow({
 
   return (
     <>
-      <Swipeable
-        ref={swipeableRef}
-        friction={2}
-        overshootRight={false}
-        renderRightActions={() => (
-          <XStack
-            width={REMOVE_ACTION_WIDTH}
-            alignItems="center"
-            justifyContent="center"
-            backgroundColor="$danger"
-            borderRadius="$5"
-            onPress={handlePress}
-          >
-            <Body fontWeight="800" color="$colorInverse">
-              {actionLabel}
-            </Body>
-          </XStack>
-        )}
+      {/* The swipe gesture itself has no VoiceOver/TalkBack equivalent (it conflicts with the
+       * screen reader's own swipe navigation) — this custom accessibility action exposes the
+       * same "Retirer"/"Supprimer" as a rotor action on the whole row, so it's reachable
+       * without swiping. `accessible` groups the row into one stop rather than breaking it
+       * apart, which still forwards a double-tap to whatever `onPress` the row's own content
+       * (e.g. a WalkCard/DogCard) has for navigation. */}
+      <View
+        accessible
+        accessibilityActions={[{ name: "activate", label: actionLabel }]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === "activate") handlePress()
+        }}
       >
-        {children}
-      </Swipeable>
+        <Swipeable
+          ref={swipeableRef}
+          friction={2}
+          overshootRight={false}
+          renderRightActions={() => (
+            <XStack
+              width={REMOVE_ACTION_WIDTH}
+              alignItems="center"
+              justifyContent="center"
+              backgroundColor="$danger"
+              borderRadius="$5"
+              onPress={handlePress}
+            >
+              <Body fontWeight="800" color="$colorInverse">
+                {actionLabel}
+              </Body>
+            </XStack>
+          )}
+        >
+          {children}
+        </Swipeable>
+      </View>
       <ConfirmDialog
         open={confirmOpen}
         title={confirmTitle}

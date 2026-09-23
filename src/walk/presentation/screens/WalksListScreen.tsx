@@ -59,7 +59,15 @@ export function WalksListScreen() {
       <ScreenHeader
         title="Balades"
         rightSlot={
-          <Body fontWeight="800" tone="accent" onPress={() => router.push("/walks/new")} minHeight="$tap" paddingVertical="$2" hitSlop={12}>
+          <Body
+            fontWeight="800"
+            tone="accent"
+            onPress={() => router.push("/walks/new")}
+            minHeight="$tap"
+            paddingVertical="$2"
+            hitSlop={12}
+            accessibilityRole="button"
+          >
             ＋ Créer
           </Body>
         }
@@ -77,6 +85,7 @@ export function WalksListScreen() {
         minHeight="$tap"
         hitSlop={12}
         onPress={() => router.push("/walks/past")}
+        accessibilityRole="button"
       >
         Voir mes balades passées ›
       </Body>
