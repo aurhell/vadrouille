@@ -1,12 +1,13 @@
 import { useRouter } from "expo-router"
-import { FlatList } from "react-native"
+import { SectionList } from "react-native"
 import { YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { useRefetchOnFocus } from "@/shared/hooks/use-refetch-on-focus"
 import { useSession } from "@/shared/providers/session-provider"
-import { Body, EmptyState, RefreshControl, ScreenHeader, SwipeToDeleteRow, WalkCard } from "@/shared/ui"
+import { Body, EmptyState, RefreshControl, ScreenHeader, SwipeToDeleteRow, Title, WalkCard } from "@/shared/ui"
 
+import { groupWalksByDate } from "../group-walks-by-date"
 import { useRemoveWalk } from "../hooks/use-walk-mutations"
 import { useWalks } from "../hooks/use-walks"
 import { toDisplayWalk } from "../to-display-walk"
@@ -54,6 +55,8 @@ export function WalksListScreen() {
   const { refreshing, onRefresh } = usePullToRefresh(() => walksQuery.refetch())
   const removeWalk = useRemoveWalk(userId)
 
+  const sections = groupWalksByDate(walks ?? [])
+
   return (
     <YStack flex={1} backgroundColor="$background">
       <ScreenHeader
@@ -73,7 +76,7 @@ export function WalksListScreen() {
         }
       />
 
-      {/* Above the list, not a FlatList footer: stays reachable even on the empty state,
+      {/* Above the list, not a SectionList footer: stays reachable even on the empty state,
        * which otherwise fills the whole flex:1 area and pushes a footer off-screen. */}
       <Body
         size="sm"
@@ -90,11 +93,17 @@ export function WalksListScreen() {
         Voir mes balades passées ›
       </Body>
 
-      <FlatList
-        contentContainerStyle={walks && walks.length > 0 ? { padding: 20, gap: 12, paddingTop: 0 } : { flexGrow: 1 }}
-        data={walks ?? []}
+      <SectionList
+        contentContainerStyle={sections.length > 0 ? { padding: 20, gap: 12, paddingTop: 0 } : { flexGrow: 1 }}
+        sections={sections}
         keyExtractor={(walk) => walk.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        stickySectionHeadersEnabled={false}
+        renderSectionHeader={({ section }) => (
+          <Title size="sm" paddingTop="$3" paddingBottom="$2">
+            {section.title}
+          </Title>
+        )}
         renderItem={({ item }) => (
           <WalkRow
             walk={item}
