@@ -85,7 +85,14 @@ export function WalkEditScreen({ walkId }: { walkId: string }) {
         durationMinutes,
         newFriendIds,
       })
-      if (outcome.success) router.replace(`/walks/${walkId}`)
+      // back(), not replace(`/walks/${walkId}`) — this screen is only ever pushed from
+      // WalkDetailScreen, so the detail screen for this exact walk is already the entry right
+      // below this one in the stack. replace() would have swapped this screen for a NEW
+      // detail route instead of returning to that existing one, leaving two consecutive
+      // detail entries in the stack — a swipe-back from there lands back on a duplicate
+      // detail screen instead of the walks list. useUpdateWalk's onSuccess already spliced
+      // the updated walk into that screen's query cache, so it shows the fresh data either way.
+      if (outcome.success) router.back()
     } catch {
       // E.g. the walk started between opening this screen and saving — RLS refuses the
       // update server-side (walks_update_organizer_future_only). Already surfaces the generic
