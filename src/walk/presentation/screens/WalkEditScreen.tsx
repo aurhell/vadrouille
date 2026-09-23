@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { ScrollView } from "react-native"
-import { XStack, YStack } from "tamagui"
+import { Spinner, XStack, YStack } from "tamagui"
 
 import { useSession } from "@/shared/providers/session-provider"
-import { Body, Button, ChoiceChipGroup, CloseButton, DateField, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
+import { Body, Button, ChoiceChipGroup, CloseButton, DateField, EmptyState, Label, PersonPicker, ScreenHeader, TextField } from "@/shared/ui"
 import { durationOptions } from "@/shared/ui/mocks"
 
 import { useFriends } from "../hooks/use-friends"
@@ -35,7 +35,7 @@ export function WalkEditScreen({ walkId }: { walkId: string }) {
   const { session } = useSession()
   const userId = session?.user.id
   const walkQuery = useWalk(walkId)
-  const { data: walk } = walkQuery
+  const { data: walk, isLoading: walkLoading } = walkQuery
   const { data: friends } = useFriends(userId)
   const updateWalk = useUpdateWalk(userId, walkId)
 
@@ -54,7 +54,20 @@ export function WalkEditScreen({ walkId }: { walkId: string }) {
     }
   }, [walk])
 
-  if (!walk) return null
+  if (!walk) {
+    return (
+      <YStack flex={1} backgroundColor="$background">
+        <ScreenHeader title="Modifier la balade" rightSlot={<CloseButton onPress={() => router.back()} />} />
+        {walkLoading ? (
+          <YStack flex={1} alignItems="center" justifyContent="center">
+            <Spinner size="large" color="$accent" />
+          </YStack>
+        ) : (
+          <EmptyState emoji="🤷" title="Balade introuvable" body="Cette balade a peut-être été annulée, ou tu n'y as plus accès." />
+        )}
+      </YStack>
+    )
+  }
 
   const alreadyInvitedIds = new Set(walk.participants.map((p) => p.id))
   const invitableFriends = (friends ?? []).filter((friend) => !alreadyInvitedIds.has(friend.id))

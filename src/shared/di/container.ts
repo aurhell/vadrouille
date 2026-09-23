@@ -57,7 +57,7 @@ export const container = {
     // mutations below all go through their use-case for validation/orchestration.
     profiles: profileRepository,
     requestMagicLink: new RequestMagicLink(authRepository),
-    signOut: new SignOut(authRepository),
+    signOut: new SignOut(authRepository, pushTokenRepository),
     createProfile: new CreateProfile(profileRepository),
     updateUsername: new UpdateUsername(profileRepository),
     updateAvatar: new UpdateAvatar(profileRepository, storageRepository),

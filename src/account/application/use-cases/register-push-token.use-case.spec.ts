@@ -9,7 +9,7 @@ describe("RegisterPushToken", () => {
   let registerPushToken: RegisterPushToken
 
   beforeEach(() => {
-    pushTokens = { register: vi.fn() }
+    pushTokens = { register: vi.fn(), remove: vi.fn() }
     registerPushToken = new RegisterPushToken(pushTokens)
   })
 

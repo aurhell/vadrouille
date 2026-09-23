@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router"
 import { ScrollView } from "react-native"
-import { XStack, YStack } from "tamagui"
+import { Spinner, XStack, YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { useSession } from "@/shared/providers/session-provider"
-import { Body, Card, DogPhoto, PersonRow, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
+import { Body, Card, DogPhoto, EmptyState, PersonRow, RefreshControl, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
 
 import { useWalk } from "../hooks/use-walks"
 import { organizerDisplayName, pairParticipantsWithDogs } from "../pair-participants-with-dogs"
@@ -26,10 +26,23 @@ export function PastWalkDetailScreen({ walkId }: { walkId: string }) {
   const router = useRouter()
   const { session } = useSession()
   const walkQuery = useWalk(walkId)
-  const { data: walk } = walkQuery
+  const { data: walk, isLoading: walkLoading } = walkQuery
   const { refreshing, onRefresh } = usePullToRefresh(() => walkQuery.refetch())
 
-  if (!walk) return null
+  if (!walk) {
+    return (
+      <YStack flex={1} backgroundColor="$background">
+        <ScreenHeader title="Balade" onBack={() => router.back()} />
+        {walkLoading ? (
+          <YStack flex={1} alignItems="center" justifyContent="center">
+            <Spinner size="large" color="$accent" />
+          </YStack>
+        ) : (
+          <EmptyState emoji="🤷" title="Balade introuvable" body="Cette balade a peut-être été annulée, ou tu n'y as plus accès." />
+        )}
+      </YStack>
+    )
+  }
 
   const { participants: participantsWithDogs } = pairParticipantsWithDogs(walk)
 

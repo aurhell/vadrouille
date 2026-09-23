@@ -2,11 +2,26 @@ import { useRouter } from "expo-router"
 import { useEffect, useRef, useState } from "react"
 import { Alert, LayoutAnimation, Modal, Platform, Pressable, ScrollView, UIManager } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { XStack, YStack } from "tamagui"
+import { Spinner, XStack, YStack } from "tamagui"
 
 import { usePullToRefresh } from "@/shared/hooks/use-pull-to-refresh"
 import { useSession } from "@/shared/providers/session-provider"
-import { Body, Button, Card, ConfirmDialog, DogPhoto, Label, PersonRow, RefreshControl, RsvpSheet, ScreenHeader, StatusBadge, Title, WalkMetaLine } from "@/shared/ui"
+import {
+  Body,
+  Button,
+  Card,
+  ConfirmDialog,
+  DogPhoto,
+  EmptyState,
+  Label,
+  PersonRow,
+  RefreshControl,
+  RsvpSheet,
+  ScreenHeader,
+  StatusBadge,
+  Title,
+  WalkMetaLine,
+} from "@/shared/ui"
 
 import { canRespondToWalk } from "../../domain/policies/response-window.policy"
 import { dogQuotaMessage } from "../../domain/policies/walk-dog-quota.policy"
@@ -46,10 +61,10 @@ function animateNext() {
   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
 }
 
-function DogPill({ dog, selected, onPress }: { dog: Dog; selected: boolean; onPress: () => void }) {
+function DogPill({ dog, selected, disabled, onPress }: { dog: Dog; selected: boolean; disabled: boolean; onPress: () => void }) {
   const shared = dog.coOwners.length > 0
   return (
-    <YStack alignItems="center" gap="$2" onPress={onPress}>
+    <YStack alignItems="center" gap="$2" opacity={disabled ? 0.6 : 1} onPress={disabled ? undefined : onPress}>
       <DogPhoto
         dog={{ id: dog.id, name: dog.name, breed: dog.breed ?? "", ageYears: 0, photoUrl: dog.photoUrl ?? undefined }}
         size="md"
@@ -70,7 +85,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
   const { session } = useSession()
   const userId = session?.user.id
   const walkQuery = useWalk(walkId)
-  const { data: walk } = walkQuery
+  const { data: walk, isLoading: walkLoading } = walkQuery
   useWalkRealtime(walkId)
   const dogsQuery = useDogs(userId)
   const { data: myDogs } = dogsQuery
@@ -91,7 +106,27 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
     }
   }, [walk])
 
-  if (!walk) return null
+  if (!walk) {
+    // Distinct from a still-loading query: a deep link (push notification, stale share) to a
+    // walk that's been cancelled since, or that RLS no longer lets us SELECT, must not leave
+    // the user stuck on a blank screen with no way back but the OS gesture.
+    return (
+      <YStack flex={1} backgroundColor="$background">
+        <ScreenHeader title="Balade" onBack={() => router.back()} />
+        {walkLoading ? (
+          <YStack flex={1} alignItems="center" justifyContent="center">
+            <Spinner size="large" color="$accent" />
+          </YStack>
+        ) : (
+          <EmptyState
+            emoji="🤷"
+            title="Balade introuvable"
+            body="Cette balade a peut-être été annulée, ou tu n'y as plus accès."
+          />
+        )}
+      </YStack>
+    )
+  }
 
   const isOrganizer = walk.organizerId === userId
   const responseWindowOpen = canRespondToWalk(walk)
@@ -260,7 +295,13 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
               {myDogs && myDogs.length > 0 ? (
                 <XStack gap="$4" flexWrap="wrap">
                   {myDogs.map((dog) => (
-                    <DogPill key={dog.id} dog={dog} selected={confirmedDogIds.has(dog.id)} onPress={() => handleToggleDog(dog)} />
+                    <DogPill
+                      key={dog.id}
+                      dog={dog}
+                      selected={confirmedDogIds.has(dog.id)}
+                      disabled={toggleDog.isPending}
+                      onPress={() => handleToggleDog(dog)}
+                    />
                   ))}
                 </XStack>
               ) : (
