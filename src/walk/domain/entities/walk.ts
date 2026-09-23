@@ -1,3 +1,5 @@
+import type { DogSex } from "@/dog/domain/entities/dog"
+
 export type WalkRsvpStatus = "pending" | "yes" | "no" | "maybe"
 
 export type WalkParticipant = {
@@ -11,6 +13,7 @@ export type WalkDog = {
   id: string
   name: string
   photoUrl: string | null
+  sex: DogSex | null
   status: "yes" | "maybe"
   /** Who confirmed this dog for the walk — an audit field (see modele-de-donnees.md), not an
    * ownership record (a dog can have several owners). Used to pair a dog with a participant

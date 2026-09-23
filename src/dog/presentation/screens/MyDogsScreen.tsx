@@ -28,6 +28,7 @@ function toDisplayDog(dog: Dog): DesignSystemDog {
     name: dog.name,
     breed: dog.breed ?? "Race non renseignée",
     ageYears: ageYearsFrom(dog.birthDate),
+    sex: dog.sex ?? undefined,
     photoUrl: dog.photoUrl ?? undefined,
     sharedWith: dog.coOwners[0] ? { id: dog.coOwners[0].id, username: dog.coOwners[0].username, avatarUrl: dog.coOwners[0].avatarUrl ?? undefined } : undefined,
   }

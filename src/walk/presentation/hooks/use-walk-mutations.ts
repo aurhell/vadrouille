@@ -7,6 +7,7 @@ import { walkQueryKey, walksQueryKey } from "./use-walks"
 import type { ToggleDogForWalkInput } from "../../application/use-cases/toggle-dog-for-walk.use-case"
 import type { Walk, WalkDog, WalkRsvpStatus } from "../../domain/entities/walk"
 import type { UpdateWalkInput, WalkInput } from "../../domain/repositories/walk.repository"
+import type { DogSex } from "@/dog/domain/entities/dog"
 
 export function useCreateWalk(userId: string | undefined) {
   const queryClient = useQueryClient()
@@ -93,6 +94,7 @@ export function useRespondToWalk(userId: string | undefined, walkId: string) {
 export type ToggleDogForWalkMutationInput = {
   dogName: string
   dogPhotoUrl: string | null
+  dogSex: DogSex | null
 } & ToggleDogForWalkInput
 
 export function useToggleDogForWalk(userId: string | undefined, walkId: string) {
@@ -109,7 +111,14 @@ export function useToggleDogForWalk(userId: string | undefined, walkId: string) 
         if (input.isConfirmed) {
           return { ...walk, dogs: walk.dogs.filter((dog) => dog.id !== input.dogId) }
         }
-        const newDog: WalkDog = { id: input.dogId, name: input.dogName, photoUrl: input.dogPhotoUrl, status: "yes", updatedBy: userId ?? null }
+        const newDog: WalkDog = {
+          id: input.dogId,
+          name: input.dogName,
+          photoUrl: input.dogPhotoUrl,
+          sex: input.dogSex,
+          status: "yes",
+          updatedBy: userId ?? null,
+        }
         return { ...walk, dogs: [...walk.dogs, newDog] }
       })
       return { previous }

@@ -160,7 +160,7 @@ export class SupabaseWalkRepository implements WalkRepository {
     const byWalk = new Map<string, WalkDogRow[]>()
     const { data, error } = await this.client
       .from("walk_dogs")
-      .select("walk_id, status, updated_by, dog:dogs(id, name, photo_url)")
+      .select("walk_id, status, updated_by, dog:dogs(id, name, photo_url, sex)")
       .in("walk_id", walkIds)
 
     if (error) throw error

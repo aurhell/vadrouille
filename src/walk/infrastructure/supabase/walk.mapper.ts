@@ -1,4 +1,5 @@
 import type { Walk, WalkDog, WalkParticipant, WalkRsvpStatus } from "../../domain/entities/walk"
+import type { DogSex } from "@/dog/domain/entities/dog"
 
 /** Shape of a row from the `walks` table (see supabase/migrations/*_walks.sql). */
 export type WalkRow = {
@@ -17,7 +18,7 @@ export type ParticipantRow = {
 export type WalkDogRow = {
   status: "yes" | "maybe"
   updated_by: string | null
-  dog: { id: string; name: string; photo_url: string | null }
+  dog: { id: string; name: string; photo_url: string | null; sex: DogSex | null }
 }
 
 export function toWalk(row: WalkRow, participantRows: ParticipantRow[], dogRows: WalkDogRow[], userId: string): Walk {
@@ -31,6 +32,7 @@ export function toWalk(row: WalkRow, participantRows: ParticipantRow[], dogRows:
     id: d.dog.id,
     name: d.dog.name,
     photoUrl: d.dog.photo_url,
+    sex: d.dog.sex,
     status: d.status,
     updatedBy: d.updated_by,
   }))

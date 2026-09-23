@@ -32,7 +32,7 @@ import { useWalk } from "../hooks/use-walks"
 import { pairParticipantsWithDogs } from "../pair-participants-with-dogs"
 
 import type { WalkRsvpStatus } from "../../domain/entities/walk"
-import type { Dog } from "@/dog/domain/entities/dog"
+import type { Dog, DogSex } from "@/dog/domain/entities/dog"
 import type { RsvpStatus } from "@/shared/ui/types"
 
 if (Platform.OS === "android") {
@@ -54,6 +54,11 @@ const RSVP_STATUS_REVERSE: Record<Exclude<RsvpStatus, "pending">, WalkRsvpStatus
 
 const QUOTA_EXCEEDED_MESSAGE = "Cette balade est complète (10/10 chiens)"
 const MAX_DOGS_SHOWN = 3
+
+// The badge on DogPhoto's ring (see shared/ui/components/DogPhoto.tsx) is a discreet visual
+// flourish, not the sole carrier of the info — this label spells it out ("Rex, mâle") for
+// screen readers rather than relying on the badge's own tiny symbol being announced.
+const SEX_LABEL: Record<DogSex, string> = { male: "mâle", female: "femelle" }
 
 type SheetView = "buttons" | "dogs" | "collapsed"
 
@@ -147,6 +152,7 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
         confirmedDogsCount: walk!.dogs.length,
         dogName: dog.name,
         dogPhotoUrl: dog.photoUrl,
+        dogSex: dog.sex,
       })
       // E.g. a race with someone else confirming the 10th dog between our own client-side
       // quota check and the request landing — the SQL trigger still refuses it server-side.
@@ -221,11 +227,17 @@ export function WalkDetailScreen({ walkId }: { walkId: string }) {
               <Title size="md">Chiens confirmés</Title>
               <XStack gap="$4" flexWrap="wrap">
                 {shownDogs.map((dog) => (
-                  <YStack key={dog.id} alignItems="center" gap="$1">
+                  <YStack
+                    key={dog.id}
+                    alignItems="center"
+                    gap="$1"
+                    accessibilityLabel={dog.sex ? `${dog.name}, ${SEX_LABEL[dog.sex]}` : dog.name}
+                  >
                     <DogPhoto
                       dog={{ id: dog.id, name: dog.name, breed: "", ageYears: 0, photoUrl: dog.photoUrl ?? undefined }}
                       size="md"
                       dashed={(myDogs?.find((myDog) => myDog.id === dog.id)?.coOwners.length ?? 0) > 0}
+                      sex={dog.sex}
                     />
                     <Body size="xs" fontWeight="700" numberOfLines={1}>
                       {dog.name}

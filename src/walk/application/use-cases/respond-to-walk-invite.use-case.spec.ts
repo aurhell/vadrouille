@@ -21,7 +21,7 @@ describe("RespondToWalkInvite", () => {
 
   describe("Given I already had a dog confirmed and I change my response to 'no'", () => {
     test("When responding, Then my confirmed dog is released from the walk", async() => {
-      const walk = createWalkFixture({ dogs: [{ id: "rex", name: "Rex", photoUrl: null, status: "yes", updatedBy: "me" }] })
+      const walk = createWalkFixture({ dogs: [{ id: "rex", name: "Rex", photoUrl: null, sex: null, status: "yes", updatedBy: "me" }] })
       const walks = createWalkRepositoryMock({ findById: vi.fn().mockResolvedValue(walk) })
       const useCase = new RespondToWalkInvite(walks)
 
@@ -34,7 +34,7 @@ describe("RespondToWalkInvite", () => {
 
   describe("Given I change my response to 'no' but a confirmed dog isn't mine", () => {
     test("When responding, Then that dog is left untouched", async() => {
-      const walk = createWalkFixture({ dogs: [{ id: "not-mine", name: "Milo", photoUrl: null, status: "yes", updatedBy: "someone-else" }] })
+      const walk = createWalkFixture({ dogs: [{ id: "not-mine", name: "Milo", photoUrl: null, sex: null, status: "yes", updatedBy: "someone-else" }] })
       const walks = createWalkRepositoryMock({ findById: vi.fn().mockResolvedValue(walk) })
       const useCase = new RespondToWalkInvite(walks)
 

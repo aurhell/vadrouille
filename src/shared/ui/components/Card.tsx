@@ -70,6 +70,11 @@ export type DogCardProps = {
   flat?: boolean;
 }
 
+const SEX_LABEL: Record<NonNullable<Dog["sex"]>, string> = {
+  male: "Mâle",
+  female: "Femelle",
+}
+
 export function DogCard({ dog, onPress, flat }: DogCardProps) {
   const shared = !!dog.sharedWith
   const { resolvedTheme } = useThemePreference()
@@ -82,6 +87,7 @@ export function DogCard({ dog, onPress, flat }: DogCardProps) {
           <Title size="lg">{dog.name}</Title>
           <Body size="sm" tone="subtle">
             {dog.breed} · {dog.ageYears} an{dog.ageYears > 1 ? "s" : ""}
+            {dog.sex ? ` · ${SEX_LABEL[dog.sex]}` : ""}
           </Body>
           {shared ? (
             <Theme name="confirmed">

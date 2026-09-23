@@ -9,7 +9,7 @@ describe("pairParticipantsWithDogs", () => {
     test("When pairing, Then the dog is attached to that participant", () => {
       const walk = createWalkFixture({
         participants: [{ id: "alice", username: "alice", avatarUrl: null, status: "yes" }],
-        dogs: [{ id: "rex", name: "Rex", photoUrl: null, status: "yes", updatedBy: "alice" }],
+        dogs: [{ id: "rex", name: "Rex", photoUrl: null, sex: null, status: "yes", updatedBy: "alice" }],
       })
 
       const result = pairParticipantsWithDogs(walk)
@@ -26,7 +26,7 @@ describe("pairParticipantsWithDogs", () => {
           { id: "alice", username: "alice", avatarUrl: null, status: "yes" },
           { id: "bob", username: "bob", avatarUrl: null, status: "yes" },
         ],
-        dogs: [{ id: "rex", name: "Rex", photoUrl: null, status: "yes", updatedBy: "alice" }],
+        dogs: [{ id: "rex", name: "Rex", photoUrl: null, sex: null, status: "yes", updatedBy: "alice" }],
       })
 
       const result = pairParticipantsWithDogs(walk)
@@ -53,7 +53,7 @@ describe("pairParticipantsWithDogs", () => {
     test("When pairing, Then the dog is unattributed rather than dropped", () => {
       const walk = createWalkFixture({
         participants: [{ id: "alice", username: "alice", avatarUrl: null, status: "yes" }],
-        dogs: [{ id: "rex", name: "Rex", photoUrl: null, status: "yes", updatedBy: null }],
+        dogs: [{ id: "rex", name: "Rex", photoUrl: null, sex: null, status: "yes", updatedBy: null }],
       })
 
       const result = pairParticipantsWithDogs(walk)
@@ -67,7 +67,7 @@ describe("pairParticipantsWithDogs", () => {
     test("When pairing, Then the dog is unattributed rather than silently dropped", () => {
       const walk = createWalkFixture({
         participants: [{ id: "alice", username: "alice", avatarUrl: null, status: "yes" }],
-        dogs: [{ id: "rex", name: "Rex", photoUrl: null, status: "yes", updatedBy: "someone-who-left" }],
+        dogs: [{ id: "rex", name: "Rex", photoUrl: null, sex: null, status: "yes", updatedBy: "someone-who-left" }],
       })
 
       const result = pairParticipantsWithDogs(walk)

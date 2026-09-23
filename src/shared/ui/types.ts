@@ -12,6 +12,7 @@ export type Dog = {
   name: string;
   breed: string;
   ageYears: number;
+  sex?: "male" | "female";
   photoUrl?: string;
   /** set when the dog is co-owned with another user (shared household) */
   sharedWith?: Friend;
